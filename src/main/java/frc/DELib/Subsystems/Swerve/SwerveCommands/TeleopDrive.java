@@ -1,0 +1,87 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.DELib.Subsystems.Swerve.SwerveCommands;
+
+import java.util.function.BooleanSupplier;
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
+import frc.DELib.BooleanUtil.ToggleBoolean;
+import frc.DELib.Subsystems.Swerve.SwerveSubsystem;
+import frc.DELib.Subsystems.Swerve.SwerveUtil.HeadingController;
+import frc.DELib.Subsystems.Swerve.SwerveUtil.SwerveDriveHelper;
+import frc.DELib.Subsystems.Swerve.SwerveUtil.SwerveDriveHelper.DriveMode;
+import frc.DELib.Subsystems.Vision.VisionSubsystem;
+import frc.robot.Constants;
+import frc.robot.Robot;
+
+public class TeleopDrive extends Command {
+ private SwerveSubsystem m_swerve;
+ private CommandPS5Controller m_joystick;
+ private HeadingController m_headingController;
+ private BooleanSupplier m_lowPower;
+ private BooleanSupplier m_fieldRelative;
+ private BooleanSupplier m_shouldResetYaw;
+ private BooleanSupplier m_useVision;
+ private ToggleBoolean m_fieldRelativeToggle;
+ private Translation2d m_centerOfRotation;
+
+
+  public TeleopDrive(SwerveSubsystem swerve, CommandPS5Controller joystick, BooleanSupplier lowPower, BooleanSupplier fieldRelative, BooleanSupplier resetYaw, BooleanSupplier useVision) {
+    m_swerve = swerve;
+    m_joystick = joystick;
+    m_headingController = new HeadingController(0.03, 0, 0);
+    m_lowPower = lowPower;
+    m_fieldRelative = fieldRelative;
+    m_shouldResetYaw = resetYaw;
+    m_useVision = useVision;
+    m_fieldRelativeToggle = new ToggleBoolean();
+    m_centerOfRotation = new Translation2d();
+    addRequirements(swerve);
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    ChassisSpeeds chassisSpeeds = new ChassisSpeeds(
+      MathUtil.applyDeadband(-m_joystick.getLeftY(), 0.1),
+      MathUtil.applyDeadband(-m_joystick.getLeftX(), 0.1),
+      MathUtil.applyDeadband(-m_joystick.getRightX(), 0.1));
+      chassisSpeeds = SwerveDriveHelper.updateChassisSpeeds(chassisSpeeds, m_lowPower, DriveMode.MadTown);
+      chassisSpeeds = SwerveDriveHelper.joystickToRobotUnits(chassisSpeeds, Constants.Swerve.swerveConstants.maxSpeed, Constants.Swerve.swerveConstants.maxAngularVelocity);
+      //heading controller
+      chassisSpeeds =  m_headingController.calculateOmegaSpeed(!Robot.s_isAuto , shouldResetAngle(m_shouldResetYaw), m_useVision.getAsBoolean(), chassisSpeeds, m_swerve.getHeading());
+      //heading controller
+      m_swerve.drive(chassisSpeeds, true, m_fieldRelativeToggle.update(!m_fieldRelative.getAsBoolean()), m_centerOfRotation);
+  }
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {}
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return false;
+  }
+
+  private boolean shouldResetAngle(BooleanSupplier shouldResetYaw){
+    if(shouldResetYaw.getAsBoolean()){
+      m_swerve.zeroHeading();
+      return true;
+    }
+    return false;
+  }
+}
