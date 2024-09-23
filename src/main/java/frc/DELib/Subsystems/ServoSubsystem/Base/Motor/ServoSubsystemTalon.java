@@ -75,6 +75,7 @@ public class ServoSubsystemTalon extends SubsystemBase implements IServoSubsyste
       m_statorCurrentSignal, 
       m_appliedVoltageSignal);
       SmartDashboard.putNumber(m_configuration.subsystemName + " Position", getPosition());
+      SmartDashboard.putNumber(m_configuration.subsystemName + " Velocity", getVelocity());
       SmartDashboard.putNumber(m_configuration.subsystemName + " closedLoopError", getClosedLoopError());
       SmartDashboard.putBoolean(m_configuration.subsystemName + " AtSetpint", isAtSetpoint());
       // SmartDashboard.putString(m_configuration.subsystemName + " current Command", getCurrentCommand().toString());

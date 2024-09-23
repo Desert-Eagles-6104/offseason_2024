@@ -145,43 +145,43 @@ public final class Constants {
 
       subsystemName = "arm";
 
-      slaves = new MotorConstants[]{new MotorConstants(50,"rio",false,true)};
+      slaves = new MotorConstants[]{new MotorConstants(50,"rio",true,true)};
 
-      master = new MotorConstants(51,"rio",true ,true);
+      master = new MotorConstants(51,"rio",false ,true);
 
-      rotationsPerPositionUnit = 1.0;
+      rotationsPerPositionUnit = 1.0/360.0;
 
-      sensorToMechanismRatio = 1.0;
+      sensorToMechanismRatio = 90.0;
       
-      pidContainer = new PIDContainer(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+      pidContainer = new PIDContainer(1.4, 3.0, 0.15, 0.15, 95.0, 2.0, 10.0);
 
       //#region motion magic values
-      motionMagicCruiseVelocity = 0.0;
+      motionMagicCruiseVelocity = 300;
       
-      motionMagicAcceleration = 0.0;
+      motionMagicAcceleration = 800;
 
-      motionMagicJerk = 0.0;
+      motionMagicJerk = 70000;
       //#endregion motion magic values
 
       //#region cuurent limit
       supplyCurrentLimit = 60; 
 
-      enableSupplyCurrentLimit = false;
+      enableSupplyCurrentLimit = true;
 
       statorCurrentLimit = 40;
 
-      enableStatorCurrentLimit = false;
+      enableStatorCurrentLimit = true;
       //#endregion current limit
 
       //#region soft limits 
-      forwardSoftLimit = -99999;
+      forwardSoftLimit = 95;
 
-      reverseSoftLimit = -99999;
+      reverseSoftLimit = 9.57;
       //#endregion sofr limits
 
       allowableError = 0.0;
 
-      homePosition = 0.0;
+      homePosition = 9.57;
     }};
   }
 
@@ -199,7 +199,7 @@ public final class Constants {
   
       sensorToMechanismRatio = 0.5;
       
-      pidContainer = new PIDContainer(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+      pidContainer = new PIDContainer(0.43555, 8.6861, 0.32974, 0.17102, 68.42, 0.0, 14.559);
   
       //#region motion magic values
       motionMagicCruiseVelocity = 0.0;
