@@ -15,6 +15,8 @@ import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -78,7 +80,7 @@ public class ShooterSubsystem extends SubsystemBase{
     talonConfigurationRight.withSlot0(PIDContainer.toSlot0Configs(configuration.pidContainer));
 
     talonConfigurationRight.MotorOutput
-    .withInverted(MotorConstants.toInvertedType(configuration.master.CounterClockwisePositive))
+    .withInverted(InvertedValue.CounterClockwise_Positive)
     .withNeutralMode(MotorConstants.toNeturalMode(configuration.master.isBrake));
 
     talonConfigurationRight.Feedback.withSensorToMechanismRatio(configuration.sensorToMechanismRatio);
@@ -100,7 +102,7 @@ public class ShooterSubsystem extends SubsystemBase{
     talonConfigurationLeft.withSlot0(PIDContainer.toSlot0Configs(configuration.pidContainer));
 
     talonConfigurationLeft.MotorOutput
-    .withInverted(MotorConstants.toInvertedType(configuration.master.CounterClockwisePositive))
+    .withInverted(InvertedValue.CounterClockwise_Positive)
     .withNeutralMode(MotorConstants.toNeturalMode(configuration.master.isBrake));
 
     talonConfigurationLeft.Feedback.withSensorToMechanismRatio(configuration.sensorToMechanismRatio);
@@ -176,17 +178,17 @@ public class ShooterSubsystem extends SubsystemBase{
 
   public void setMotionMagicVelocity(double velocity) {
     m_rightMotor.setControl(m_motiongMagicVelocityRequest.withVelocity(toRotations(velocity)));
-    m_leftMotor.setControl(m_motiongMagicVelocityRequest.withVelocity(toRotations(velocity * ratioBetweenMotors)));
+    m_leftMotor.setControl(m_motiongMagicVelocityRequest.withVelocity(toRotations(-velocity * ratioBetweenMotors)));
   }
 
   public void setVelocity(double velocity) {
     m_rightMotor.setControl(m_VelocityVoltageRequest.withVelocity(toRotations(velocity)));
-    m_leftMotor.setControl(m_VelocityVoltageRequest.withVelocity(toRotations(velocity * ratioBetweenMotors)));
+    m_leftMotor.setControl(m_VelocityVoltageRequest.withVelocity(toRotations(-velocity * ratioBetweenMotors)));
   }
 
   public void setPrecentOutput(double precent) {
     m_rightMotor.setControl(m_dutyCycleRequest.withOutput(precent));
-    m_leftMotor.setControl(m_dutyCycleRequest.withOutput(precent * ratioBetweenMotors));
+    m_leftMotor.setControl(m_dutyCycleRequest.withOutput(-precent * ratioBetweenMotors));
   }
 
   public boolean isAtSetpointRight() {

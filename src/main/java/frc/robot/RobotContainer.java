@@ -55,15 +55,15 @@ public class RobotContainer {
     //arm
     SmartDashboard.putData("reset arm", new InstantCommand(() -> m_arm.resetPosition(9.57)).ignoringDisable(true));
     controller.circle().onTrue(new InstantCommand(() -> m_arm.setMotionMagicPosition(90)));
-    controller.square().onTrue(new InstantCommand(() -> m_arm.setMotionMagicPosition(20)));
+    controller.square().onTrue(new InstantCommand(() -> m_arm.setMotionMagicPosition(45)));
     controller.PS().onTrue(new InstantCommand(() -> m_arm.setMotionMagicPosition(Constants.arm.configuration.homePosition)));
     controller.povDown().onTrue(new ArmHoming(m_arm));
     // shooter
-    controller.triangle().onTrue(new InstantCommand(() -> m_shooter.setMotionMagicVelocity(3000)));
+    controller.triangle().onTrue(new InstantCommand(() -> m_shooter.setMotionMagicVelocity(-6000)));
     controller.cross().onTrue(new InstantCommand(() -> m_shooter.disableMotors()));
     //intake
-    controller.R2().onTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(-0.3)));
-    controller.L2().onTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(0.3)));
+    controller.R2().onTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(-0.4)));
+    controller.L2().onTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(0.4)));
 
   }
 

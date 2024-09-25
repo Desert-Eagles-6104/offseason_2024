@@ -191,9 +191,9 @@ public final class Constants {
 
       subsystemName = "Shooter";
   
-      master = new MotorConstants(53,"rio",false,false);
+      master = new MotorConstants(53,"rio",true,false);
 
-      slaves = new MotorConstants[]{new MotorConstants(52,"rio",true,false)};
+      slaves = new MotorConstants[]{new MotorConstants(52,"rio",true ,false)};
   
       rotationsPerPositionUnit = 1.0 / 60.0;
   
