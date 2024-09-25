@@ -19,7 +19,7 @@ public class VisionSubsystem extends SubsystemBase {
   private double m_tx; //Horizontal Offset From Crosshair To Target (-27 degrees to 27 degrees)
   private double m_ty; //Vertical Offset From Crosshair To Target (-20.5 degrees to 20.5 degrees)
   private boolean m_tv; //Whether the limelight has any valid targets (0 or 1)
-  private Pose2d m_estimatedRobotPose; 
+  private Pose2d m_estimatedRobotPose = new Pose2d(); 
   private double m_currentID;
   
   private double cropXMin = -1;
@@ -68,8 +68,9 @@ public class VisionSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("TY", getTy());
     SmartDashboard.putBoolean("TV", getTv());
 
-    SmartDashboard.putNumber("DistanceFromTargetX", getDstX(Constants.Vision.tragetHeight));
-    SmartDashboard.putNumber("DistanceFromTargetY", getDstY(Constants.Vision.tragetHeight));
+    SmartDashboard.putString("3D", m_estimatedRobotPose.toString());
+    // SmartDashboard.putNumber("DistanceFromTargetX", getDstX(Constants.Vision.tragetHeight));
+    // SmartDashboard.putNumber("DistanceFromTargetY", getDstY(Constants.Vision.tragetHeight));
 
     if(m_gamePieceCameraSettings != null){
       m_gamePieceTX = LimelightHelpers.getTX(CameraType.GamePieceCamera.getCameraName());
@@ -169,7 +170,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public enum CameraType{
-    AprilTagCamera("AprilTagCamera"),
+    AprilTagCamera("limelight"),
     GamePieceCamera("GamePieceCamera");
 
     final String m_cameraName;

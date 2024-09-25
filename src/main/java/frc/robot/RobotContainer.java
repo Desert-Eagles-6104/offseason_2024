@@ -11,6 +11,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.DELib.Subsystems.ServoSubsystem.Base.Motor.ServoSubsystemTalon;
 import frc.DELib.Subsystems.Swerve.SwerveSubsystem;
 import frc.DELib.Subsystems.Swerve.SwerveCommands.TeleopDrive;
+import frc.DELib.Subsystems.Vision.VisionSubsystem;
+import frc.DELib.Subsystems.Vision.VisionUtil.CameraSettings;
+import frc.robot.commands.ArmCommands.ArmHoming;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
@@ -27,8 +31,9 @@ public class RobotContainer {
   private CommandPS5Controller controller = new CommandPS5Controller(0);
   private SwerveSubsystem m_swerve;
   private IntakeSubsystem m_intakeSub;
-  private ServoSubsystemTalon m_arm;
+  private ArmSubsystem m_arm;
   private ShooterSubsystem m_shooter;
+  private VisionSubsystem m_vision;
   // private PhoneixSysid sysid;
   // private SwerveAutoBuilder swerveAutoBuilder;
   public RobotContainer() {
@@ -39,15 +44,22 @@ public class RobotContainer {
     // SmartDashboard.putData("reset Odometry",
     // new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d())).ignoringDisable(true));
     m_intakeSub = IntakeSubsystem.getInstance();
-    m_arm = new ServoSubsystemTalon(Constants.arm.configuration);
+    m_arm = new ArmSubsystem(Constants.arm.configuration);
     m_shooter = new ShooterSubsystem(Constants.Shooter.configuration);
+    m_vision = new VisionSubsystem(new CameraSettings(0, 0, 0, 0, 0, 0, true), null);
     // sysid = new PhoneixSysid(Constants.sysidConfiguration, m_shooter);
-    SmartDashboard.putData("reset arm", new InstantCommand(() -> m_arm.resetPosition(9.57)).ignoringDisable(true));
     // controller.circle().onTrue(sysid.runFullCharacterization(true));
+    
+    //arm
+    SmartDashboard.putData("reset arm", new InstantCommand(() -> m_arm.resetPosition(9.57)).ignoringDisable(true));
     controller.circle().onTrue(new InstantCommand(() -> m_arm.setMotionMagicPosition(90)));
-    controller.square().onTrue(new InstantCommand(() -> m_arm.setMotionMagicPosition(15)));
+    controller.square().onTrue(new InstantCommand(() -> m_arm.setMotionMagicPosition(20)));
+    controller.PS().onTrue(new InstantCommand(() -> m_arm.setMotionMagicPosition(Constants.arm.configuration.homePosition)));
+    controller.povDown().onTrue(new ArmHoming(m_arm));
+    // shooter
     controller.triangle().onTrue(new InstantCommand(() -> m_shooter.setMotionMagicVelocity(3000)));
     controller.cross().onTrue(new InstantCommand(() -> m_shooter.disableMotors()));
+    //intake
     controller.R2().onTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(-0.3)));
     controller.L2().onTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(0.3)));
 

@@ -28,7 +28,7 @@ public class ServoSubsystemTalon extends SubsystemBase implements IServoSubsyste
   private TalonFX m_masterFx;
   @SuppressWarnings("unused")
   private TalonFX[] m_slaveFX;
-  private double setpoint;
+  public double setpoint;
 
     // Requests
   private MotionMagicVoltage m_motiongMagicVoltageRequest = new MotionMagicVoltage(0).withSlot(0);

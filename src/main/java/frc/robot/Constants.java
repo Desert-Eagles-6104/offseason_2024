@@ -153,7 +153,7 @@ public final class Constants {
 
       sensorToMechanismRatio = 90.0;
       
-      pidContainer = new PIDContainer(1.4, 3.0, 0.15, 0.15, 95.0, 2.0, 10.0);
+      pidContainer = new PIDContainer(1.5, 3.0, 0.15, 0.15, 95.0, 2.0, 10.0);
 
       //#region motion magic values
       motionMagicCruiseVelocity = 300;
@@ -179,7 +179,7 @@ public final class Constants {
       reverseSoftLimit = 9.57;
       //#endregion sofr limits
 
-      allowableError = 0.0;
+      allowableError = 2.0;
 
       homePosition = 9.57;
     }};

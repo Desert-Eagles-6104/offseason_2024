@@ -86,8 +86,7 @@ public class HeadingController  {
         if(setpoint.getDegrees() == m_pidController.getSetpoint()) return;
         m_pidController.reset();
         m_pidController.setSetpoint(setpoint.getDegrees());
-        SmartDashboard.putNumber("setpointHeading", setpoint.getDegrees());
-    }
+          }
 
     /**
    @param value clamped value

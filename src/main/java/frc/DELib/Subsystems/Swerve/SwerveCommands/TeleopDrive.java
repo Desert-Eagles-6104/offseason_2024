@@ -19,7 +19,6 @@ import frc.DELib.Subsystems.Swerve.SwerveUtil.SwerveDriveHelper;
 import frc.DELib.Subsystems.Swerve.SwerveUtil.SwerveDriveHelper.DriveMode;
 import frc.robot.Constants;
 import frc.robot.Robot;
-import frc.robot.RobotContainer;
 
 public class TeleopDrive extends Command {
  private  SwerveSubsystem m_swerve;
@@ -36,7 +35,7 @@ public class TeleopDrive extends Command {
   public TeleopDrive(SwerveSubsystem swerve, CommandPS5Controller joystick, BooleanSupplier lowPower, BooleanSupplier fieldRelative, BooleanSupplier resetYaw, BooleanSupplier useVision) {
     m_swerve = swerve;
     m_joystick = joystick;
-    m_headingController = new HeadingController(0.03, 0, 0);
+    m_headingController = new HeadingController(0.2, 0, 0);
     m_lowPower = lowPower;
     m_fieldRelative = fieldRelative;
     m_shouldResetYaw = resetYaw;
