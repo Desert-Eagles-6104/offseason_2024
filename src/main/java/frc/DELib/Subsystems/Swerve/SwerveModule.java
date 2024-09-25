@@ -58,13 +58,13 @@ public class SwerveModule {
         m_swerveConstants = swerveConstants;
         m_moduleConstants = swerveModuleConstants;
 
-        m_absoluteEncoder = new CANcoder(swerveModuleConstants.absoluteEncoderID);
+        m_absoluteEncoder = new CANcoder(swerveModuleConstants.absoluteEncoderID, "Canivore");
         m_absoluteEncoder.getConfigurator().apply(swerveConstants.canCoderConfigs());
 
-        m_steeringMotor = new TalonFX(swerveModuleConstants.steeringMotorID);
+        m_steeringMotor = new TalonFX(swerveModuleConstants.steeringMotorID, "Canivore");
         m_steeringMotor.getConfigurator().apply(swerveConstants.steerTalonFXConfigs());
 
-        m_driveMotor = new TalonFX(swerveModuleConstants.driveMotorID);
+        m_driveMotor = new TalonFX(swerveModuleConstants.driveMotorID, "Canivore");
         m_driveMotor.getConfigurator().apply(swerveConstants.driveTalonFXConfigs());
         m_driveMotor.getConfigurator().apply(swerveModuleConstants.slot0Configs);
         m_driveMotor.getConfigurator().setPosition(0.0);
@@ -82,10 +82,10 @@ public class SwerveModule {
         m_CANCoderAbsolutePositionSignal = m_absoluteEncoder.getAbsolutePosition();
 
         odometrySignals = new BaseStatusSignal[4];
-        odometrySignals[0] = m_driveMotorPositionSignal;
-        odometrySignals[1] = m_driveMotorVelocitySignal;
-        odometrySignals[2] = m_steerMotorPositionSignal;
-        odometrySignals[3] = m_steerMotorVelocitySignal;
+        odometrySignals[0] = m_driveMotorVelocitySignal;
+        odometrySignals[1] = m_driveMotorPositionSignal;
+        odometrySignals[2] = m_steerMotorVelocitySignal;
+        odometrySignals[3] = m_steerMotorPositionSignal;
 
         CanBusProperties(50);
 
@@ -248,7 +248,7 @@ public class SwerveModule {
     }
 
     private void CanBusProperties(int CanBusFrequency){
-        BaseStatusSignal.setUpdateFrequencyForAll(CanBusFrequency, 
+        BaseStatusSignal.setUpdateFrequencyForAll(50, 
         m_driveMotorPositionSignal,
         m_driveMotorVelocitySignal,
         m_driveMotorSupplyCurrentSignal,

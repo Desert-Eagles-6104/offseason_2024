@@ -4,6 +4,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.DELib.BooleanUtil.StickyBoolean;
 import frc.robot.Constants;
 
@@ -34,7 +35,7 @@ public class HeadingController  {
      * @return a setpoint to the pid controller
      */
     public double update(Rotation2d currentHeading){
-        return clamp(m_pidController.calculate(currentHeading.getDegrees()),-Constants.Swerve.swerveConstants.maxAngularVelocity,Constants.Swerve.swerveConstants.maxAngularVelocity);
+        return -clamp(m_pidController.calculate(currentHeading.getDegrees()),-Constants.Swerve.swerveConstants.maxAngularVelocity,Constants.Swerve.swerveConstants.maxAngularVelocity);
     }
     /**
      * calculates the heading of the robot
@@ -85,6 +86,7 @@ public class HeadingController  {
         if(setpoint.getDegrees() == m_pidController.getSetpoint()) return;
         m_pidController.reset();
         m_pidController.setSetpoint(setpoint.getDegrees());
+        SmartDashboard.putNumber("setpointHeading", setpoint.getDegrees());
     }
 
     /**

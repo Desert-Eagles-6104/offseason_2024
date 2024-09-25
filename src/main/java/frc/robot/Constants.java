@@ -44,100 +44,100 @@ public final class Constants {
   }
 
   public final static class Swerve{
-    public static double x = 0.4783 / 2.0;
-    public static double y = 0.425 / 2.0;
+    public static final double x = 0.4783 /2.0;
+    public static final double y = 0.425 /2.0;
 
-      public static SwerveConstants swerveConstants = new SwerveConstants(){{
-        chosenModule =  //TODO: This must be tuned to specific robot
-        COTSTalonFXSwerveConstants.SDS.MK4.KrakenX60(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L3);
+    public static SwerveConstants swerveConstants = new SwerveConstants(){{
+      chosenModule =  //TODO: This must be tuned to specific robot
+      COTSTalonFXSwerveConstants.SDS.MK4.KrakenX60(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L3);
 
-        /* Drivetrain Constants */
-        wheelCircumference = chosenModule.wheelCircumference;
+      /* Drivetrain Constants */
+      wheelCircumference = chosenModule.wheelCircumference;
 
-        /*swerve module position*/
-        frontLeftPos = new Translation2d(x,y);
-        modulesPositions[0] = frontLeftPos;
-        frontRightPos = new Translation2d(x,-y);
-        modulesPositions[1] = frontRightPos;
-        backLeftPos = new Translation2d(-x,y);
-        modulesPositions[2] = backLeftPos;
-        backRightPos = new Translation2d(-x,-y);
-        modulesPositions[3] = backRightPos;
+      /*swerve module position*/
+      frontLeftPos = new Translation2d(x,y);
+      modulesPositions[0] = frontLeftPos;
+      frontRightPos = new Translation2d(x,-y);
+      modulesPositions[1] = frontRightPos;
+      backLeftPos = new Translation2d(-x,y);
+      modulesPositions[2] = backLeftPos;
+      backRightPos = new Translation2d(-x,-y);
+      modulesPositions[3] = backRightPos;
 
-        /* Module Gear Ratios */
-        driveGearRatio = chosenModule.driveGearRatio;
-        angleGearRatio = chosenModule.angleGearRatio;
+      /* Module Gear Ratios */
+      driveGearRatio = chosenModule.driveGearRatio;
+      angleGearRatio = chosenModule.angleGearRatio;
 
-        /* Motor Inverts */
-        angleMotorInvert = chosenModule.angleMotorInvert;
-        driveMotorInvert = chosenModule.driveMotorInvert;
+      /* Motor Inverts */
+      angleMotorInvert = chosenModule.angleMotorInvert;
+      driveMotorInvert = chosenModule.driveMotorInvert;
 
-        /* Angle Encoder Invert */
-        canCoderInvert = chosenModule.cancoderInvert;
+      /* Angle Encoder Invert */
+      canCoderInvert = chosenModule.cancoderInvert;
 
-        /* Swerve Current Limiting */
-        angleContinuousCurrentLimit = 25;
-        anglePeakCurrentLimit = 40;
-        anglePeakCurrentDuration = 0.1;
-        angleEnableCurrentLimit = true;
+      /* Swerve Current Limiting */
+      angleContinuousCurrentLimit = 25;
+      anglePeakCurrentLimit = 40;
+      anglePeakCurrentDuration = 0.1;
+      angleEnableCurrentLimit = true;
 
-        driveContinuousCurrentLimit = 40;
-        drivePeakCurrentLimit = 60;
-        drivePeakCurrentDuration = 0.1;
-        driveEnableCurrentLimit = true;
+      driveContinuousCurrentLimit = 40;
+      drivePeakCurrentLimit = 60;
+      drivePeakCurrentDuration = 0.1;
+      driveEnableCurrentLimit = true;
 
-        /* These values are used by the drive falcon to ramp in open loop and closed loop driving.
-        * We found a small open loop ramp (0.25) helps with tread wear, tipping, etc */
-        openLoopRamp = 0.2;
-        closedLoopRamp = 0.0;
+      /* These values are used by the drive falcon to ramp in open loop and closed loop driving.
+      * We found a small open loop ramp (0.25) helps with tread wear, tipping, etc */
+      openLoopRamp = 0.2;
+      closedLoopRamp = 0.0;
 
-        /* Angle Motor PID Values */
-        angleKP = chosenModule.angleKP;
-        angleKI = chosenModule.angleKI;
-        angleKD = chosenModule.angleKD;
+      /* Angle Motor PID Values */
+      angleKP = chosenModule.angleKP;
+      angleKI = chosenModule.angleKI;
+      angleKD = chosenModule.angleKD;
 
-        /* Drive Motor PID Values */
-        driveKP = 0.05; //TODO: This must be tuned to specific robot
-        driveKI = 0.0;
-        driveKD = 0.0;
-        driveKS = 0.0;
+      /* Drive Motor PID Values */
+      driveKP = 0.05; //TODO: This must be tuned to specific robot
+      driveKI = 0.0;
+      driveKD = 0.0;
+      driveKS = 0.0;
 
-        /* Heading PID Values */
-        HeadingKP = 4;
-        HeadingKI = 0.0;
-        HeadingKD = 0;
-        HeadingTolerence = 0;
-
-
-        /* Drive Motor Characterization Values 
-        * Divide SYSID values by 12 to convert from volts to percent output for CTRE */
-        driveKS = (0.32 / 12); //TODO: This must be tuned to specific robot
-        driveKV = (1.51 / 12);
-        driveKA = (0.27 / 12);
-
-        /*wheel parameters */
-        WheelRadius = 0.0508;
-        WheelCircumference = WheelRadius * 2 * Math.PI;
-
-        /* Swerve Profiling Values */
-        /** Meters per Second */
-        maxSpeed = 5.21 * 0.8; //TODO: This must be tuned to specific robot
-        /** Radians per Second */
-        maxAngularVelocity = 5.21 / 0.31992 * 0.8; //Robot linear max speed divided by the robot radius 
-
-        /* Neutral Modes */
-        angleNeutralMode = NeutralMode.Coast;
-        driveNeutralMode = NeutralMode.Brake;
+      /* Heading PID Values */
+      HeadingKP = 0.5;
+      HeadingKI = 0.0;
+      HeadingKD = 0.0;
+      HeadingTolerence = 1;
 
 
-        FL = new SwerveModuleConstants(10, 11, 12, Rotation2d.fromDegrees(0.0), new Slot0Configs().withKS(driveKS).withKV(driveKV).withKA(driveKA).withKP(driveKP).withKD(driveKD).withKD(driveKD), frontLeftPos);
-        FR = new SwerveModuleConstants(20, 21, 22, Rotation2d.fromDegrees(0.0), new Slot0Configs().withKS(driveKS).withKV(driveKV).withKA(driveKA).withKP(driveKP).withKD(driveKD).withKD(driveKD), frontRightPos);
-        BL = new SwerveModuleConstants(30, 31, 32, Rotation2d.fromDegrees(0.0), new Slot0Configs().withKS(driveKS).withKV(driveKV).withKA(driveKA).withKP(driveKP).withKD(driveKD).withKD(driveKD), backLeftPos);
-        BR = new SwerveModuleConstants(40, 41, 42, Rotation2d.fromDegrees(0.0), new Slot0Configs().withKS(driveKS).withKV(driveKV).withKA(driveKA).withKP(driveKP).withKD(driveKD).withKD(driveKD), backRightPos);
+      /* Drive Motor Characterization Values 
+      * Divide SYSID values by 12 to convert from volts to percent output for CTRE */
+      driveKS = (0.32 / 12); //TODO: This must be tuned to specific robot
+      driveKV = (1.51 / 12);
+      driveKA = (0.27 / 12);
 
-        filepath = "/home/lvuser/natinst/ModuleOffsets.csv";
-    }};
-  }
+      /*wheel parameters */
+      WheelRadius = 0.0508;
+      WheelCircumference = WheelRadius * 2 * Math.PI;
+
+      /* Swerve Profiling Values */
+      /** Meters per Second */
+      maxSpeed = 5.21 * 0.8; //TODO: This must be tuned to specific robot
+      /** Radians per Second */
+      maxAngularVelocity = 5.21 / 0.31992 * 0.8; //Robot linear max speed divided by the robot radius 
+
+      /* Neutral Modes */
+      angleNeutralMode = NeutralMode.Coast;
+      driveNeutralMode = NeutralMode.Brake;
+
+
+      FL = new SwerveModuleConstants(10, 11, 12, Rotation2d.fromDegrees(0.0), new Slot0Configs().withKS(driveKS).withKV(driveKV).withKA(driveKA).withKP(driveKP).withKD(driveKD).withKD(driveKD), frontLeftPos);
+      FR = new SwerveModuleConstants(20, 21, 22, Rotation2d.fromDegrees(0.0), new Slot0Configs().withKS(driveKS).withKV(driveKV).withKA(driveKA).withKP(driveKP).withKD(driveKD).withKD(driveKD), frontRightPos);
+      BL = new SwerveModuleConstants(30, 31, 32, Rotation2d.fromDegrees(0.0), new Slot0Configs().withKS(driveKS).withKV(driveKV).withKA(driveKA).withKP(driveKP).withKD(driveKD).withKD(driveKD), backLeftPos);
+      BR = new SwerveModuleConstants(40, 41, 42, Rotation2d.fromDegrees(0.0), new Slot0Configs().withKS(driveKS).withKV(driveKV).withKA(driveKA).withKP(driveKP).withKD(driveKD).withKD(driveKD), backRightPos);
+
+      filepath = "/home/lvuser/natinst/ModuleOffsets.csv";
+  }};
+}
 
   public final class arm {
     public static final ServoSubsystemConfiguration configuration = new ServoSubsystemConfiguration(){{
@@ -195,16 +195,16 @@ public final class Constants {
 
       slaves = new MotorConstants[]{new MotorConstants(52,"rio",true,false)};
   
-      rotationsPerPositionUnit = 60;
+      rotationsPerPositionUnit = 1.0 / 60.0;
   
       sensorToMechanismRatio = 0.5;
       
-      pidContainer = new PIDContainer(0.43555, 8.6861, 0.32974, 0.17102, 68.42, 0.0, 14.559);
+      pidContainer = new PIDContainer(0.28, 0.075, 0.05, 0.0, 0.15, 0.0, 0);
   
       //#region motion magic values
-      motionMagicCruiseVelocity = 0.0;
+      motionMagicCruiseVelocity = 3000;
       
-      motionMagicAcceleration = 0.0;
+      motionMagicAcceleration = 4000;
   
       motionMagicJerk = 0.0;
       //#endregion motion magic values
@@ -230,10 +230,10 @@ public final class Constants {
     m_rampRate = Volts.of(1).per(Seconds.of(1));
 
     /** The step voltage output used for dynamic test routines. */
-    m_stepVoltage = Volts.of(3);
+    m_stepVoltage = Volts.of(4);
 
     /** Safety timeout for the test routine commands. */
-    m_timeout = Seconds.of(4);
+    m_timeout = Seconds.of(10);
     //#endregion mechanisem
   }};
 }

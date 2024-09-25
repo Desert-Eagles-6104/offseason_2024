@@ -7,8 +7,8 @@ package frc.robot.subsystems;
 import frc.DELib.Subsystems.ServoSubsystem.ServoSubsystemConfiguration;
 import frc.DELib.Subsystems.ServoSubsystem.Base.Motor.ServoSubsystemTalon;
 
-public class Arm extends ServoSubsystemTalon {
-  public Arm(ServoSubsystemConfiguration configuration) {
+public class ArmSubsystem extends ServoSubsystemTalon {
+  public ArmSubsystem(ServoSubsystemConfiguration configuration) {
     super(configuration);
   }
 

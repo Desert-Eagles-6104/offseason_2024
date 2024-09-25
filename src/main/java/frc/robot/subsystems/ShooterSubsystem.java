@@ -17,6 +17,7 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.DELib.CSV.CSVReader;
 import frc.DELib.Intepulation.LinearInterpolator;
@@ -129,7 +130,7 @@ public class ShooterSubsystem extends SubsystemBase{
     BaseStatusSignal.setUpdateFrequencyForAll(50,m_closedLoopErrorLeft, m_positionSignalLeft, m_velocitySignalLeft, m_accelerationSignalLeft, m_appliedVoltageSignalLeft, m_supplyCurrentSignalLeft, m_statorCurrentSignalLeft);
     m_leftMotor.optimizeBusUtilization();
 
-    setShootingTable(m_configuration.fileLocation);
+    // setShootingTable(m_configuration.fileLocation);
   }
 
   @Override
@@ -150,6 +151,9 @@ public class ShooterSubsystem extends SubsystemBase{
       m_supplyCurrentSignalLeft, 
       m_statorCurrentSignalLeft, 
       m_appliedVoltageSignalLeft);
+
+      SmartDashboard.putNumber("shooter left RPM", getVelocityLeft());
+      SmartDashboard.putNumber("shooter right RPM", getVelocityRight());
   }
 
   public void disableMotors() {
@@ -194,11 +198,11 @@ public class ShooterSubsystem extends SubsystemBase{
   }
 
   public double getVelocityRight() {
-   return  m_velocitySignalRight.getValueAsDouble();
+   return  fromRotations(m_velocitySignalRight.getValueAsDouble());
   }
 
   public double getVelocityLeft() {
-   return  m_velocitySignalLeft.getValueAsDouble();
+   return  fromRotations(m_velocitySignalLeft.getValueAsDouble());
   }
 
   public void setShootingTable(String Filelocation) {

@@ -60,8 +60,9 @@ public class WheelTracker {
 		mAllSignals[mAllSignals.length - 2] = mPigeon.getYawStatusSignal();
 		mAllSignals[mAllSignals.length - 1] = mPigeon.getRateStatusSignal();
 
-		BaseStatusSignal.setUpdateFrequencyForAll(250, mAllSignals);
-
+		for (BaseStatusSignal sig : mAllSignals) {
+			sig.setUpdateFrequency(250);
+		}
 		mOdometryThread = new OdometryThread();
 		mOdometryThread.setDaemon(true);
 		mOdometryThread.start();
@@ -76,11 +77,9 @@ public class WheelTracker {
 	}
 
 	private class OdometryThread extends Thread {
-
 		@Override
 		public void run() {
-			BaseStatusSignal.setUpdateFrequencyForAll(250, mAllSignals);
-			while (mIsEnabled) {
+			while (true) {
 				try {
 					robotHeading = mPigeon.getYaw().getDegrees();
 					updateRobotPose(Timer.getFPGATimestamp());

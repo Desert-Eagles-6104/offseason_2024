@@ -11,7 +11,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 
 public class IntakeEatNote extends Command {
   private IntakeSubsystem m_intake;
-  private final double EAT_NOTE_PRECENTAGE = 0.7;
+  private final double EAT_NOTE_PRECENTAGE = -0.8;
   private final double FIRST_STAGE_PRECENT = 0.5;
   private final double SECOAND_STAGE_MOVE_POSITION = 0.2;
   private LatchedBolean m_firstStage;

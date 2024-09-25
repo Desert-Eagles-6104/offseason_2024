@@ -17,12 +17,12 @@ import frc.DELib.Subsystems.Swerve.SwerveSubsystem;
 import frc.DELib.Subsystems.Swerve.SwerveUtil.HeadingController;
 import frc.DELib.Subsystems.Swerve.SwerveUtil.SwerveDriveHelper;
 import frc.DELib.Subsystems.Swerve.SwerveUtil.SwerveDriveHelper.DriveMode;
-import frc.DELib.Subsystems.Vision.VisionSubsystem;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 
 public class TeleopDrive extends Command {
- private SwerveSubsystem m_swerve;
+ private  SwerveSubsystem m_swerve;
  private CommandPS5Controller m_joystick;
  private HeadingController m_headingController;
  private BooleanSupplier m_lowPower;
@@ -56,9 +56,9 @@ public class TeleopDrive extends Command {
   @Override
   public void execute() {
     ChassisSpeeds chassisSpeeds = new ChassisSpeeds(
-      MathUtil.applyDeadband(-m_joystick.getLeftY(), 0.1),
-      MathUtil.applyDeadband(-m_joystick.getLeftX(), 0.1),
-      MathUtil.applyDeadband(-m_joystick.getRightX(), 0.1));
+      MathUtil.applyDeadband(m_joystick.getLeftY(), 0.1),
+      MathUtil.applyDeadband(m_joystick.getLeftX(), 0.1),
+      MathUtil.applyDeadband(m_joystick.getRightX(), 0.1));
       chassisSpeeds = SwerveDriveHelper.updateChassisSpeeds(chassisSpeeds, m_lowPower, DriveMode.MadTown);
       chassisSpeeds = SwerveDriveHelper.joystickToRobotUnits(chassisSpeeds, Constants.Swerve.swerveConstants.maxSpeed, Constants.Swerve.swerveConstants.maxAngularVelocity);
       //heading controller
@@ -84,4 +84,17 @@ public class TeleopDrive extends Command {
     }
     return false;
   }
+
+  /**
+   * @param hasTarget camera sees target 
+   * @param errorFromTarget error from target in degrees
+   * @param latency camera total latency
+   */
+  private void setVisionTarget(boolean hasTarget, double errorFromTarget, double latency){
+    if(m_useVision.getAsBoolean()){
+      double errorDegrees = hasTarget ? errorFromTarget : 0;
+      Rotation2d target = m_swerve.getInterpolatedPose(latency).getRotation().plus(Rotation2d.fromDegrees(errorDegrees));
+      m_headingController.setSetpoint(target);
+    }
+}
 }

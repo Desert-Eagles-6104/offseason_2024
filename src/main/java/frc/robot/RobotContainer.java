@@ -4,23 +4,15 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.proto.Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.DELib.Subsystems.ServoSubsystem.Base.Motor.ServoSubsystemTalon;
-import frc.DELib.Subsystems.ServoSubsystem.Commands.ServoSubsystemInstantSetPosition;
-import frc.DELib.Subsystems.ServoSubsystem.Commands.ServoSubsystemManualControl;
 import frc.DELib.Subsystems.Swerve.SwerveSubsystem;
-import frc.DELib.Subsystems.Swerve.SwerveCommands.ResetSwerveModules;
 import frc.DELib.Subsystems.Swerve.SwerveCommands.TeleopDrive;
-import frc.DELib.Sysid.PhoneixSysid;
-import frc.DELib.Util.SwerveAutoBuilder;
-import frc.robot.commands.IntakeCommnands.IntakeEatNote;
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -33,32 +25,38 @@ import frc.robot.subsystems.IntakeSubsystem;
  */
 public class RobotContainer {
   private CommandPS5Controller controller = new CommandPS5Controller(0);
-  // private SwerveSubsystem m_swerve;
+  private SwerveSubsystem m_swerve;
   private IntakeSubsystem m_intakeSub;
   private ServoSubsystemTalon m_arm;
-  private PhoneixSysid sysid;
+  private ShooterSubsystem m_shooter;
+  // private PhoneixSysid sysid;
   // private SwerveAutoBuilder swerveAutoBuilder;
   public RobotContainer() {
-    // m_swerve = SwerveSubsystem.getInstance(Constants.Swerve.swerveConstants);
+    m_swerve = SwerveSubsystem.createInstance(Constants.Swerve.swerveConstants);
     // swerveAutoBuilder = new SwerveAutoBuilder(m_swerve);
-    // m_swerve.setDefaultCommand(new TeleopDrive(m_swerve, controller, controller.L1(), controller.touchpad(),
-    // controller.options(), () -> false));
+    m_swerve.setDefaultCommand(new TeleopDrive(m_swerve, controller, controller.L1(), controller.touchpad(), controller.options(), () -> false));
     // SmartDashboard.putData("calibrate Swerve Modules", new ResetSwerveModules(m_swerve).ignoringDisable(true));
     // SmartDashboard.putData("reset Odometry",
     // new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d())).ignoringDisable(true));
     m_intakeSub = IntakeSubsystem.getInstance();
     m_arm = new ServoSubsystemTalon(Constants.arm.configuration);
-    controller.circle().onTrue(new ServoSubsystemManualControl(m_arm, () -> controller.getLeftY()));
+    m_shooter = new ShooterSubsystem(Constants.Shooter.configuration);
+    // sysid = new PhoneixSysid(Constants.sysidConfiguration, m_shooter);
     SmartDashboard.putData("reset arm", new InstantCommand(() -> m_arm.resetPosition(9.57)).ignoringDisable(true));
-    sysid = new PhoneixSysid(Constants.sysidConfiguration, m_arm);
-    boolean isMotionMagic = false;
-    controller.square().onTrue(new ServoSubsystemInstantSetPosition(m_arm, 90, isMotionMagic));
-    controller.triangle().onTrue(new ServoSubsystemInstantSetPosition(m_arm, 20, isMotionMagic));
-    controller.cross().onTrue(new ServoSubsystemInstantSetPosition(m_arm, 40, isMotionMagic));
+    // controller.circle().onTrue(sysid.runFullCharacterization(true));
+    controller.circle().onTrue(new InstantCommand(() -> m_arm.setMotionMagicPosition(90)));
+    controller.square().onTrue(new InstantCommand(() -> m_arm.setMotionMagicPosition(15)));
+    controller.triangle().onTrue(new InstantCommand(() -> m_shooter.setMotionMagicVelocity(3000)));
+    controller.cross().onTrue(new InstantCommand(() -> m_shooter.disableMotors()));
+    controller.R2().onTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(-0.3)));
+    controller.L2().onTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(0.3)));
+
   }
 
   public void disableMotors() {
-    // m_swerve.disableModules();
+    m_arm.disableMotors();
+    m_intakeSub.disableMotors();
+    m_shooter.disableMotors();
   }
 
   /**
@@ -72,6 +70,6 @@ public class RobotContainer {
   }
 
   public void intakeBinding(){
-    controller.L2().onTrue(new IntakeEatNote(m_intakeSub));
+    // controller.L2().onTrue(new IntakeEatNote(m_intakeSub));
     }
 }

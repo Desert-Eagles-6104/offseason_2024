@@ -13,7 +13,7 @@ public class Pigeon {
 
 	public static void CreateInstance(int ID) {
 		if (mInstance == null) {
-			mInstance = new Pigeon(ID, "");
+			mInstance = new Pigeon(ID, "Canivore");
 		}
 	}
 
@@ -31,7 +31,7 @@ public class Pigeon {
 	private final Pigeon2 mGyro;
 
 	// Configs
-	private boolean inverted = false;
+	private boolean inverted = true;
 	private Rotation2d yawAdjustmentAngle = new Rotation2d();
 	private Rotation2d rollAdjustmentAngle = new Rotation2d();
 	private Rotation2d pitchAdjustmentAngle = new Rotation2d();

@@ -25,13 +25,12 @@ public class ResetSwerveModules extends Command {
   public void initialize() {
     m_swerve.disableModules();
     m_swerve.setModulesNetrualMode(NeutralModeValue.Coast);
-    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_confirmOffsets = true;
+    m_confirmOffsets = SmartDashboard.getBoolean("Confirm", false);    ;
   }
 
   // Called once the command ends or is interrupted.
@@ -40,9 +39,9 @@ public class ResetSwerveModules extends Command {
       m_swerve.setModulesNetrualMode(NeutralModeValue.Brake);
     if(m_confirmOffsets){
         m_swerve.updateAngleOffsets();
+        // m_swerve.readAngleOffsets();
     }
     m_swerve.disableModules();
-    m_swerve.readAngleOffsets();
     SmartDashboard.putBoolean("Confirm", false);
     SmartDashboard.putBoolean("Finish", false);
   }

@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.DELib.Subsystems.ServoSubsystem.Base.Motor.ServoSubsystemTalon;
 import frc.DELib.Subsystems.VelocitySubsystem.Base.Motor.VelocitySubsystemTalon;
+import frc.robot.subsystems.ShooterSubsystem;
 
 /** Add your docs here. */
 public class PhoneixSysid {
@@ -35,6 +36,22 @@ public class PhoneixSysid {
     }
 
         public PhoneixSysid(SysidConfiguration configuration, VelocitySubsystemTalon subsystem){
+        m_routine =  new SysIdRoutine(
+            new SysIdRoutine.Config(
+                configuration.m_rampRate,  // Default ramp rate is acceptable
+                configuration.m_stepVoltage, // Reduce dynamic voltage to 4 to prevent motor brownout
+                configuration.m_timeout,          // Default timeout is acceptable
+                configuration.m_recordState), // Log state with Phoenix SignalLogger class
+            new SysIdRoutine.Mechanism(
+                (volts)-> {
+                    subsystem.runCharacterization(volts);
+                },
+                configuration.m_log, 
+                subsystem));
+        SignalLogger.setPath("sysid");
+    }
+
+    public PhoneixSysid(SysidConfiguration configuration, ShooterSubsystem subsystem){
         m_routine =  new SysIdRoutine(
             new SysIdRoutine.Config(
                 configuration.m_rampRate,  // Default ramp rate is acceptable
