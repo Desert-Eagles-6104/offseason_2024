@@ -35,7 +35,7 @@ public final class Constants {
   }
 
   public final static class Vision{
-    public static final CameraSettings aprilTagCameraSettings = new CameraSettings(0, 0, 0, 0, 0, 0, false); //TODO: This must be tuned to specific robot
+    public static final CameraSettings aprilTagCameraSettings = new CameraSettings(0.30821, 0, 0.10689, 0, 15.13, 0, false); //TODO: This must be tuned to specific robot
     public static final CameraSettings gamePieceCameraSettings = new CameraSettings(0, 0, 0, 0, 0, 0, false); //TODO: This must be tuned to specific robot
 
     public static final double cameraHeight = 0.428;

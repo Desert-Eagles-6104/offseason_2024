@@ -43,7 +43,7 @@ public class HeadingController  {
      * @param chassisSpeeds x,y and omega speeds 
      * @return new values for the modules to use 
      */
-    public ChassisSpeeds calculateOmegaSpeed(boolean shouldRun ,boolean isSwerveReset, boolean useVision ,ChassisSpeeds chassisSpeeds, Rotation2d robotHeading){
+    public ChassisSpeeds calculateOmegaSpeed(boolean shouldRun ,boolean isSwerveReset, boolean useVision ,ChassisSpeeds chassisSpeeds, Rotation2d robotHeading, Rotation2d visionHeading){
       m_useVisionLatch.update(useVision);
       if(shouldRun && !isSwerveReset){
         if(firstRun){
@@ -68,7 +68,7 @@ public class HeadingController  {
           if (Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.05){
             m_useVisionLatch.reset();
           }
-          chassisSpeeds.omegaRadiansPerSecond = update(robotHeading);
+          chassisSpeeds.omegaRadiansPerSecond = update(visionHeading);
           return chassisSpeeds;
         }
       }
@@ -86,7 +86,7 @@ public class HeadingController  {
         if(setpoint.getDegrees() == m_pidController.getSetpoint()) return;
         m_pidController.reset();
         m_pidController.setSetpoint(setpoint.getDegrees());
-          }
+      }
 
     /**
    @param value clamped value

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.DELib.Subsystems.ServoSubsystem.Base.Motor.ServoSubsystemTalon;
 import frc.DELib.Subsystems.Swerve.SwerveSubsystem;
+import frc.DELib.Subsystems.Swerve.SwerveCommands.RotateToTarget;
 import frc.DELib.Subsystems.Swerve.SwerveCommands.TeleopDrive;
 import frc.DELib.Subsystems.Vision.VisionSubsystem;
 import frc.DELib.Subsystems.Vision.VisionUtil.CameraSettings;
@@ -38,15 +39,16 @@ public class RobotContainer {
   // private SwerveAutoBuilder swerveAutoBuilder;
   public RobotContainer() {
     m_swerve = SwerveSubsystem.createInstance(Constants.Swerve.swerveConstants);
-    // swerveAutoBuilder = new SwerveAutoBuilder(m_swerve);
-    m_swerve.setDefaultCommand(new TeleopDrive(m_swerve, controller, controller.L1(), controller.touchpad(), controller.options(), () -> false));
-    // SmartDashboard.putData("calibrate Swerve Modules", new ResetSwerveModules(m_swerve).ignoringDisable(true));
-    // SmartDashboard.putData("reset Odometry",
-    // new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d())).ignoringDisable(true));
     m_intakeSub = IntakeSubsystem.getInstance();
     m_arm = new ArmSubsystem(Constants.arm.configuration);
     m_shooter = new ShooterSubsystem(Constants.Shooter.configuration);
-    m_vision = new VisionSubsystem(new CameraSettings(0, 0, 0, 0, 0, 0, true), null);
+    m_vision = new VisionSubsystem(new CameraSettings(0, 0, 0, 0, 0, 0, true), new CameraSettings(0, 0, 0, 0, 0, 0, false));
+    // swerveAutoBuilder = new SwerveAutoBuilder(m_swerve);
+    // SmartDashboard.putData("calibrate Swerve Modules", new ResetSwerveModules(m_swerve).ignoringDisable(true));
+    // SmartDashboard.putData("reset Odometry",
+    // new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d())).ignoringDisable(true));
+    m_swerve.setDefaultCommand(new TeleopDrive(m_swerve, m_vision, controller, controller.L1(), controller.touchpad(), controller.options(), controller.R1()));
+    // controller.L1().onTrue(new RotateToTarget(m_swerve, m_vision, controller));
     // sysid = new PhoneixSysid(Constants.sysidConfiguration, m_shooter);
     // controller.circle().onTrue(sysid.runFullCharacterization(true));
     

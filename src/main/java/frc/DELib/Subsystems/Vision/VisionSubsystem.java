@@ -16,11 +16,11 @@ public class VisionSubsystem extends SubsystemBase {
   /** Creates a new VisionSubsystem. */
   
   private CameraSettings m_aprilTagCameraSettings = null;
-  private double m_tx; //Horizontal Offset From Crosshair To Target (-27 degrees to 27 degrees)
-  private double m_ty; //Vertical Offset From Crosshair To Target (-20.5 degrees to 20.5 degrees)
-  private boolean m_tv; //Whether the limelight has any valid targets (0 or 1)
+  private double m_tx = 0; //Horizontal Offset From Crosshair To Target (-27 degrees to 27 degrees)
+  private double m_ty = 0; //Vertical Offset From Crosshair To Target (-20.5 degrees to 20.5 degrees)
+  private boolean m_tv = false; //Whether the limelight has any valid targets (0 or 1)
   private Pose2d m_estimatedRobotPose = new Pose2d(); 
-  private double m_currentID;
+  private double m_currentID = 0;
   
   private double cropXMin = -1;
   private double cropXMax = 1;
@@ -44,10 +44,10 @@ public class VisionSubsystem extends SubsystemBase {
       LimelightHelpers.setCameraPose_RobotSpace(CameraType.AprilTagCamera.getCameraName(), aprilTagCameraSettings.m_forward, aprilTagCameraSettings.m_Side, aprilTagCameraSettings.m_up, aprilTagCameraSettings.m_roll, aprilTagCameraSettings.m_pitch, aprilTagCameraSettings.m_yaw);
     }
     
-    m_gamePieceCameraSettings = gamePieceCameraSettings;
-    if(gamePieceCameraSettings != null){
-      LimelightHelpers.setCameraPose_RobotSpace(CameraType.GamePieceCamera.getCameraName(), gamePieceCameraSettings.m_forward, gamePieceCameraSettings.m_Side, gamePieceCameraSettings.m_up, gamePieceCameraSettings.m_roll, gamePieceCameraSettings.m_pitch, gamePieceCameraSettings.m_yaw);
-    }
+    // m_gamePieceCameraSettings = gamePieceCameraSettings;
+    // if(gamePieceCameraSettings != null){
+    //   LimelightHelpers.setCameraPose_RobotSpace(CameraType.GamePieceCamera.getCameraName(), gamePieceCameraSettings.m_forward, gamePieceCameraSettings.m_Side, gamePieceCameraSettings.m_up, gamePieceCameraSettings.m_roll, gamePieceCameraSettings.m_pitch, gamePieceCameraSettings.m_yaw);
+    // }
   }
 
   @Override
@@ -72,10 +72,10 @@ public class VisionSubsystem extends SubsystemBase {
     // SmartDashboard.putNumber("DistanceFromTargetX", getDstX(Constants.Vision.tragetHeight));
     // SmartDashboard.putNumber("DistanceFromTargetY", getDstY(Constants.Vision.tragetHeight));
 
-    if(m_gamePieceCameraSettings != null){
-      m_gamePieceTX = LimelightHelpers.getTX(CameraType.GamePieceCamera.getCameraName());
-      m_gamePieceTY = LimelightHelpers.getTY(CameraType.GamePieceCamera.getCameraName());
-    }
+    // if(m_gamePieceCameraSettings != null){
+    //   m_gamePieceTX = LimelightHelpers.getTX(CameraType.GamePieceCamera.getCameraName());
+    //   m_gamePieceTY = LimelightHelpers.getTY(CameraType.GamePieceCamera.getCameraName());
+    // }
   }
 
   public Pose2d getEstimatedRobotPose(){
@@ -149,21 +149,21 @@ public class VisionSubsystem extends SubsystemBase {
     crop( cropXMin , cropXMax , cropYMin , cropYMax );
   }
 
-  public double getDstX(double targetHeight){
-    double ty = getGamePieceTx();
-    return  (targetHeight-Constants.Vision.cameraHeight)/Math.tan(Math.toRadians(ty));
-  }
+  // public double getDstX(double targetHeight){
+  //   double ty = getGamePieceTx();
+  //   return  (targetHeight-Constants.Vision.cameraHeight)/Math.tan(Math.toRadians(ty));
+  // }
 
-  public double getDstY( double targetHeight){
-    double tx = getGamePieceTx();
-    double ty = getGamePieceTy();
-    double distanceX = (targetHeight-Constants.Vision.cameraHeight)/Math.tan(Math.toRadians(ty));
-    return distanceX/Math.tan(Math.toRadians(tx));
-  }
+  // public double getDstY( double targetHeight){
+  //   double tx = getGamePieceTx();
+  //   double ty = getGamePieceTy();
+  //   double distanceX = (targetHeight-Constants.Vision.cameraHeight)/Math.tan(Math.toRadians(ty));
+  //   return distanceX/Math.tan(Math.toRadians(tx));
+  // }
  
-   public Translation2d getDistance(double targetHeight){
-    return new Translation2d(getDstX(targetHeight),getDstY(targetHeight));
-  }
+  //  public Translation2d getDistance(double targetHeight){
+  //   return new Translation2d(getDstX(targetHeight),getDstY(targetHeight));
+  // }
 
   public void changePiplne(int pipeline){
     LimelightHelpers.setPipelineIndex(CameraType.AprilTagCamera.getCameraName(), pipeline);
