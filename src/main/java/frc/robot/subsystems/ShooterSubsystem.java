@@ -80,7 +80,7 @@ public class ShooterSubsystem extends SubsystemBase{
     talonConfigurationRight.withSlot0(PIDContainer.toSlot0Configs(configuration.pidContainer));
 
     talonConfigurationRight.MotorOutput
-    .withInverted(InvertedValue.CounterClockwise_Positive)
+    .withInverted(InvertedValue.Clockwise_Positive)
     .withNeutralMode(MotorConstants.toNeturalMode(configuration.master.isBrake));
 
     talonConfigurationRight.Feedback.withSensorToMechanismRatio(configuration.sensorToMechanismRatio);
@@ -178,17 +178,17 @@ public class ShooterSubsystem extends SubsystemBase{
 
   public void setMotionMagicVelocity(double velocity) {
     m_rightMotor.setControl(m_motiongMagicVelocityRequest.withVelocity(toRotations(velocity)));
-    m_leftMotor.setControl(m_motiongMagicVelocityRequest.withVelocity(toRotations(-velocity * ratioBetweenMotors)));
+    m_leftMotor.setControl(m_motiongMagicVelocityRequest.withVelocity(toRotations(velocity * ratioBetweenMotors)));
   }
 
   public void setVelocity(double velocity) {
     m_rightMotor.setControl(m_VelocityVoltageRequest.withVelocity(toRotations(velocity)));
-    m_leftMotor.setControl(m_VelocityVoltageRequest.withVelocity(toRotations(-velocity * ratioBetweenMotors)));
+    m_leftMotor.setControl(m_VelocityVoltageRequest.withVelocity(toRotations(velocity * ratioBetweenMotors)));
   }
 
   public void setPrecentOutput(double precent) {
     m_rightMotor.setControl(m_dutyCycleRequest.withOutput(precent));
-    m_leftMotor.setControl(m_dutyCycleRequest.withOutput(-precent * ratioBetweenMotors));
+    m_leftMotor.setControl(m_dutyCycleRequest.withOutput(precent * ratioBetweenMotors));
   }
 
   public boolean isAtSetpointRight() {

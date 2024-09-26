@@ -59,7 +59,7 @@ public class RobotContainer {
     controller.PS().onTrue(new InstantCommand(() -> m_arm.setMotionMagicPosition(Constants.arm.configuration.homePosition)));
     controller.povDown().onTrue(new ArmHoming(m_arm));
     // shooter
-    controller.triangle().onTrue(new InstantCommand(() -> m_shooter.setMotionMagicVelocity(-6000)));
+    controller.triangle().onTrue(new InstantCommand(() -> m_shooter.setMotionMagicVelocity(6000)));
     controller.cross().onTrue(new InstantCommand(() -> m_shooter.disableMotors()));
     //intake
     controller.R2().onTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(-0.4)));
