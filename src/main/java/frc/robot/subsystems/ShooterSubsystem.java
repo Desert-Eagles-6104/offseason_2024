@@ -156,6 +156,9 @@ public class ShooterSubsystem extends SubsystemBase{
 
       SmartDashboard.putNumber("shooter left RPM", getVelocityLeft());
       SmartDashboard.putNumber("shooter right RPM", getVelocityRight());
+      SmartDashboard.putBoolean("leftSetpoint", isAtSetpointLeft());
+      SmartDashboard.putBoolean("rightSetpoint", isAtSetpointRight());
+
   }
 
   public void disableMotors() {

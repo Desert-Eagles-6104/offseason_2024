@@ -14,7 +14,9 @@ import frc.DELib.Subsystems.Swerve.SwerveCommands.RotateToTarget;
 import frc.DELib.Subsystems.Swerve.SwerveCommands.TeleopDrive;
 import frc.DELib.Subsystems.Vision.VisionSubsystem;
 import frc.DELib.Subsystems.Vision.VisionUtil.CameraSettings;
+import frc.robot.commands.ArmCommands.ArmChangeNeutralMode;
 import frc.robot.commands.ArmCommands.ArmHoming;
+import frc.robot.commands.IntagrationCommands.Preset;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -53,6 +55,7 @@ public class RobotContainer {
     // controller.circle().onTrue(sysid.runFullCharacterization(true));
     
     //arm
+    SmartDashboard.putData("Change Arm  NeutralMode", new ArmChangeNeutralMode(m_arm).ignoringDisable(true));
     SmartDashboard.putData("reset arm", new InstantCommand(() -> m_arm.resetPosition(9.57)).ignoringDisable(true));
     controller.circle().onTrue(new InstantCommand(() -> m_arm.setMotionMagicPosition(90)));
     controller.square().onTrue(new InstantCommand(() -> m_arm.setMotionMagicPosition(45)));
@@ -65,6 +68,7 @@ public class RobotContainer {
     controller.R2().onTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(-0.4)));
     controller.L2().onTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(0.4)));
 
+    SmartDashboard.putData("presetCheak", new Preset(m_shooter, m_arm, 20, 6000));
   }
 
   public void disableMotors() {

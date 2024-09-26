@@ -7,6 +7,7 @@ package frc.DELib.Subsystems.ServoSubsystem.Base.Motor;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.CANSparkFlex;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
 
@@ -146,5 +147,11 @@ public class ServoSubsystemSparkFlex extends SubsystemBase implements IServoSubs
    */
   public boolean inRange(double v, double magnitude){
     return inRange(v, -magnitude, magnitude);
+  }
+
+  @Override
+  public void changeNeutralMode(NeutralModeValue NeutralMode) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'changeNeutralMode'");
   }
 }

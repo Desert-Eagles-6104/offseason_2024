@@ -14,6 +14,8 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -61,6 +63,7 @@ public class ServoSubsystemTalon extends SubsystemBase implements IServoSubsyste
     m_closedLoopError = m_masterFx.getClosedLoopError();
     BaseStatusSignal.setUpdateFrequencyForAll(50,m_closedLoopError, m_positionSignal, m_velocitySignal, m_accelerationSignal, m_appliedVoltageSignal, m_supplyCurrentSignal, m_statorCurrentSignal);
     m_masterFx.optimizeBusUtilization();
+    resetSubsystemToInitialState();
   }
 
   @Override
@@ -78,7 +81,6 @@ public class ServoSubsystemTalon extends SubsystemBase implements IServoSubsyste
       SmartDashboard.putNumber(m_configuration.subsystemName + " Velocity", getVelocity());
       SmartDashboard.putNumber(m_configuration.subsystemName + " closedLoopError", getClosedLoopError());
       SmartDashboard.putBoolean(m_configuration.subsystemName + " AtSetpint", isAtSetpoint());
-      // SmartDashboard.putString(m_configuration.subsystemName + " current Command", getCurrentCommand().toString());
   }
 
   @Override
@@ -167,5 +169,15 @@ public class ServoSubsystemTalon extends SubsystemBase implements IServoSubsyste
   @Override
   public double getVelocity() {
     return fromRotations(m_masterFx.getVelocity().getValueAsDouble());
+  }
+
+  @Override
+  public void changeNeutralMode(NeutralModeValue NeutralMode) {
+    m_masterFx.setNeutralMode(NeutralMode);
+    if(m_slaveFX != null){
+      for(TalonFX talonFX : m_slaveFX){
+        talonFX.setNeutralMode(NeutralMode);
+      }
+    }
   }
 }

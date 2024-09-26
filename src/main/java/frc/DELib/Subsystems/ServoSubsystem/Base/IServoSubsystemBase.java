@@ -1,5 +1,7 @@
 package frc.DELib.Subsystems.ServoSubsystem.Base;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 
@@ -37,6 +39,8 @@ public interface IServoSubsystemBase {
     public abstract void resetPosition(double position);
 
     public abstract boolean isAtSetpoint();
+
+    public abstract void changeNeutralMode(NeutralModeValue NeutralMode);
 
     public abstract void disableMotors();
 
