@@ -41,7 +41,7 @@ public class TeleopDrive extends Command {
     m_swerve = swerve;
     m_VisionSubsystem = visionSubsystem;
     m_joystick = joystick;
-    m_headingController = new HeadingController(0.1, 0, 0);
+    m_headingController = new HeadingController(0.12, 0, 0);
     m_lowPower = lowPower;
     m_fieldRelative = fieldRelative;
     m_shouldResetYaw = resetYaw;
@@ -69,7 +69,7 @@ public class TeleopDrive extends Command {
       chassisSpeeds = SwerveDriveHelper.joystickToRobotUnits(chassisSpeeds, Constants.Swerve.swerveConstants.maxSpeed, Constants.Swerve.swerveConstants.maxAngularVelocity);
       //heading controller
       m_useVisionLatch.update(m_useVision.getAsBoolean());
-      if(chassisSpeeds.omegaRadiansPerSecond > 0.05){
+      if (Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.05){
         m_useVisionLatch.reset();
       }
       setVisionTarget(m_VisionSubsystem.getTv(), m_VisionSubsystem.getTx(), m_VisionSubsystem.getTotalLatency());
@@ -102,7 +102,7 @@ public class TeleopDrive extends Command {
    * @param latency camera total latency
    */
   private void setVisionTarget(boolean hasTarget, double errorFromTarget, double latency){
-    if(m_useVision.getAsBoolean()){
+    if(m_useVisionLatch.get()){
       double errorDegrees = hasTarget ? -errorFromTarget : 0;
       Rotation2d target = m_swerve.getInterpolatedPose(m_VisionSubsystem.getTotalLatency()).getRotation().plus(Rotation2d.fromDegrees(errorDegrees));
       SmartDashboard.putNumber("setpoint", target.getDegrees());

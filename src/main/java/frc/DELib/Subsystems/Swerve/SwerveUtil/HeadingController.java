@@ -4,13 +4,15 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.DELib.BooleanUtil.StickyBoolean;
 import frc.robot.Constants;
 
 public class HeadingController  {
 
-    private PIDController m_pidController;
+    private PIDController m_pidControllerStabalize;
+    private PIDController m_pidControllerSnap;
+    private PIDController m_pidControllerVision;
+
     private Rotation2d m_lastHeading;
     private boolean m_shouldSaveHeading = true;
     private StickyBoolean m_useVisionLatch;
@@ -24,9 +26,9 @@ public class HeadingController  {
     * @param kd d value
     */
     public HeadingController (double kp , double ki , double kd){
-        m_pidController = new PIDController(kp, ki, kd);
-        m_pidController.enableContinuousInput(-180, 180);
-        m_pidController.setIntegratorRange(-1*(9.9*Math.E+30), (9.9*Math.E+30));
+        m_pidControllerStabalize = new PIDController(kp, ki, kd);
+        m_pidControllerStabalize.enableContinuousInput(-180, 180);
+        m_pidControllerStabalize.setIntegratorRange(-1*(9.9*Math.E+30), (9.9*Math.E+30));
         m_useVisionLatch = new StickyBoolean();
     }
     /**
@@ -35,7 +37,7 @@ public class HeadingController  {
      * @return a setpoint to the pid controller
      */
     public double update(Rotation2d currentHeading){
-        return -clamp(m_pidController.calculate(currentHeading.getDegrees()),-Constants.Swerve.swerveConstants.maxAngularVelocity,Constants.Swerve.swerveConstants.maxAngularVelocity);
+        return -clamp(m_pidControllerStabalize.calculate(currentHeading.getDegrees()),-Constants.Swerve.swerveConstants.maxAngularVelocity,Constants.Swerve.swerveConstants.maxAngularVelocity);
     }
     /**
      * calculates the heading of the robot
@@ -74,7 +76,6 @@ public class HeadingController  {
       }
       else if(isSwerveReset){
         setSetpoint(DriverStation.getAlliance().isPresent() && (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) ? Rotation2d.fromDegrees(180):Rotation2d.fromDegrees(0)); 
-        // setSetpoint(Rotation2d.fromDegrees(0)); //Commented out code might solve the issue of the robot rotating on yaw reset.
       }
       return chassisSpeeds;
   }
@@ -83,9 +84,9 @@ public class HeadingController  {
      * @param setpoint
      */
     public void setSetpoint(Rotation2d setpoint){
-        if(setpoint.getDegrees() == m_pidController.getSetpoint()) return;
-        m_pidController.reset();
-        m_pidController.setSetpoint(setpoint.getDegrees());
+        if(setpoint.getDegrees() == m_pidControllerStabalize.getSetpoint()) return;
+        m_pidControllerStabalize.reset();
+        m_pidControllerStabalize.setSetpoint(setpoint.getDegrees());
       }
 
     /**
