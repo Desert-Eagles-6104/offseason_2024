@@ -4,23 +4,22 @@
 
 package frc.robot.commands.ArmCommands;
 
-import edu.wpi.first.math.filter.MedianFilter;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.DELib.Subsystems.Vision.VisionSubsystem;
-import frc.robot.Constants.Vision;
 import frc.robot.subsystems.ArmSubsystem;
 
 public class ArmWithVision extends Command {
   /** Creates a new ArmWithVision. */
   ArmSubsystem m_armSubsystem;
   VisionSubsystem m_visionSubsystem;
-  MedianFilter m_filter;
+  LinearFilter m_filter;
 
 
   public ArmWithVision(ArmSubsystem armSubsystem,VisionSubsystem visionSubsystem) {
     m_armSubsystem = armSubsystem;
     m_visionSubsystem = visionSubsystem;
-    m_filter = new MedianFilter(5);
+    m_filter = LinearFilter.movingAverage(5);
     }
 
   @Override

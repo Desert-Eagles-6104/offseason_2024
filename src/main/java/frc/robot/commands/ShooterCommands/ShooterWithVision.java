@@ -1,21 +1,19 @@
 
 package frc.robot.commands.ShooterCommands;
 
-import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.DELib.Subsystems.Vision.VisionSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class ShooterWithVision extends Command {
 
-  ShooterSubsystem m_ShooterSubsystem;
-  VisionSubsystem m_VisionSubsystem;
-  MedianFilter m_filter;  
+  private ShooterSubsystem m_ShooterSubsystem;
+  private VisionSubsystem m_VisionSubsystem;
+  private double setpoint = -9999;
 
   public ShooterWithVision(ShooterSubsystem shooterSubsystem,VisionSubsystem visionSubsystem) {
     m_ShooterSubsystem = shooterSubsystem;
     m_VisionSubsystem = visionSubsystem;
-    m_filter = new MedianFilter(5);
   }
 
   // Called when the command is initially scheduled.
@@ -26,7 +24,9 @@ public class ShooterWithVision extends Command {
   @Override
   public void execute() {
     if(m_VisionSubsystem.getTv()){
-      m_ShooterSubsystem.setUsingInterpulation(m_VisionSubsystem.getTy(), true);
+      if(Math.abs(setpoint - m_VisionSubsystem.getTy()) > 0.01){
+        m_ShooterSubsystem.setUsingInterpulation(m_VisionSubsystem.getTy(), true);
+      }
     }
   }
 
