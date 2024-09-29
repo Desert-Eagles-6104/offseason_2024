@@ -15,6 +15,9 @@ public class ArmWithVision extends Command {
   VisionSubsystem m_visionSubsystem;
   LinearFilter m_filter;
 
+  private double Lastsetpoint = -9999;
+  private double threshold = 0.05;
+
 
   public ArmWithVision(ArmSubsystem armSubsystem,VisionSubsystem visionSubsystem) {
     m_armSubsystem = armSubsystem;
@@ -30,8 +33,15 @@ public class ArmWithVision extends Command {
 
   @Override
   public void execute() {
+    // if(m_visionSubsystem.getTv()){
+    //   m_armSubsystem.setMotionMagicPosition(m_armSubsystem.getInterpulatedAngle(m_filter.calculate(m_visionSubsystem.getTy())));
+    // }
+
     if(m_visionSubsystem.getTv()){
-      m_armSubsystem.setMotionMagicPosition(m_armSubsystem.getInterpulatedAngle(m_filter.calculate(m_visionSubsystem.getTy())));
+      if(Math.abs(Lastsetpoint - m_visionSubsystem.getTy()) > threshold){
+      m_armSubsystem.setMotionMagicPosition(m_armSubsystem.getInterpulatedAngle(m_filter.calculate(Lastsetpoint)));
+      Lastsetpoint = m_visionSubsystem.getTy();
+      }
     }
   }
 
