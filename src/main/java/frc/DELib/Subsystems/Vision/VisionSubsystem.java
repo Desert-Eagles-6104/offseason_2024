@@ -4,6 +4,10 @@
 
 package frc.DELib.Subsystems.Vision;
 
+import java.io.IOException;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -37,8 +41,15 @@ public class VisionSubsystem extends SubsystemBase {
   private double m_gamePieceTX;
   private double m_gamePieceTY;
 
+  private AprilTagFieldLayout aprilTagFieldLayout = null;
+
   //*create a new VisionSubsystem constructor to apply the subsystem's properties */
   public VisionSubsystem(CameraSettings aprilTagCameraSettings, CameraSettings gamePieceCameraSettings) {
+    try {
+      aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.name());
+    } catch (IOException e) {
+      System.out.println("april tag field layout not found!");
+    }
     m_aprilTagCameraSettings = aprilTagCameraSettings;
     if(aprilTagCameraSettings != null){
       LimelightHelpers.setCameraPose_RobotSpace(CameraType.AprilTagCamera.getCameraName(), aprilTagCameraSettings.m_forward, aprilTagCameraSettings.m_Side, aprilTagCameraSettings.m_up, aprilTagCameraSettings.m_roll, aprilTagCameraSettings.m_pitch, aprilTagCameraSettings.m_yaw);
@@ -61,7 +72,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     //bounding april tag
-    orbitCalculation();
+    // orbitCalculation();
 
     //limelight values
     SmartDashboard.putNumber("TX", getTx());
@@ -69,6 +80,7 @@ public class VisionSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("TV", getTv());
 
     SmartDashboard.putString("3D", m_estimatedRobotPose.toString());
+    SmartDashboard.putNumber("Dis", getDistance());
     // SmartDashboard.putNumber("DistanceFromTargetX", getDstX(Constants.Vision.tragetHeight));
     // SmartDashboard.putNumber("DistanceFromTargetY", getDstY(Constants.Vision.tragetHeight));
 
@@ -76,6 +88,14 @@ public class VisionSubsystem extends SubsystemBase {
     //   m_gamePieceTX = LimelightHelpers.getTX(CameraType.GamePieceCamera.getCameraName());
     //   m_gamePieceTY = LimelightHelpers.getTY(CameraType.GamePieceCamera.getCameraName());
     // }
+  }
+
+  public double getDistance(){
+    if(getTv() ){
+      double highet = 1.368552 + 0.08255 - 0.10689;
+      return highet / Math.tan(getTy());
+    }
+    return 0;
   }
 
   public Pose2d getEstimatedRobotPose(){

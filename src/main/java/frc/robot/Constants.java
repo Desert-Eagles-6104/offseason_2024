@@ -233,7 +233,7 @@ public final class Constants {
     m_stepVoltage = Volts.of(4);
 
     /** Safety timeout for the test routine commands. */
-    m_timeout = Seconds.of(10);
+    m_timeout = Seconds.of(3.5);
     //#endregion mechanisem
   }};
 }

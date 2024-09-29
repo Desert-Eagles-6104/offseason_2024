@@ -132,7 +132,7 @@ public class ShooterSubsystem extends SubsystemBase{
     BaseStatusSignal.setUpdateFrequencyForAll(50,m_closedLoopErrorLeft, m_positionSignalLeft, m_velocitySignalLeft, m_accelerationSignalLeft, m_appliedVoltageSignalLeft, m_supplyCurrentSignalLeft, m_statorCurrentSignalLeft);
     m_leftMotor.optimizeBusUtilization();
 
-    // setShootingTable(m_configuration.fileLocation);
+    linearInterpolator = new LinearInterpolator(interpulation);
   }
 
   @Override
@@ -241,4 +241,19 @@ public class ShooterSubsystem extends SubsystemBase{
   public double getInterpulationVelocity(double value) {
     return linearInterpolator.getInterpolatedValue(value);
   }
+
+  double[][] interpulation = 
+  {
+    {1,4000},
+    
+    {3,4200},
+    {6,4400},
+    {8,4600},
+    {10,4800},
+    {12,5000},
+    {14,5200},
+    {16,5400},
+    {18,5600},
+    {20,5800}
+  };
 }

@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.DELib.Subsystems.Swerve.SwerveSubsystem;
 import frc.DELib.Subsystems.Swerve.SwerveCommands.ResetSwerveModules;
+import frc.DELib.Subsystems.Swerve.SwerveCommands.SwerveSysidCommands;
 import frc.DELib.Subsystems.Swerve.SwerveCommands.TeleopDrive;
 import frc.DELib.Subsystems.Vision.VisionSubsystem;
 import frc.DELib.Subsystems.Vision.VisionUtil.CameraSettings;
@@ -19,8 +20,10 @@ import frc.DELib.Util.DriverStationController;
 import frc.DELib.Util.SwerveAutoBuilder;
 import frc.robot.commands.ArmCommands.ArmChangeNeutralMode;
 import frc.robot.commands.ArmCommands.ArmHoming;
+import frc.robot.commands.ArmCommands.ArmWithVision;
 import frc.robot.commands.IntagrationCommands.Preset;
 import frc.robot.commands.IntakeCommnands.IntakeEatNote;
+import frc.robot.commands.ShooterCommands.ShooterWithVision;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -44,6 +47,7 @@ public class RobotContainer {
   private ShooterSubsystem m_shooter;
   private VisionSubsystem m_vision;
   private SwerveAutoBuilder swerveAutoBuilder;
+  private SwerveSysidCommands swerveSysidCommands;
 
   public RobotContainer() {
     m_swerve = SwerveSubsystem.createInstance(Constants.Swerve.swerveConstants);
@@ -58,6 +62,8 @@ public class RobotContainer {
     intakeBinding();
     presets();
     resets();
+    swerveSysidCommands =new SwerveSysidCommands(m_swerve);
+    driverStationController.LeftSwitch().onTrue(swerveSysidCommands.fullSysidRun());
   }
 
   public void disableMotors() {
@@ -89,11 +95,13 @@ public class RobotContainer {
     drivercontroller.square().onTrue(new InstantCommand(() -> m_arm.setMotionMagicPosition(45)));
     drivercontroller.PS().onTrue(new InstantCommand(() -> m_arm.setMotionMagicPosition(Constants.arm.configuration.homePosition)));
     drivercontroller.povDown().onTrue(new ArmHoming(m_arm));
+    operatorController.cross().onTrue(new ArmWithVision(m_arm, m_vision));
   }
 
   public void shooterBinding(){
     drivercontroller.triangle().onTrue(new InstantCommand(() -> m_shooter.setMotionMagicVelocity(6000)));
     drivercontroller.cross().onTrue(new InstantCommand(() -> m_shooter.disableMotors()));
+    operatorController.cross().onTrue(new ShooterWithVision(m_shooter, m_vision));
   }
 
 
