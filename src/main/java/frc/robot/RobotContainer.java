@@ -20,6 +20,7 @@ import frc.DELib.Util.SwerveAutoBuilder;
 import frc.robot.commands.ArmCommands.ArmChangeNeutralMode;
 import frc.robot.commands.ArmCommands.ArmHoming;
 import frc.robot.commands.ArmCommands.ArmWithVision;
+import frc.robot.commands.IntagrationCommands.Amping;
 import frc.robot.commands.IntagrationCommands.Preset;
 import frc.robot.commands.IntakeCommnands.IntakeEatNote;
 import frc.robot.commands.ShooterCommands.ShooterWithVision;
@@ -111,6 +112,7 @@ public class RobotContainer {
     }
 
   public void presets(){
+    drivercontroller.R3().onTrue(new Amping(m_arm, m_shooter, m_intakeSub, drivercontroller.R3()));
     driverStationController.LeftBlue().onTrue(new Preset(m_shooter, m_arm, 20, 6000));
     driverStationController.RightYellow().onTrue(new Preset(m_shooter, m_arm, 40, 8000));
     driverStationController.DownYellow().onTrue(new Preset(m_shooter, m_arm, 60, 7000));

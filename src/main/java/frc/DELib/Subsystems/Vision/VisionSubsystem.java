@@ -10,6 +10,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.DELib.Subsystems.Vision.VisionUtil.CameraSettings;
@@ -43,6 +44,8 @@ public class VisionSubsystem extends SubsystemBase {
 
   private AprilTagFieldLayout aprilTagFieldLayout = null;
 
+  private Field2d field2d = new Field2d();
+
   //*create a new VisionSubsystem constructor to apply the subsystem's properties */
   public VisionSubsystem(CameraSettings aprilTagCameraSettings, CameraSettings gamePieceCameraSettings) {
     try {
@@ -73,7 +76,8 @@ public class VisionSubsystem extends SubsystemBase {
 
     //bounding april tag
     // orbitCalculation();
-
+    SmartDashboard.putData("Field ", field2d);
+    field2d.setRobotPose(m_estimatedRobotPose);
     //limelight values
     SmartDashboard.putNumber("TX", getTx());
     SmartDashboard.putNumber("TY", getTy());
