@@ -54,7 +54,7 @@ public class RobotContainer {
     m_intakeSub = IntakeSubsystem.getInstance();
     m_arm = new ArmSubsystem(Constants.arm.configuration);
     m_shooter = new ShooterSubsystem(Constants.Shooter.configuration);
-    m_vision = new VisionSubsystem(new CameraSettings(0.30821, 0, 0.10689, 0, 15.13, 0, true), new CameraSettings(0, 0, 0, 0, 0, 0, false));
+    m_vision = new VisionSubsystem(new CameraSettings(0.30821, 0, 0.10689, 0, 15.13, 180.0, true), new CameraSettings(0, 0, 0, 0, 0, 0, false));
     swerveAutoBuilder = new SwerveAutoBuilder(m_swerve);
     SwerveBinding();
     armBinding();

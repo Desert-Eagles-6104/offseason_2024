@@ -28,6 +28,7 @@ import frc.DELib.Intepulation.InterpolatingDouble;
 import frc.DELib.Intepulation.InterpolatingTreeMap;
 import frc.DELib.Sensors.Pigeon;
 import frc.DELib.Subsystems.Swerve.SwerveOdometry.WheelTracker;
+import frc.DELib.Subsystems.Vision.VisionUtil.LimelightHelpers;
 
 public class SwerveSubsystem extends SubsystemBase {
   private static SwerveSubsystem swerve = null;
@@ -86,6 +87,7 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("FR", true);
     SmartDashboard.putBoolean("BL", true);
     SmartDashboard.putBoolean("BR", true);
+  
   }
 
   public void drive(ChassisSpeeds chassisSpeeds , boolean openLoop , boolean fieldRelative, Translation2d centerOfRtation){
@@ -152,6 +154,7 @@ public class SwerveSubsystem extends SubsystemBase {
     m_pastPoses.put(new InterpolatingDouble(Timer.getFPGATimestamp()), currentPose);
     m_gyro.getYawStatusSignal().refresh();
     SmartDashboard.putNumber("gyroYaw", m_gyro.getYawStatusSignal().getValue());
+    LimelightHelpers.SetRobotOrientation("limelight", getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     // SmartDashboard.putString("OdometryPose", getPose().toString());
     // SmartDashboard.putString("wheelTrackerPose", m_wheelTracker.getRobotPose().toString());
     // m_wheelTracker.ignoreModule(SmartDashboard.getBoolean("FL", true), SmartDashboard.getBoolean("FR", true), SmartDashboard.getBoolean("BL", true), SmartDashboard.getBoolean("BR", true));
@@ -205,6 +208,8 @@ public class SwerveSubsystem extends SubsystemBase {
     m_writer.writeCSVFile(angleOffsets);
     return true;
   }
+
+
 
   public static SwerveSubsystem createInstance(SwerveConstants swerveConstants){
     if(swerve == null){

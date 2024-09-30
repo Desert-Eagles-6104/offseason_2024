@@ -42,8 +42,6 @@ public class VisionSubsystem extends SubsystemBase {
 
   private AprilTagFieldLayout aprilTagFieldLayout = null;
 
-  private Field2d field2d = new Field2d();
-
   //*create a new VisionSubsystem constructor to apply the subsystem's properties */
   public VisionSubsystem(CameraSettings aprilTagCameraSettings, CameraSettings gamePieceCameraSettings) {
     try {
@@ -73,9 +71,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     //bounding april tag
-    // orbitCalculation();
-    SmartDashboard.putData("Field ", field2d);
-    field2d.setRobotPose(m_estimatedRobotPose);
+    orbitCalculation();
     //limelight values
     SmartDashboard.putNumber("TX", getTx());
     SmartDashboard.putNumber("TY", getTy());
@@ -146,7 +142,7 @@ public class VisionSubsystem extends SubsystemBase {
    */
   public void orbitCalculation(){
     double precent = 0.5;
-    double outerLayer = 15.0;
+    double outerLayer = 10.0;
     double _xFOV = xFOV;
     double _yFOV = yFOV;
 
@@ -157,10 +153,10 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     if(m_tv){
-      cropXMin = (getTx() - outerLayer) / (precent * _xFOV);
-      cropXMax = (getTx() + outerLayer) / (precent * _xFOV);
-      cropYMin = (getTy() - outerLayer) / (precent * _yFOV);
-      cropYMax = (getTy() + outerLayer) / (precent * _yFOV);
+      cropXMin = (m_tx - outerLayer) / (precent * _xFOV);
+      cropXMax = (m_tx + outerLayer) / (precent * _xFOV);
+      cropYMin = (m_ty - outerLayer) / (precent * _yFOV);
+      cropYMax = (m_ty + outerLayer) / (precent * _yFOV);
     }
     else{
       cropXMin = -1.0;
