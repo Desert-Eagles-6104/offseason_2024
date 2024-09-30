@@ -4,18 +4,14 @@
 
 package frc.DELib.Subsystems.Swerve.SwerveCommands;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.DELib.Subsystems.Swerve.SwerveSubsystem;
 import frc.DELib.Subsystems.Swerve.SwerveUtil.HeadingController;
 import frc.DELib.Subsystems.Vision.VisionSubsystem;
-import frc.robot.Constants.Vision;
 
 public class RotateToTarget extends Command {
   SwerveSubsystem m_swerve;
@@ -58,8 +54,4 @@ public class RotateToTarget extends Command {
   public boolean isFinished() {
     return false;
   }
-
-    private void setVisionTarget(boolean hasTarget, double errorFromTarget, double latency){
-      
-    }
 }

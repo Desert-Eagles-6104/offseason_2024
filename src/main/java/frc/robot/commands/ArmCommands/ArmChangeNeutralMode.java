@@ -4,11 +4,7 @@
 
 package frc.robot.commands.ArmCommands;
 
-import java.util.function.BooleanSupplier;
-
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
-import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.ArmSubsystem;
 

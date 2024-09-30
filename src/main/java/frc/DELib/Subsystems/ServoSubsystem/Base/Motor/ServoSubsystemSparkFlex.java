@@ -126,8 +126,7 @@ public class ServoSubsystemSparkFlex extends SubsystemBase implements IServoSubs
 
   @Override
   public double getClosedLoopError() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getClosedLoopError'");
+    return 0;
   }
 
   @Override
@@ -151,7 +150,6 @@ public class ServoSubsystemSparkFlex extends SubsystemBase implements IServoSubs
 
   @Override
   public void changeNeutralMode(NeutralModeValue NeutralMode) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'changeNeutralMode'");
+  
   }
 }

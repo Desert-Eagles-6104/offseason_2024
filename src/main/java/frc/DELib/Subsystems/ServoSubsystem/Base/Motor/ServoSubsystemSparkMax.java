@@ -123,8 +123,7 @@ public class ServoSubsystemSparkMax extends SubsystemBase implements IServoSubsy
 
   @Override
   public double getClosedLoopError() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getClosedLoopError'");
+    return 0;
   }
 
   @Override
@@ -149,7 +148,5 @@ public class ServoSubsystemSparkMax extends SubsystemBase implements IServoSubsy
   
   @Override
   public void changeNeutralMode(NeutralModeValue NeutralMode) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'changeNeutralMode'");
   }
 }

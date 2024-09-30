@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.concurrent.TransferQueue;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -13,14 +11,10 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.DELib.Motors.MotorConstants;
-import frc.DELib.Motors.TalonFXFactory;
 import frc.DELib.Sensors.BeamBreak;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -41,7 +35,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private StatusSignal<Double> m_closedLoopErrorSignal;
   
   public IntakeSubsystem() {
-    m_master = new TalonFX(55); //TODO: add id
+    m_master = new TalonFX(55); 
     configurator = m_master.getConfigurator();
     configurator.apply(new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive));
     configurator.apply(new Slot0Configs().withKS(0.0).withKV(0.0).withKA(0.0).withKP(0.0).withKI(0.0).withKD(0.0));
@@ -50,7 +44,7 @@ public class IntakeSubsystem extends SubsystemBase {
     m_velocitySignal = m_master.getVelocity();
     m_closedLoopErrorSignal = m_master.getClosedLoopError();
     BaseStatusSignal.setUpdateFrequencyForAll(50 ,m_positionSignal, m_velocitySignal, m_closedLoopErrorSignal);
-    m_slave = new TalonFX(54);//TODO: add id
+    m_slave = new TalonFX(54);
     m_slave.getConfigurator().apply(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive));
     m_BB = new BeamBreak(0);
   }
