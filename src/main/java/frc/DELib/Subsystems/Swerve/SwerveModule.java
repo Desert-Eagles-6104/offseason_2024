@@ -242,7 +242,7 @@ public class SwerveModule {
             m_driveMotor.setControl(driveDutyCycle);
         }
         else {
-            driveVelocity.Velocity = Conversions.MPSToRPS(desiredState.speedMetersPerSecond, m_swerveConstants.maxSpeed);
+            driveVelocity.Velocity = Conversions.MPSToRPS(desiredState.speedMetersPerSecond, m_swerveConstants.wheelCircumference);
             m_driveMotor.setControl(driveVelocity);
         }
     }

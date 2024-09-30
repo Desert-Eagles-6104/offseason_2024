@@ -40,7 +40,7 @@ public class IntakeEatNote extends Command {
   public void execute() {
     m_firstStage.update(m_intake.hasGamePiece());
     firstStage();
-    secoandStage();
+    secondStage();
   }
 
   
@@ -76,7 +76,7 @@ public class IntakeEatNote extends Command {
     }
   }
 
-  public void secoandStage(){
+  public void secondStage(){
     if(m_secondStage && !m_thirdStage){
       m_intake.setPosition(SECOAND_STAGE_MOVE_POSITION);
       m_thirdStage = true;

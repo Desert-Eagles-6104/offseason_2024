@@ -44,7 +44,7 @@ public class SwerveAutoBuilder {
             new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
                         new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
                         new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
-                        3.9, // Max module speed, in m/s
+                        5.2, // Max module speed, in m/s
                         0.325, // Drive base radius in meters. Distance from robot center to furthest module.
                         new ReplanningConfig() // Default path replanning config. See the API for the options here
                 ),/*  ()->true,*/
@@ -106,7 +106,7 @@ public class SwerveAutoBuilder {
      * @return
      */
     public Command getAuto(){
-        return m_fullAutoCommands.get(m_autoChooser.getSelected().getName());        
+        return AutoBuilder.buildAuto(getAutoName());        
     }
 
     public String getAutoName(){
@@ -133,6 +133,7 @@ public class SwerveAutoBuilder {
     }
 
     private void autoDrive(ChassisSpeeds chassisSpeeds){
+        chassisSpeeds.omegaRadiansPerSecond = -chassisSpeeds.omegaRadiansPerSecond;
         m_swerve.drive(chassisSpeeds, false, false, new Translation2d());;
     }
 }

@@ -9,11 +9,11 @@ import java.io.IOException;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.DELib.Subsystems.Vision.VisionUtil.CameraSettings;
 import frc.DELib.Subsystems.Vision.VisionUtil.LimelightHelpers;
+import frc.robot.Constants;
 
 public class VisionSubsystem extends SubsystemBase {
   /** Creates a new VisionSubsystem. */
@@ -79,9 +79,10 @@ public class VisionSubsystem extends SubsystemBase {
 
     SmartDashboard.putString("3D", m_estimatedRobotPose.toString());
     SmartDashboard.putNumber("Dis", getDistance());
+    // if (getTv()){
     // SmartDashboard.putNumber("DistanceFromTargetX", getDstX(Constants.Vision.tragetHeight));
     // SmartDashboard.putNumber("DistanceFromTargetY", getDstY(Constants.Vision.tragetHeight));
-
+    // }
     // if(m_gamePieceCameraSettings != null){
     //   m_gamePieceTX = LimelightHelpers.getTX(CameraType.GamePieceCamera.getCameraName());
     //   m_gamePieceTY = LimelightHelpers.getTY(CameraType.GamePieceCamera.getCameraName());
@@ -167,17 +168,17 @@ public class VisionSubsystem extends SubsystemBase {
     crop( cropXMin , cropXMax , cropYMin , cropYMax );
   }
 
-  // public double getDstX(double targetHeight){
-  //   double ty = getGamePieceTx();
-  //   return  (targetHeight-Constants.Vision.cameraHeight)/Math.tan(Math.toRadians(ty));
-  // }
+  public double getDstX(double targetHeight){
+    double ty = m_ty + (m_aprilTagCameraSettings.m_pitch *2);
+    return  (targetHeight-Constants.Vision.cameraHeight)/Math.tan(Math.toRadians(ty));
+  }
 
-  // public double getDstY( double targetHeight){
-  //   double tx = getGamePieceTx();
-  //   double ty = getGamePieceTy();
-  //   double distanceX = (targetHeight-Constants.Vision.cameraHeight)/Math.tan(Math.toRadians(ty));
-  //   return distanceX/Math.tan(Math.toRadians(tx));
-  // }
+  public double getDstY( double targetHeight){
+    double tx = m_tx;
+    double ty = m_ty + m_aprilTagCameraSettings.m_pitch;
+    double distanceX = (targetHeight-Constants.Vision.cameraHeight)/Math.tan(Math.toRadians(ty));
+    return distanceX/Math.tan(Math.toRadians(tx));
+  }
  
   //  public Translation2d getDistance(double targetHeight){
   //   return new Translation2d(getDstX(targetHeight),getDstY(targetHeight));

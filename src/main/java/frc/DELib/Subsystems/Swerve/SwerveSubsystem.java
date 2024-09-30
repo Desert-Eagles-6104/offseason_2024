@@ -27,8 +27,9 @@ import frc.DELib.CSV.CSVWriter;
 import frc.DELib.Intepulation.InterpolatingDouble;
 import frc.DELib.Intepulation.InterpolatingTreeMap;
 import frc.DELib.Sensors.Pigeon;
-import frc.DELib.Subsystems.Swerve.SwerveOdometry.WheelTracker;
+import frc.DELib.Subsystems.PoseEstimator.PoseEstimatorUtil.FOMHelper;
 import frc.DELib.Subsystems.Vision.VisionUtil.LimelightHelpers;
+import frc.robot.Constants;
 
 public class SwerveSubsystem extends SubsystemBase {
   private static SwerveSubsystem swerve = null;
@@ -47,7 +48,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private SwerveDriveKinematics m_kinematics;
   private SwerveDriveOdometry m_odometry;
   private InterpolatingTreeMap<InterpolatingDouble, Pose2d> m_pastPoses;
-  private WheelTracker m_wheelTracker;
+  // private WheelTracker m_wheelTracker;
 
   private Pigeon m_gyro;
   /** Creates a new SwerveSubsystem */
@@ -80,8 +81,8 @@ public class SwerveSubsystem extends SubsystemBase {
     int k_maxPoseHistorySize = 51;
     m_pastPoses = new InterpolatingTreeMap<>(k_maxPoseHistorySize);
 
-    m_wheelTracker = new WheelTracker(m_swerveModules);
-    m_wheelTracker.start();
+    // m_wheelTracker = new WheelTracker(m_swerveModules);
+    // m_wheelTracker.start();
 
     SmartDashboard.putBoolean("FL", true);
     SmartDashboard.putBoolean("FR", true);
@@ -156,8 +157,10 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("gyroYaw", m_gyro.getYawStatusSignal().getValue());
     LimelightHelpers.SetRobotOrientation("limelight", getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     // SmartDashboard.putString("OdometryPose", getPose().toString());
+    SmartDashboard.putString("pose", getPose().toString());
     // SmartDashboard.putString("wheelTrackerPose", m_wheelTracker.getRobotPose().toString());
     // m_wheelTracker.ignoreModule(SmartDashboard.getBoolean("FL", true), SmartDashboard.getBoolean("FR", true), SmartDashboard.getBoolean("BL", true), SmartDashboard.getBoolean("BR", true));
+    SmartDashboard.putNumber("CameraFOM", FOMHelper.cameraFOMBasedOnRobotVelocity(new Translation2d(getRobotRelativeVelocity().vxMetersPerSecond, getRobotRelativeVelocity().vyMetersPerSecond).getNorm(), Constants.Swerve.swerveConstants.maxSpeed, 0.1, 3.0));
   }
 
   public void zeroHeading(){
@@ -174,7 +177,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public void resetOdometry(Pose2d pose) {
     m_odometry.resetPosition(m_gyro.getUnadjustedYaw(), getModulesPositions(), pose);
-    m_wheelTracker.resetPose(pose);
+    // m_wheelTracker.resetPose(pose);
   }
 
   public void disableModules(){

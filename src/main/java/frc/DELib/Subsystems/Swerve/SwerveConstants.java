@@ -58,7 +58,7 @@ public class SwerveConstants {
     public double angleKD = chosenModule.angleKD;
 
     /* Drive Motor PID Values */
-    public double driveKP = 0.05; //TODO: This must be tuned to specific robot
+    public double driveKP = 0.2; //TODO: This must be tuned to specific robot
     public double driveKI = 0.0;
     public double driveKD = 0.0;
     public double driveKF = 0.0;

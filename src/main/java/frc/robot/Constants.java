@@ -38,9 +38,9 @@ public final class Constants {
     public static final CameraSettings aprilTagCameraSettings = new CameraSettings(0.30821, 0, 0.10689, 0, 15.13, 0, false); //TODO: This must be tuned to specific robot
     public static final CameraSettings gamePieceCameraSettings = new CameraSettings(0, 0, 0, 0, 0, 0, false); //TODO: This must be tuned to specific robot
 
-    public static final double cameraHeight = 0.428;
-    public static final double tragetHeight = 0.0508;
-    public static final double cameraPitch = 15;
+    public static final double cameraHeight = 0.10689;
+    public static final double tragetHeight = 1.435;
+    public static final double cameraPitch = 15.13;
   }
 
   public final static class Swerve{
@@ -97,7 +97,7 @@ public final class Constants {
       angleKD = chosenModule.angleKD;
 
       /* Drive Motor PID Values */
-      driveKP = 0.05; //TODO: This must be tuned to specific robot
+      driveKP = 1.0; //TODO: This must be tuned to specific robot
       driveKI = 0.0;
       driveKD = 0.0;
       driveKS = 0.0;
@@ -111,9 +111,9 @@ public final class Constants {
 
       /* Drive Motor Characterization Values 
       * Divide SYSID values by 12 to convert from volts to percent output for CTRE */
-      driveKS = (0.32 / 12); //TODO: This must be tuned to specific robot
-      driveKV = (1.51 / 12);
-      driveKA = (0.27 / 12);
+      driveKS = 0; //TODO: This must be tuned to specific robot
+      driveKV = 0;
+      driveKA = 0;
 
       /*wheel parameters */
       WheelRadius = 0.0508;

@@ -5,14 +5,17 @@
 package frc.DELib.Subsystems.PoseEstimator;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.DELib.Intepulation.InterpolatingDouble;
 import frc.DELib.Intepulation.InterpolatingTreeMap;
+import frc.DELib.Subsystems.PoseEstimator.PoseEstimatorUtil.FOMHelper;
 import frc.DELib.Subsystems.PoseEstimator.PoseEstimatorUtil.PoseMergingFOM;
 import frc.DELib.Subsystems.Swerve.SwerveSubsystem;
 import frc.DELib.Subsystems.Vision.VisionSubsystem;
+import frc.robot.Constants;
 
 public class PoseEstimator extends SubsystemBase{
   /** Creates a new PoseEstimator. */
@@ -25,7 +28,7 @@ public class PoseEstimator extends SubsystemBase{
 
   public PoseEstimator(SwerveSubsystem swerve, VisionSubsystem vision) {
     m_poseMerging = new PoseMergingFOM();
-    m_swerve = swerve;;
+    m_swerve = swerve;
     m_vision = vision;
     int k_maxPoseHistorySize = 51;
     m_pastPoses = new InterpolatingTreeMap<>(k_maxPoseHistorySize);
@@ -34,12 +37,12 @@ public class PoseEstimator extends SubsystemBase{
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if(m_vision.getTv()) m_poseMerging.updateCameraFOM(0.1); else m_poseMerging.updateCameraFOM(Double.POSITIVE_INFINITY);
+    if(m_vision.getTv()) m_poseMerging.updateCameraFOM(FOMHelper.cameraFOMBasedOnRobotVelocity(new Translation2d(m_swerve.getRobotRelativeVelocity().vxMetersPerSecond, m_swerve.getRobotRelativeVelocity().vyMetersPerSecond).getNorm(), Constants.Swerve.swerveConstants.maxSpeed, 0.1, 3.0)); else m_poseMerging.updateCameraFOM(Double.POSITIVE_INFINITY);
     if(m_vision.getTv()) m_visionPose = m_vision.getEstimatedRobotPose();
     double latencySeconds = m_vision.getTotalLatency(); 
     m_estimatedRobotPose = m_poseMerging.FOMCalculation(m_swerve.getInterpolatedPose(latencySeconds), m_visionPose);
     SmartDashboard.putString("Estimated Pose FOM", m_estimatedRobotPose.toString());
-    // m_swerve.resetOdometry(m_estimatedRobotPose); //TODO: cheak on robot
+    m_swerve.resetOdometry(m_estimatedRobotPose); //TODO: cheak on robot
   }
 
   public Pose2d getRobotPose(){

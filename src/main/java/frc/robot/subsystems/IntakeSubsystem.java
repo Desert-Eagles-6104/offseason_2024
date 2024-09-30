@@ -25,7 +25,6 @@ public class IntakeSubsystem extends SubsystemBase {
   private BeamBreak m_BB;
   private boolean m_hasGamePiece;
 
-  private DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0);
   private PositionVoltage m_PositionVoltageRequest = new PositionVoltage(0);
 
   private TalonFXConfigurator configurator;
