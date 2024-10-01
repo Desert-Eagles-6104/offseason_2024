@@ -109,8 +109,8 @@ public class RobotContainer {
 
 
   public void intakeBinding(){
-    drivercontroller.R2().onTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(-0.4)));
-    drivercontroller.L2().onTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(0.4)));
+    drivercontroller.R2().onTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(-0.3)));
+    drivercontroller.L2().onTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(0.3)));
     operatorController.L2().onTrue(new IntakeEatNote(m_intakeSub));
     }
 
