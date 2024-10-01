@@ -17,8 +17,14 @@ public class ArmSubsystem extends ServoSubsystemTalon {
   
   public ArmSubsystem(ServoSubsystemConfiguration configuration) {
     super(configuration);
-    MAGNETboI = new BeamBreak(8);
+    MAGNETboI = new BeamBreak(0);
     linearInterpolator = new LinearInterpolator(interpulation);
+    SmartDashboard.putNumber("armOffset", 0);
+  }
+
+  @Override
+  public void setMotionMagicPosition(double position) {
+    super.setMotionMagicPosition(position + SmartDashboard.getNumber("armOffset", 0));
   }
 
   @Override
@@ -30,7 +36,7 @@ public class ArmSubsystem extends ServoSubsystemTalon {
 
   public boolean magnetUpdate(){
     MAGNETboI.update();
-    return  MAGNETboI.get();
+    return MAGNETboI.get();
   }
 
   public boolean getMagnetState(){

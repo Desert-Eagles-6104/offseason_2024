@@ -25,6 +25,7 @@ import frc.robot.commands.ArmCommands.ArmWithVision;
 import frc.robot.commands.IntagrationCommands.Amping;
 import frc.robot.commands.IntagrationCommands.Preset;
 import frc.robot.commands.IntakeCommnands.IntakeEatNote;
+import frc.robot.commands.IntakeCommnands.IntakeSetPrecent;
 import frc.robot.commands.ShooterCommands.ShooterWithVision;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -97,7 +98,6 @@ public class RobotContainer {
     drivercontroller.circle().onTrue(new InstantCommand(() -> m_arm.setMotionMagicPosition(90)));
     drivercontroller.square().onTrue(new InstantCommand(() -> m_arm.setMotionMagicPosition(45)));
     drivercontroller.PS().onTrue(new InstantCommand(() -> m_arm.setMotionMagicPosition(Constants.arm.configuration.homePosition)));
-    drivercontroller.povDown().onTrue(new ArmHoming(m_arm));
     operatorController.cross().onTrue(new ArmWithVision(m_arm, m_vision));
   }
 
@@ -109,14 +109,14 @@ public class RobotContainer {
 
 
   public void intakeBinding(){
-    drivercontroller.R2().onTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(-0.3)));
-    drivercontroller.L2().onTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(0.3)));
+    drivercontroller.R2().whileTrue(new IntakeSetPrecent(m_intakeSub, -0.3));
+    drivercontroller.L2().whileTrue(new IntakeSetPrecent(m_intakeSub, 0.3));
     operatorController.L2().onTrue(new IntakeEatNote(m_intakeSub));
     }
 
   public void presets(){
     drivercontroller.R3().onTrue(new Amping(m_arm, m_shooter, m_intakeSub, drivercontroller.R3()));
-    driverStationController.LeftBlue().onTrue(new Preset(m_shooter, m_arm, 20, 6000));
+    driverStationController.LeftBlue().onTrue(new Preset(m_shooter, m_arm, 10, 0));
     driverStationController.RightYellow().onTrue(new Preset(m_shooter, m_arm, 40, 8000));
     driverStationController.DownYellow().onTrue(new Preset(m_shooter, m_arm, 60, 7000));
     driverStationController.UpBlue().onTrue(new Preset(m_shooter, m_arm, 70, 5000));
@@ -124,5 +124,6 @@ public class RobotContainer {
 
   public void resets(){
     operatorController.L1().onTrue(new Preset(m_shooter, m_arm, 9.57, 0));
+    drivercontroller.povDown().onTrue(new ArmHoming(m_arm));
   }
 }

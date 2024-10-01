@@ -133,6 +133,8 @@ public class ShooterSubsystem extends SubsystemBase{
     m_leftMotor.optimizeBusUtilization();
 
     linearInterpolator = new LinearInterpolator(interpulation);
+
+    SmartDashboard.putNumber("shooterOffset", 0);
   }
 
   @Override
@@ -180,11 +182,13 @@ public class ShooterSubsystem extends SubsystemBase{
   }
 
   public void setMotionMagicVelocity(double velocity) {
+    velocity = velocity + SmartDashboard.getNumber("ShooterOffset", 0);
     m_rightMotor.setControl(m_motiongMagicVelocityRequest.withVelocity(toRotations(velocity)));
     m_leftMotor.setControl(m_motiongMagicVelocityRequest.withVelocity(toRotations(velocity * ratioBetweenMotors)));
   }
 
   public void setVelocity(double velocity) {
+    velocity = velocity + SmartDashboard.getNumber("ShooterOffset", 0);
     m_rightMotor.setControl(m_VelocityVoltageRequest.withVelocity(toRotations(velocity)));
     m_leftMotor.setControl(m_VelocityVoltageRequest.withVelocity(toRotations(velocity * ratioBetweenMotors)));
   }
