@@ -15,7 +15,7 @@ public class ArmWithVision extends Command {
   VisionSubsystem m_visionSubsystem;
   LinearFilter m_filterTy;
 
-  private double Lastsetpoint = -9999;
+  private double LastMeserment = -9999;
   private double threshold = 0.01;
 
 
@@ -28,18 +28,18 @@ public class ArmWithVision extends Command {
 
   @Override
   public void initialize() {
-    
+    m_filterTy.reset();
   }
 
 
   @Override
   public void execute() {
     if(m_visionSubsystem.getTv()){
-      // if(Math.abs(Lastsetpoint - m_visionSubsystem.getTy()) > threshold){ //TODO: cheak
+      // if(Math.abs(LastMeserment - m_visionSubsystem.getTy()) > threshold){ //TODO: cheak
       // m_arm.setUsingInterpulation(m_filterTy.calculate(Lastsetpoint));
       // Lastsetpoint = m_visionSubsystem.getTy();
       // }
-      m_arm.setUsingInterpulation(m_filterTy.calculate(Lastsetpoint));
+      m_arm.setUsingInterpulation(m_filterTy.calculate(LastMeserment));
     }
   }
 
