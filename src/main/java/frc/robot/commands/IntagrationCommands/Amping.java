@@ -34,7 +34,6 @@ public class Amping extends Command {
   public void initialize() {
     m_arm.setMotionMagicPosition(m_startPos);
     m_shooter.setMotionMagicVelocity(m_Velocity);
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.

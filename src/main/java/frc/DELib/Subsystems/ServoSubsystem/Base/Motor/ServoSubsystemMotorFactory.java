@@ -38,7 +38,8 @@ public class ServoSubsystemMotorFactory {
         .withSupplyCurrentLimitEnable(configuration.enableSupplyCurrentLimit)
         .withSupplyCurrentLimit(configuration.supplyCurrentLimit);
 
-        talonConfiguration.withSlot0(PIDContainer.toSlot0Configs(configuration.pidContainer));
+        talonConfiguration.withSlot0(PIDContainer.toSlot0Configs(configuration.pidContainerSlot0));
+        talonConfiguration.withSlot1(PIDContainer.toSlot1Configs(configuration.pidContainerSlot1));
 
         talonConfiguration.MotorOutput
         .withInverted(MotorConstants.toInvertedType(configuration.master.CounterClockwisePositive))
@@ -69,7 +70,7 @@ public class ServoSubsystemMotorFactory {
         spark.getEncoder().setPositionConversionFactor(configuration.sensorToMechanismRatio * configuration.rotationsPerPositionUnit);
         spark.getEncoder().setVelocityConversionFactor((configuration.sensorToMechanismRatio * configuration.rotationsPerPositionUnit) /60.0);
 
-        PIDContainer.toSparkPIDController(configuration.pidContainer, spark);
+        PIDContainer.toSparkPIDController(configuration.pidContainerSlot0, spark);
 
         spark.getPIDController().setSmartMotionMaxAccel(configuration.motionMagicAcceleration, 0);
         spark.getPIDController().setSmartMotionMaxVelocity(configuration.motionMagicCruiseVelocity, 0);
@@ -100,7 +101,7 @@ public class ServoSubsystemMotorFactory {
         spark.getEncoder().setPositionConversionFactor(configuration.sensorToMechanismRatio * configuration.rotationsPerPositionUnit);
         spark.getEncoder().setVelocityConversionFactor((configuration.sensorToMechanismRatio * configuration.rotationsPerPositionUnit) /60.0);
 
-        PIDContainer.toSparkPIDController(configuration.pidContainer, spark);
+        PIDContainer.toSparkPIDController(configuration.pidContainerSlot0, spark);
 
         spark.getPIDController().setSmartMotionMaxAccel(configuration.motionMagicAcceleration, 0);
         spark.getPIDController().setSmartMotionMaxVelocity(configuration.motionMagicCruiseVelocity, 0);

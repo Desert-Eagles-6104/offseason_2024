@@ -720,6 +720,10 @@ public class LimelightHelpers {
         return getLimelightNTTableEntry(tableName, entryName).getDouble(0.0);
     }
 
+    public static double getLimelightNTDouble(String tableName, String entryName, double defaultValue) {
+        return getLimelightNTTableEntry(tableName, entryName).getDouble(defaultValue);
+    }
+
     public static void setLimelightNTDouble(String tableName, String entryName, double val) {
         getLimelightNTTableEntry(tableName, entryName).setDouble(val);
     }
@@ -761,8 +765,8 @@ public class LimelightHelpers {
         return getLimelightNTDouble(limelightName, "tx");
     }
 
-    public static double getTY(String limelightName) {
-        return getLimelightNTDouble(limelightName, "ty");
+    public static double getTY(String limelightName, double defaultValue) {
+        return getLimelightNTDouble(limelightName, "ty", defaultValue);
     }
 
     public static double getTA(String limelightName) {

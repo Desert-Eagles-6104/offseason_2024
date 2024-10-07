@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.DELib.Motors.MotorConstants;
@@ -153,7 +154,7 @@ public final class Constants {
 
       sensorToMechanismRatio = 90.0;
       
-      pidContainer = new PIDContainer(1.5, 3.0, 0.15, 0.15, 95.0, 2.0, 10.0);
+      pidContainerSlot0 = new PIDContainer(1.5, 3.0, 0.15, 0.15, 95.0, 2.0, 10.0);
 
       //#region motion magic values
       motionMagicCruiseVelocity = 300;
@@ -219,10 +220,21 @@ public final class Constants {
       enableStatorCurrentLimit = false;
       //#endregion current limit
   
-      allowableError = 0.0;
+      allowableError = 50.0;
   
       fileLocation = "";
     }};
+  }
+
+  public static final class Intake{
+    public static final int masterID = 55;
+    public static final int SlaveID = 54;
+    public static final int beamBrakPort = 2;
+    public static final double Ks = 1.5;
+    public static final double Kp = 4.0;
+    public static final double supplyCurrentLimit = 30;
+    public static final InvertedValue masterInvert = InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue slaveInvert = InvertedValue.Clockwise_Positive;
   }
 
   public static final SysidConfiguration sysidConfiguration = new SysidConfiguration(){{

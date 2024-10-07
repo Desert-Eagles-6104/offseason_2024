@@ -33,7 +33,7 @@ public class ShooterSubsystem extends SubsystemBase{
   private VelocitySubsystemConfiguration m_configuration;
   
   private TalonFX m_rightMotor;
-  private TalonFX m_leftMotor; //zona
+  private TalonFX m_leftMotor; 
 
     // Requests
   private MotionMagicVelocityVoltage m_motiongMagicVelocityRequest = new MotionMagicVelocityVoltage(0).withSlot(0);
@@ -61,6 +61,9 @@ public class ShooterSubsystem extends SubsystemBase{
   private LinearInterpolator linearInterpolator;
 
   private final double ratioBetweenMotors = 2.0/3.0;  
+
+  private double leftSetpoint = 0;
+  private double rightSetpoint = 0;
 
   public ShooterSubsystem(VelocitySubsystemConfiguration configuration) {
     m_configuration =  configuration;
@@ -181,29 +184,53 @@ public class ShooterSubsystem extends SubsystemBase{
     return rotations / m_configuration.rotationsPerPositionUnit;  
   }
 
-  public void setMotionMagicVelocity(double velocity) {
+  public void setMotionMagicVelocityWithRatio(double velocity) {
     velocity = velocity + SmartDashboard.getNumber("ShooterOffset", 0);
+    rightSetpoint = velocity;
+    leftSetpoint = velocity * ratioBetweenMotors;
     m_rightMotor.setControl(m_motiongMagicVelocityRequest.withVelocity(toRotations(velocity)));
     m_leftMotor.setControl(m_motiongMagicVelocityRequest.withVelocity(toRotations(velocity * ratioBetweenMotors)));
   }
 
-  public void setVelocity(double velocity) {
+  public void setVelocityWithRatio(double velocity) {
     velocity = velocity + SmartDashboard.getNumber("ShooterOffset", 0);
+    rightSetpoint = velocity;
+    leftSetpoint = velocity * ratioBetweenMotors;
     m_rightMotor.setControl(m_VelocityVoltageRequest.withVelocity(toRotations(velocity)));
     m_leftMotor.setControl(m_VelocityVoltageRequest.withVelocity(toRotations(velocity * ratioBetweenMotors)));
   }
 
+  public void setMotionMagicVelocity(double velocity) {
+    velocity = velocity + SmartDashboard.getNumber("ShooterOffset", 0);
+    rightSetpoint = velocity;
+    leftSetpoint = velocity;
+    m_rightMotor.setControl(m_motiongMagicVelocityRequest.withVelocity(toRotations(velocity)));
+    m_leftMotor.setControl(m_motiongMagicVelocityRequest.withVelocity(toRotations(velocity)));
+  }
+
+  public void setVelocity(double velocity) {
+    velocity = velocity + SmartDashboard.getNumber("ShooterOffset", 0);
+    rightSetpoint = velocity;
+    leftSetpoint = velocity;
+    m_rightMotor.setControl(m_VelocityVoltageRequest.withVelocity(toRotations(velocity)));
+    m_leftMotor.setControl(m_VelocityVoltageRequest.withVelocity(toRotations(velocity)));
+  }
+
   public void setPrecentOutput(double precent) {
     m_rightMotor.setControl(m_dutyCycleRequest.withOutput(precent));
-    m_leftMotor.setControl(m_dutyCycleRequest.withOutput(precent * ratioBetweenMotors));
+    m_leftMotor.setControl(m_dutyCycleRequest.withOutput(precent));
   }
 
   public boolean isAtSetpointRight() {
-    return Math.abs(m_closedLoopErrorRight.getValue()) < m_configuration.allowableError;
+   return Math.abs(rightSetpoint - getVelocityRight()) < m_configuration.allowableError;
   }
 
   public boolean isAtSetpointLeft() {
-    return Math.abs(m_closedLoopErrorLeft.getValue()) < m_configuration.allowableError;
+    return Math.abs(leftSetpoint - getVelocityLeft()) < m_configuration.allowableError;
+  }
+
+  public boolean isAtSetpoint(){
+    return isAtSetpointLeft() && isAtSetpointRight();
   }
 
   public double getVelocityRight() {
@@ -235,10 +262,10 @@ public class ShooterSubsystem extends SubsystemBase{
   public void setUsingInterpulation(double value, boolean useMotionMagic) {
     double speed = linearInterpolator.getInterpolatedValue(value);
     if(useMotionMagic){
-      setMotionMagicVelocity(speed);
+      setMotionMagicVelocityWithRatio(speed);
     }
     else{
-      setVelocity(speed);
+      setVelocityWithRatio(speed);
     }
   }
 
@@ -249,7 +276,6 @@ public class ShooterSubsystem extends SubsystemBase{
   double[][] interpulation = 
   {
     {1,4000},
-    
     {3,4200},
     {6,4400},
     {8,4600},

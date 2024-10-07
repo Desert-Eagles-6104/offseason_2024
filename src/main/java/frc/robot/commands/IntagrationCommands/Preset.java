@@ -40,11 +40,11 @@ public class Preset extends InstantCommand {
   public void initialize() {
     if(m_angleSupplier == null && m_velocitySupplier ==null){
       m_arm.setMotionMagicPosition(m_angle);
-      m_shooter.setMotionMagicVelocity(m_velocity);
+      m_shooter.setMotionMagicVelocityWithRatio(m_velocity);
     }
     else{
       m_arm.setMotionMagicPosition(m_angleSupplier.getAsDouble());
-      m_shooter.setMotionMagicVelocity(m_velocitySupplier.getAsDouble());
+      m_shooter.setMotionMagicVelocityWithRatio(m_velocitySupplier.getAsDouble());
     }
   }
 }

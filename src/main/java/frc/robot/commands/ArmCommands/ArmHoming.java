@@ -24,6 +24,7 @@ public class ArmHoming extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_arm.ControlSoftLimit(false);
     done = false;
     if(m_arm.getPosition()<20){
     skipSetPosition = true;
@@ -51,6 +52,7 @@ public class ArmHoming extends Command {
     m_arm.setMotionMagicPosition(20);
     skipSetPosition = false;
     done = false;
+    m_arm.ControlSoftLimit(true);
   }
 
   // Returns true when the command should end.

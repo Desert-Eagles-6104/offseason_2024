@@ -8,6 +8,9 @@ import static edu.wpi.first.units.Units.Volts;
 
 import java.io.IOException;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -47,8 +50,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
   private SwerveDriveKinematics m_kinematics;
   private SwerveDriveOdometry m_odometry;
+  private SwerveDrivePoseEstimator m_poseEstimator;
   private InterpolatingTreeMap<InterpolatingDouble, Pose2d> m_pastPoses;
-  // private WheelTracker m_wheelTracker;
 
   private Pigeon m_gyro;
   /** Creates a new SwerveSubsystem */
@@ -69,6 +72,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     m_kinematics = new SwerveDriveKinematics(swerveConstants.frontLeftPos, swerveConstants.frontRightPos, swerveConstants.backLeftPos, swerveConstants.backRightPos);
     m_odometry = new SwerveDriveOdometry(m_kinematics, Rotation2d.fromDegrees(0), getModulesPositions());
+    m_poseEstimator = new SwerveDrivePoseEstimator(m_kinematics, Rotation2d.fromDegrees(0), getModulesPositions(), new Pose2d());
 
     try {
       m_writer = new CSVWriter(swerveConstants.filepath);
@@ -80,15 +84,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
     int k_maxPoseHistorySize = 51;
     m_pastPoses = new InterpolatingTreeMap<>(k_maxPoseHistorySize);
-
-    // m_wheelTracker = new WheelTracker(m_swerveModules);
-    // m_wheelTracker.start();
-
-    SmartDashboard.putBoolean("FL", true);
-    SmartDashboard.putBoolean("FR", true);
-    SmartDashboard.putBoolean("BL", true);
-    SmartDashboard.putBoolean("BR", true);
-  
   }
 
   public void drive(ChassisSpeeds chassisSpeeds , boolean openLoop , boolean fieldRelative, Translation2d centerOfRtation){
@@ -149,23 +144,22 @@ public class SwerveSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     for (SwerveModule m : m_swerveModules) {
-      m.refreshAllSignals(); //maby change to refrash without odometry signals
+      m.refreshAllSignals(); 
     }
-    Pose2d currentPose = m_odometry.update(m_gyro.getUnadjustedYaw(), getModulesPositions());
-    m_pastPoses.put(new InterpolatingDouble(Timer.getFPGATimestamp()), currentPose);
     m_gyro.getYawStatusSignal().refresh();
-    SmartDashboard.putNumber("gyroYaw", m_gyro.getYawStatusSignal().getValue());
-    LimelightHelpers.SetRobotOrientation("limelight", getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-    // SmartDashboard.putString("OdometryPose", getPose().toString());
+
+    m_poseEstimator.update(m_gyro.getYaw(), getModulesPositions());
+    updateVisionOdometry();
+    SmartDashboard.putString("EstimatedPose", m_poseEstimator.getEstimatedPosition().toString());
+    Pose2d currentPose = m_odometry.update(m_gyro.getYaw(), getModulesPositions());
+    m_pastPoses.put(new InterpolatingDouble(Timer.getFPGATimestamp()), currentPose);
+    SmartDashboard.putNumber("gyroYaw", m_gyro.getYaw().getDegrees());
     SmartDashboard.putString("pose", getPose().toString());
-    // SmartDashboard.putString("wheelTrackerPose", m_wheelTracker.getRobotPose().toString());
-    // m_wheelTracker.ignoreModule(SmartDashboard.getBoolean("FL", true), SmartDashboard.getBoolean("FR", true), SmartDashboard.getBoolean("BL", true), SmartDashboard.getBoolean("BR", true));
-    SmartDashboard.putNumber("CameraFOM", FOMHelper.cameraFOMBasedOnRobotVelocity(new Translation2d(getRobotRelativeVelocity().vxMetersPerSecond, getRobotRelativeVelocity().vyMetersPerSecond).getNorm(), Constants.Swerve.swerveConstants.maxSpeed, 0.1, 3.0));
   }
 
   public void zeroHeading(){
     Rotation2d heading = (DriverStation.getAlliance().isPresent() && (DriverStation.getAlliance().get() == DriverStation.Alliance.Red)) ? Rotation2d.fromDegrees(180) : new Rotation2d();
-    m_odometry.resetPosition(m_gyro.getUnadjustedYaw(), getModulesPositions(), new Pose2d(getPose().getTranslation(), heading));
+    m_odometry.resetPosition(m_gyro.getYaw(), getModulesPositions(), new Pose2d(getPose().getTranslation(), heading));
     m_gyro.setYaw(heading.getDegrees());
   }
 
@@ -176,8 +170,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public void resetOdometry(Pose2d pose) {
-    m_odometry.resetPosition(m_gyro.getUnadjustedYaw(), getModulesPositions(), pose);
-    // m_wheelTracker.resetPose(pose);
+    m_odometry.resetPosition(m_gyro.getYaw(), getModulesPositions(), pose);
   }
 
   public void disableModules(){
@@ -196,6 +189,18 @@ public class SwerveSubsystem extends SubsystemBase {
     double[][] angleOffsets = m_reader.readAsDouble(1);
     for(int i = 0; i < angleOffsets.length; i++){
       m_swerveModules[i].setAngleOffset(Rotation2d.fromRotations(angleOffsets[i][0]));
+    }
+  }
+
+  public void updateVisionOdometry(){
+    boolean rejectUpdate = false;
+    LimelightHelpers.SetRobotOrientation("limelight", getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    LimelightHelpers.PoseEstimate limelightMeserment = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+    if(Math.abs(m_gyro.getRateStatusSignal().getValueAsDouble()) > 360){
+      rejectUpdate = true;
+    }
+    if(!rejectUpdate && LimelightHelpers.getTV("limelight")){
+      m_poseEstimator.addVisionMeasurement(limelightMeserment.pose, limelightMeserment.timestampSeconds, VecBuilder.fill(0.7, 0.7, 9999999));
     }
   }
 

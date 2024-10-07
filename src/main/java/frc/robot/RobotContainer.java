@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -24,12 +22,11 @@ import frc.robot.commands.ArmCommands.ArmChangeNeutralMode;
 import frc.robot.commands.ArmCommands.ArmHoming;
 import frc.robot.commands.ArmCommands.ArmWithVision;
 import frc.robot.commands.IntagrationCommands.Amp;
-import frc.robot.commands.IntagrationCommands.Amping;
 import frc.robot.commands.IntagrationCommands.Preset;
-import frc.robot.commands.IntakeCommnands.IntakeEatNote;
+import frc.robot.commands.IntakeCommnands.IntakeForTime;
 import frc.robot.commands.IntakeCommnands.IntakeSetPrecent;
 import frc.robot.commands.IntakeCommnands.SimpleIntake;
-import frc.robot.commands.ShooterCommands.ShooterWithVision;
+import frc.robot.commands.ShooterCommands.ShooterSetVelocity;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -53,14 +50,13 @@ public class RobotContainer {
   private ShooterSubsystem m_shooter;
   private VisionSubsystem m_vision;
   private SwerveAutoBuilder swerveAutoBuilder;
-  private SwerveSysidCommands swerveSysidCommands;
 
   public RobotContainer() {
     m_swerve = SwerveSubsystem.createInstance(Constants.Swerve.swerveConstants);
     m_intakeSub = IntakeSubsystem.getInstance();
     m_arm = new ArmSubsystem(Constants.arm.configuration);
     m_shooter = new ShooterSubsystem(Constants.Shooter.configuration);
-    m_vision = new VisionSubsystem(new CameraSettings(0.30821, 0, 0.10689, 0, 15.13, 180.0, true), new CameraSettings(0, 0, 0, 0, 0, 0, false));
+    m_vision = new VisionSubsystem(new CameraSettings(-0.30821, 0, 0.10689, 0, 15.13, 180.0, true), new CameraSettings(0, 0, 0, 0, 0, 0, false));
     swerveAutoBuilder = new SwerveAutoBuilder(m_swerve);
     SwerveBinding();
     armBinding();
@@ -68,12 +64,11 @@ public class RobotContainer {
     intakeBinding();
     presets();
     resets();
-    swerveSysidCommands =new SwerveSysidCommands(m_swerve);
-    driverStationController.LeftSwitch().onTrue(swerveSysidCommands.fullSysidRun());
     SmartDashboard.putNumber("ArmAnglePreset", 10);
   }
 
   public void disableMotors() {
+    m_swerve.disableModules();
     m_arm.disableMotors();
     m_intakeSub.disableMotors();
     m_shooter.disableMotors();
@@ -85,8 +80,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    // return AutoBuilder.buildAuto("LineAutoGilad");
     return swerveAutoBuilder.getAuto();
   }
 
@@ -99,38 +92,27 @@ public class RobotContainer {
   public void armBinding(){
     SmartDashboard.putData("Change Arm  NeutralMode", new ArmChangeNeutralMode(m_arm).ignoringDisable(true));
     SmartDashboard.putData("reset arm", new InstantCommand(() -> m_arm.resetPosition(9.57)).ignoringDisable(true));
-    drivercontroller.circle().onTrue(new InstantCommand(() -> m_arm.setMotionMagicPosition(90)));
-    drivercontroller.square().onTrue(new InstantCommand(() -> m_arm.setMotionMagicPosition(45)));
-    drivercontroller.PS().onTrue(new InstantCommand(() -> m_arm.setMotionMagicPosition(Constants.arm.configuration.homePosition)));
-    operatorController.cross().onTrue(new ArmWithVision(m_arm, m_vision));
+    drivercontroller.R1().onTrue(new ArmWithVision(m_arm, m_vision));
   }
 
   public void shooterBinding(){
-    drivercontroller.triangle().onTrue(new InstantCommand(() -> m_shooter.setMotionMagicVelocity(800)));
-    drivercontroller.cross().onTrue(new InstantCommand(() -> m_shooter.disableMotors()));
-    operatorController.cross().onTrue(new InstantCommand(() -> m_shooter.setMotionMagicVelocity(7000)));
+    drivercontroller.R1().onTrue(new ShooterSetVelocity(m_shooter, 7000));
   }
 
-
-
   public void intakeBinding(){
-    drivercontroller.R2().whileTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(0.3)));
-    drivercontroller.L2().whileTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(-0.3)));
-    operatorController.L3().onTrue(new SimpleIntake(m_intakeSub));
-    }
+    drivercontroller.L2().whileTrue(new SimpleIntake(m_intakeSub));
+    drivercontroller.R2().whileTrue(new IntakeForTime(m_intakeSub, -0.3, 2.0));
+    drivercontroller.R1().debounce(0.4).onTrue(new IntakeForTime(m_intakeSub, 0.3, 3));
+  }
 
   public void presets(){
-    driverStationController.UpBlue().onTrue(new WaitCommand(0.25).andThen(new IntakeSetPrecent(m_intakeSub, 0.3)));
-    driverStationController.UpBlue().onTrue(new Amp(m_intakeSub, m_arm, m_shooter));
-    driverStationController.LeftBlue().onTrue(new Preset(m_shooter, m_arm, 45, 1000));
     driverStationController.RightYellow().onTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(0.3)));
-    // driverStationController.DownYellow().onTrue(new Preset(m_shooter, m_arm,() -> SmartDashboard.getNumber("ArmAnglePreset", 10), () ->7000));
-    // driverStationController.UpBlue().onTrue(new Preset(m_shooter, m_arm, 70, 5000));
+    driverStationController.DownYellow().onTrue(new Preset(m_shooter, m_arm, 9.57, 7000));
+    driverStationController.UpBlue().onTrue(new Amp(m_intakeSub, m_arm, m_shooter));
   }
 
   public void resets(){
     operatorController.L1().onTrue(new Preset(m_shooter, m_arm, 9.57, 0));
-    operatorController.L1().onTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(0)));
     drivercontroller.povDown().onTrue(new ArmHoming(m_arm));
   }
 }

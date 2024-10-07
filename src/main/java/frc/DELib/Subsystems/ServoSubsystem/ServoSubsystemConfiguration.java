@@ -21,8 +21,9 @@ public class ServoSubsystemConfiguration {
 
     public double sensorToMechanismRatio = 1.0;
     
-    public PIDContainer pidContainer = new PIDContainer(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public PIDContainer pidContainerSlot0 = new PIDContainer(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
+    public PIDContainer pidContainerSlot1 = new PIDContainer(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
     //#region motion magic values
     public double motionMagicCruiseVelocity = 0.0;
     

@@ -5,7 +5,6 @@
 package frc.robot.commands.IntakeCommnands;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.DELib.BooleanUtil.LatchedBolean;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -18,6 +17,9 @@ public class SimpleIntake extends Command {
   private Timer m_timer;
   private int i = 0;
   private boolean secondStage = false;
+  private double intakePower = 0.3;
+  private double slowOutake = 0.08;
+  
   
   public SimpleIntake(IntakeSubsystem intake) {
     m_intake = intake;
@@ -40,25 +42,25 @@ public class SimpleIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_firstStage.update(m_intake.hasGamePiece());
+    m_firstStage.update(m_intake.hasGamePiece()); 
     if(first){
-      m_intake.setMotorPrecent(0.3);
+      m_intake.setMotorPrecent(intakePower);
       first = !m_firstStage.get();
       m_timer.reset();
     }
     else if(i < 4){
       if(m_intake.hasGamePiece() && m_timer.hasElapsed(0.1)){
-        m_intake.setMotorPrecent(-0.3);
+        m_intake.setMotorPrecent(-intakePower);
         m_timer.reset();
         i++;
       }
       else if(!m_intake.hasGamePiece() && m_timer.hasElapsed(0.1)){
-        m_intake.setMotorPrecent(0.3);
+        m_intake.setMotorPrecent(intakePower);
         m_timer.reset();
       }
     }
     else if(i == 4 && m_intake.hasGamePiece()){
-      m_intake.setMotorPrecent(-0.08);
+      m_intake.setMotorPrecent(-slowOutake);
     }
     else{
       m_intake.setMotorPrecent(0);
@@ -69,7 +71,12 @@ public class SimpleIntake extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_intake.setPosition(8);
+    if(secondStage){
+      m_intake.setPosition(8);
+    }
+    else{
+      m_intake.setMotorPrecent(0);
+    }
   }
 
   // Returns true when the command should end.

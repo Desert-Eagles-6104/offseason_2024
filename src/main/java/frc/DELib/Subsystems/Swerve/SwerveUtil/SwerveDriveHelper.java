@@ -69,7 +69,7 @@ public class SwerveDriveHelper {
     private static ChassisSpeeds madTown(ChassisSpeeds rawChassisSpeeds, boolean lowPower){
         //inputes
         Translation2d translationInput = new Translation2d(rawChassisSpeeds.vxMetersPerSecond, rawChassisSpeeds.vyMetersPerSecond);
-        double rotationInput = rawChassisSpeeds.omegaRadiansPerSecond;
+        double rotationInput = rawChassisSpeeds.omegaRadiansPerSecond * 0.8; //TODO: maby delete
         double inputMagnitude = translationInput.getNorm();
 
         //nearest pole thrshold

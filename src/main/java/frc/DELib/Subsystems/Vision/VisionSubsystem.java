@@ -21,6 +21,7 @@ public class VisionSubsystem extends SubsystemBase {
   private CameraSettings m_aprilTagCameraSettings = null;
   private double m_tx = 0; //Horizontal Offset From Crosshair To Target (-27 degrees to 27 degrees)
   private double m_ty = 0; //Vertical Offset From Crosshair To Target (-20.5 degrees to 20.5 degrees)
+  private double m_lastTy = 0;
   private boolean m_tv = false; //Whether the limelight has any valid targets (0 or 1)
   private Pose2d m_estimatedRobotPose = new Pose2d(); 
   private double m_currentID = 0;
@@ -40,15 +41,8 @@ public class VisionSubsystem extends SubsystemBase {
   private double m_gamePieceTX;
   private double m_gamePieceTY;
 
-  private AprilTagFieldLayout aprilTagFieldLayout = null;
-
   //*create a new VisionSubsystem constructor to apply the subsystem's properties */
   public VisionSubsystem(CameraSettings aprilTagCameraSettings, CameraSettings gamePieceCameraSettings) {
-    try {
-      aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.name());
-    } catch (IOException e) {
-      System.out.println("april tag field layout not found!");
-    }
     m_aprilTagCameraSettings = aprilTagCameraSettings;
     if(aprilTagCameraSettings != null){
       LimelightHelpers.setCameraPose_RobotSpace(CameraType.AprilTagCamera.getCameraName(), aprilTagCameraSettings.m_forward, aprilTagCameraSettings.m_Side, aprilTagCameraSettings.m_up, aprilTagCameraSettings.m_roll, aprilTagCameraSettings.m_pitch, aprilTagCameraSettings.m_yaw);
@@ -65,9 +59,10 @@ public class VisionSubsystem extends SubsystemBase {
     m_tv = LimelightHelpers.getTV(CameraType.AprilTagCamera.getCameraName());
     if(m_tv){
       m_tx = LimelightHelpers.getTX(CameraType.AprilTagCamera.getCameraName());
-      m_ty = LimelightHelpers.getTY(CameraType.AprilTagCamera.getCameraName());
+      m_ty = LimelightHelpers.getTY(CameraType.AprilTagCamera.getCameraName(), m_lastTy);
       m_currentID = LimelightHelpers.getFiducialID(CameraType.AprilTagCamera.getCameraName());
       m_estimatedRobotPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(CameraType.AprilTagCamera.getCameraName()).pose;
+      m_lastTy = m_ty;
     }
 
     //bounding april tag
@@ -79,14 +74,6 @@ public class VisionSubsystem extends SubsystemBase {
 
     SmartDashboard.putString("3D", m_estimatedRobotPose.toString());
     SmartDashboard.putNumber("Dis", getDistance());
-    // if (getTv()){
-    // SmartDashboard.putNumber("DistanceFromTargetX", getDstX(Constants.Vision.tragetHeight));
-    // SmartDashboard.putNumber("DistanceFromTargetY", getDstY(Constants.Vision.tragetHeight));
-    // }
-    // if(m_gamePieceCameraSettings != null){
-    //   m_gamePieceTX = LimelightHelpers.getTX(CameraType.GamePieceCamera.getCameraName());
-    //   m_gamePieceTY = LimelightHelpers.getTY(CameraType.GamePieceCamera.getCameraName());
-    // }
   }
 
   public double getDistance(){
@@ -142,7 +129,8 @@ public class VisionSubsystem extends SubsystemBase {
    * we are doing this because crop the full picture to maxmize the limelight FPS
    */
   public void orbitCalculation(){
-    double precent = 0.5;
+    double precentY = 0.5;
+    double precentX = 0.1;
     double outerLayer = 10.0;
     double _xFOV = xFOV;
     double _yFOV = yFOV;
@@ -154,10 +142,10 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     if(m_tv){
-      cropXMin = (m_tx - outerLayer) / (precent * _xFOV);
-      cropXMax = (m_tx + outerLayer) / (precent * _xFOV);
-      cropYMin = (m_ty - outerLayer) / (precent * _yFOV);
-      cropYMax = (m_ty + outerLayer) / (precent * _yFOV);
+      cropXMin = (m_tx - outerLayer) / (precentX * _xFOV);
+      cropXMax = (m_tx + outerLayer) / (precentX * _xFOV);
+      cropYMin = (m_ty - outerLayer) / (precentY * _yFOV);
+      cropYMax = (m_ty + outerLayer) / (precentY * _yFOV);
     }
     else{
       cropXMin = -1.0;

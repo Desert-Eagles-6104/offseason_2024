@@ -28,7 +28,6 @@ public class ServoSubsystemTalon extends SubsystemBase implements IServoSubsyste
   public ServoSubsystemConfiguration m_configuration;
   
   private TalonFX m_masterFx;
-  @SuppressWarnings("unused")
   private TalonFX[] m_slaveFX;
   public double setpoint;
 
@@ -152,7 +151,6 @@ public class ServoSubsystemTalon extends SubsystemBase implements IServoSubsyste
 
   @Override
   public boolean isAtSetpoint() {
-    //return Math.abs(fromRotations(m_closedLoopError.getValueAsDouble())) < m_configuration.allowableError; //TODO: needs to comments out on the new robot
     return Math.abs(setpoint - getPosition()) < m_configuration.allowableError;
   }
 

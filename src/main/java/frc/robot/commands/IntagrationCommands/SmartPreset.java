@@ -14,6 +14,7 @@ public class SmartPreset extends Command {
  private ArmSubsystem m_arm;
  private double m_angle;
  private double m_velocity;
+ private boolean m_spin = true;
 
  private DoubleSupplier m_angleSupplier = null;
  private DoubleSupplier m_velocitySupplier = null;
@@ -23,6 +24,16 @@ public class SmartPreset extends Command {
     m_arm = arm;
     m_angle = angle;
     m_velocity = velocity;
+    m_spin = true;
+    addRequirements(arm , shooter);
+  }
+
+  public SmartPreset(ShooterSubsystem shooter , ArmSubsystem arm, double angle ,double velocity, boolean spin) {
+    m_shooter = shooter;
+    m_arm = arm;
+    m_angle = angle;
+    m_velocity = velocity;
+    m_spin = spin;
     addRequirements(arm , shooter);
   }
 
@@ -31,19 +42,30 @@ public class SmartPreset extends Command {
     m_arm = arm;
     m_angleSupplier = angle;
     m_velocitySupplier = velocity;
+    m_spin = true;
     addRequirements(arm , shooter);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(m_angleSupplier == null && m_velocitySupplier ==null){
+    if(m_angleSupplier == null && m_velocitySupplier == null){
       m_arm.setMotionMagicPosition(m_angle);
-      m_shooter.setMotionMagicVelocity(m_velocity);
+      if(m_spin){
+        m_shooter.setMotionMagicVelocityWithRatio(m_velocity);
+      }
+      else{
+        m_shooter.setMotionMagicVelocity(m_velocity);
+      }
     }
     else{
       m_arm.setMotionMagicPosition(m_angleSupplier.getAsDouble());
-      m_shooter.setMotionMagicVelocity(m_velocitySupplier.getAsDouble());
+      if(m_spin){
+        m_shooter.setMotionMagicVelocityWithRatio(m_velocity);
+      }
+      else{
+        m_shooter.setMotionMagicVelocity(m_velocity);
+      }    
     }
   }
   // Called every time the scheduler runs while the command is scheduled.
@@ -57,6 +79,6 @@ public class SmartPreset extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_arm.isAtSetpoint(); //TODO: add shooter is atSetpoint
+    return m_arm.isAtSetpoint() && m_shooter.isAtSetpoint();
   }
 }

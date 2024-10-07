@@ -11,18 +11,19 @@ import frc.robot.subsystems.ArmSubsystem;
 
 public class ArmWithVision extends Command {
   /** Creates a new ArmWithVision. */
-  ArmSubsystem m_armSubsystem;
+  ArmSubsystem m_arm;
   VisionSubsystem m_visionSubsystem;
-  LinearFilter m_filter;
+  LinearFilter m_filterTy;
 
   private double Lastsetpoint = -9999;
   private double threshold = 0.05;
 
 
-  public ArmWithVision(ArmSubsystem armSubsystem,VisionSubsystem visionSubsystem) {
-    m_armSubsystem = armSubsystem;
+  public ArmWithVision(ArmSubsystem arm,VisionSubsystem visionSubsystem) {
+    m_arm = arm;
     m_visionSubsystem = visionSubsystem;
-    m_filter = LinearFilter.movingAverage(5);
+    m_filterTy = LinearFilter.movingAverage(5);
+    addRequirements(arm);
     }
 
   @Override
@@ -33,13 +34,9 @@ public class ArmWithVision extends Command {
 
   @Override
   public void execute() {
-    // if(m_visionSubsystem.getTv()){
-    //   m_armSubsystem.setMotionMagicPosition(m_armSubsystem.getInterpulatedAngle(m_filter.calculate(m_visionSubsystem.getTy())));
-    // }
-
     if(m_visionSubsystem.getTv()){
       if(Math.abs(Lastsetpoint - m_visionSubsystem.getTy()) > threshold){
-      m_armSubsystem.setMotionMagicPosition(m_armSubsystem.getInterpulatedAngle(m_filter.calculate(Lastsetpoint)));
+      m_arm.setUsingInterpulation(m_filterTy.calculate(Lastsetpoint));
       Lastsetpoint = m_visionSubsystem.getTy();
       }
     }

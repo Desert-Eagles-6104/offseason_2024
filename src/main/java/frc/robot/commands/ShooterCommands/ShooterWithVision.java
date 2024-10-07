@@ -8,16 +8,17 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 public class ShooterWithVision extends Command {
 
-  private ShooterSubsystem m_ShooterSubsystem;
-  private VisionSubsystem m_VisionSubsystem;
+  private ShooterSubsystem m_Shooter;
+  private VisionSubsystem m_Vision;
   private LinearFilter m_filter;
   private double Lastsetpoint = -9999;
   private double threshold = 0.05;
 
-  public ShooterWithVision(ShooterSubsystem shooterSubsystem,VisionSubsystem visionSubsystem) {
-    m_ShooterSubsystem = shooterSubsystem;
-    m_VisionSubsystem = visionSubsystem;
+  public ShooterWithVision(ShooterSubsystem shooter,VisionSubsystem visionSubsystem) {
+    m_Shooter = shooter;
+    m_Vision = visionSubsystem;
     m_filter = LinearFilter.movingAverage(5);
+    addRequirements(shooter);
   }
 
   // Called when the command is initially scheduled.
@@ -27,10 +28,10 @@ public class ShooterWithVision extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(m_VisionSubsystem.getTv()){
-      if(Math.abs(Lastsetpoint - m_VisionSubsystem.getTy()) > threshold){
-        m_ShooterSubsystem.setUsingInterpulation(m_filter.calculate(Lastsetpoint), true);
-        Lastsetpoint = m_VisionSubsystem.getTy();
+    if(m_Vision.getTv()){
+      if(Math.abs(Lastsetpoint - m_Vision.getTy()) > threshold){
+        m_Shooter.setUsingInterpulation(m_filter.calculate(Lastsetpoint), true);
+        Lastsetpoint = m_Vision.getTy();
       }
     }
   }

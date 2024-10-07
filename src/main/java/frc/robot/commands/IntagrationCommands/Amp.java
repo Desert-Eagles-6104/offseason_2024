@@ -4,11 +4,10 @@
 
 package frc.robot.commands.IntagrationCommands;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.DELib.Subsystems.ServoSubsystem.Commands.ServoSubsystemSetPosition;
-import frc.robot.Constants.Shooter;
-import frc.robot.commands.ArmCommands.ArmSetPosition;
-import frc.robot.commands.IntakeCommnands.IntakeSetPrecent;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.IntakeCommnands.IntakeForTime;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -18,8 +17,8 @@ import frc.robot.subsystems.ShooterSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class Amp extends SequentialCommandGroup {
   /** Creates a new Amp. */
-
+  // 103
   public Amp(IntakeSubsystem intake, ArmSubsystem arm, ShooterSubsystem shooter) {
-    addCommands(new SmartPreset(shooter, arm, 95, 1000));
+    addCommands(new InstantCommand(() -> arm.ControlSoftLimit(false)),new SmartPreset(shooter, arm, 80, 700, false),new WaitCommand(0), new IntakeForTime(intake, 0.6, 0.3).alongWith(new SmartPreset(shooter, arm, 98, 700, false)), new WaitCommand(0.5), new SmartPreset(shooter, arm, 20, 0), new WaitCommand(0.1) ,new InstantCommand(() -> arm.ControlSoftLimit(true)));
   }
 }

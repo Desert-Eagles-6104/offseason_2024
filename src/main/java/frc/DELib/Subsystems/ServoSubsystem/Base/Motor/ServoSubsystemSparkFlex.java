@@ -37,7 +37,7 @@ public class ServoSubsystemSparkFlex extends SubsystemBase implements IServoSubs
       slaveFlex = ServoSubsystemMotorFactory.createSlaveSparkFlex(configuration, master);
     }
 
-    feedforward = new SimpleMotorFeedforward(configuration.pidContainer.kS, configuration.pidContainer.kV, configuration.pidContainer.kA); 
+    feedforward = new SimpleMotorFeedforward(configuration.pidContainerSlot0.kS, configuration.pidContainerSlot0.kV, configuration.pidContainerSlot0.kA); 
 
   }
 

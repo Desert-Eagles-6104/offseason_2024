@@ -1,6 +1,7 @@
 package frc.DELib.Motors;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.SparkPIDController;
@@ -70,6 +71,18 @@ public class PIDContainer
 
     public static Slot0Configs toSlot0Configs(PIDContainer pidContainer){
         return new Slot0Configs()
+        .withKS(pidContainer.kS)
+        .withKV(pidContainer.kV)
+        .withKA(pidContainer.kA)
+        .withKG(pidContainer.kG)
+        .withKP(pidContainer.kP)
+        .withKI(pidContainer.kI)
+        .withKD(pidContainer.kD)
+        .withGravityType(pidContainer.gravityTypeValue);
+    }
+
+    public static Slot1Configs toSlot1Configs(PIDContainer pidContainer){
+        return new Slot1Configs()
         .withKS(pidContainer.kS)
         .withKV(pidContainer.kV)
         .withKA(pidContainer.kA)
