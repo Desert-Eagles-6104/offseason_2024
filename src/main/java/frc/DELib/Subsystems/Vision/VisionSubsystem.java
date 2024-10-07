@@ -4,10 +4,6 @@
 
 package frc.DELib.Subsystems.Vision;
 
-import java.io.IOException;
-
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,6 +18,7 @@ public class VisionSubsystem extends SubsystemBase {
   private double m_tx = 0; //Horizontal Offset From Crosshair To Target (-27 degrees to 27 degrees)
   private double m_ty = 0; //Vertical Offset From Crosshair To Target (-20.5 degrees to 20.5 degrees)
   private double m_lastTy = 0;
+  private double m_lastTx = 0;
   private boolean m_tv = false; //Whether the limelight has any valid targets (0 or 1)
   private Pose2d m_estimatedRobotPose = new Pose2d(); 
   private double m_currentID = 0;
@@ -58,11 +55,12 @@ public class VisionSubsystem extends SubsystemBase {
   public void periodic() {
     m_tv = LimelightHelpers.getTV(CameraType.AprilTagCamera.getCameraName());
     if(m_tv){
-      m_tx = LimelightHelpers.getTX(CameraType.AprilTagCamera.getCameraName());
+      m_tx = LimelightHelpers.getTX(CameraType.AprilTagCamera.getCameraName(), m_lastTx);
       m_ty = LimelightHelpers.getTY(CameraType.AprilTagCamera.getCameraName(), m_lastTy);
       m_currentID = LimelightHelpers.getFiducialID(CameraType.AprilTagCamera.getCameraName());
       m_estimatedRobotPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(CameraType.AprilTagCamera.getCameraName()).pose;
       m_lastTy = m_ty;
+      m_lastTx = m_tx;
     }
 
     //bounding april tag

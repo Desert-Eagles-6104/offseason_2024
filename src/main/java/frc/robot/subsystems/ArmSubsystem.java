@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.DELib.Intepulation.LinearInterpolator;
 import frc.DELib.Sensors.BeamBreak;
@@ -12,22 +11,20 @@ import frc.DELib.Subsystems.ServoSubsystem.ServoSubsystemConfiguration;
 import frc.DELib.Subsystems.ServoSubsystem.Base.Motor.ServoSubsystemTalon;
 
 public class ArmSubsystem extends ServoSubsystemTalon {
-  private BeamBreak MAGNETboI;
+  private BeamBreak m_armMagnet;
   private boolean magnetState = false;
   private LinearInterpolator linearInterpolator;
-  private LinearFilter m_filterInterpulation;
   
   public ArmSubsystem(ServoSubsystemConfiguration configuration) {
     super(configuration);
-    MAGNETboI = new BeamBreak(0);
+    m_armMagnet = new BeamBreak(0);
     linearInterpolator = new LinearInterpolator(interpulation);
-    m_filterInterpulation = LinearFilter.movingAverage(4);
     SmartDashboard.putNumber("armOffset", 0);
   }
 
   @Override
   public void setMotionMagicPosition(double position) {
-    super.setMotionMagicPosition(position + SmartDashboard.getNumber("armOffset", 0));
+    super.setMotionMagicPosition(position);
   }
 
   @Override
@@ -35,11 +32,12 @@ public class ArmSubsystem extends ServoSubsystemTalon {
     super.periodic();
     magnetState = magnetUpdate();
     SmartDashboard.putBoolean("magnetcontact", magnetState);
+    SmartDashboard.putNumber("armSetpoint", setpoint);
   }
 
   public boolean magnetUpdate(){
-    MAGNETboI.update();
-    return MAGNETboI.get();
+    m_armMagnet.update();
+    return m_armMagnet.get();
   }
 
   public boolean getMagnetState(){
@@ -55,41 +53,121 @@ public class ArmSubsystem extends ServoSubsystemTalon {
   }
 
   public void setUsingInterpulation(double value) {
-    double angle = m_filterInterpulation.calculate(linearInterpolator.getInterpolatedValue(value));
-    setMotionMagicPosition(angle);
+    double angle = linearInterpolator.getInterpolatedValue(value);
+    this.setMotionMagicPosition(angle);
   }
 
   double[][] interpulation = 
   {
-    {7.77, 30.41015625},
-    {8.6, 31.376953125},
-    {9.6, 32.080078125},
-    {10.6767, 33.486328125},
-    {11.110023384094239, 34.5},
-    {12.12, 35.859375},
-    {13.83, 36.03515625},
-    {15.9, 37.123046875},
-    {19.0, 39.314453125},
-    {21.4, 43.330078125},
-    {22.6, 44},
-    {24.3, 47.8125},
-    {27.4, 46.58203125},
-    {31.94, 48.603515625},
-    {37.85, 55.107421875}
+    {37,54},
+    {35.93,52},
+    {32.93,51},
+    {29.44,50},
+    {26.59,48},
+    {23.85,46},
+    {20.92,44},
+    {18.81,42},
+    {17.1,40},
+    {16.1,38},
+    {15.1,38},
+    {14.1,37},
+    {12.95,36.5},
+    {12.12,36.25},
+    {11.57,35.5},
+    {11.14,34.5},
+    {10.56,34},
+    {9.87,33.5},
+    {9.38,32.75},
+    {8.89,32},
+    {8.36,31.75},
+    {7.87,31},
+    {7.32,31},
+    {6.90,30.75},
+    {6.60,30.33},
+    {6.27,29.5},
+    {5.87,29.5},
+    {5.57,29.5},
+    {5.25,29},
+    {4.92,28.75},
+    {4.64,28.75},
+    {4.24,28.75},
+    {3.84,27.75},
+    {3.47,27.25},
+    {3.21,27.25},
+    {2.90,27.25},
+    {2.65,27},
+    {2.43,27},
+    {2.24,27},
+    {2.02,27},
+    {1.71,27},
+    {1.59,26.5},
+    {1.41,26.5},
+    {1.17,26.5},
+    {0.97,25.75},
+    {0.81,25.75},
+    {0.64,25.75},
+    {0.43,25.75},
+    {0.37,25.5},
+    {0.36,25.5},
+    {0.21,25},
   };
 
   //ty //angle
-  // 37.85, 55.107421875
-  // 31.94, 48.603515625
-  // 27.4, 46.58203125
-  // 24.3, 47.8125
-  // 21.4, 43.330078125
-  // 19.0, 39.314453125
-  // 15.9, 37.123046875
-  // 13.83, 36.03515625
-  // 12.12, 35.859375
-  // 10.6767, 33.486328125
-  // 9.6, 32.080078125
-  // 8.6, 31.376953125
-  // 7.77, 30.41015625
+  //37, 54
+  //35.93, 52
+  //32.93, 51
+  //29.44, 50
+  //26.59, 48
+  //23.85, 46
+  //20.92, 44
+  //18.81, 42
+  //17.1, 40
+  //16.1, 38
+  //15.1,38
+  //14.1, 37
+  //12.95,36.5
+  //12.12,36.25
+  //11.57,35.5
+  //11.14,34.5
+  //10.56,34
+  //9.87,33.5
+  //9.38,32.75
+  //8.89,32
+  //8.36,31.75
+  //7.87,31
+  //7.32,31
+  //6.90,30.75
+  //6.60,30.33
+  //6.27,29.5
+  //5.87,29.5
+  //5.57,29.5
+  //5.25,29
+  //4.92,28.75
+  //4.64,28.75
+  //4.24,28.75
+  //3.84,27.75
+  //3.47,27.25
+  //3.21,27.25
+  //2.90,27.25
+  //2.65,27
+  //2.43,27
+  //2.24,27
+  //2.02,27
+  //1.71,27
+  //1.59,26.5
+  //1.41,26.5
+  //1.17,26.5
+  //0.97,25.75
+  //0.81,25.75
+  //0.64,25.75
+  //0.43,25.75
+  //0.37,25.5
+  //0.36,25.5
+  //0.21,25
+  //
+
+
+
+
+
 }

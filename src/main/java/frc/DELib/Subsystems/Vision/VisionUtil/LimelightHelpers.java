@@ -761,8 +761,8 @@ public class LimelightHelpers {
     /////
     /////
 
-    public static double getTX(String limelightName) {
-        return getLimelightNTDouble(limelightName, "tx");
+    public static double getTX(String limelightName, double defaultValue) {
+        return getLimelightNTDouble(limelightName, "tx", defaultValue);
     }
 
     public static double getTY(String limelightName, double defaultValue) {

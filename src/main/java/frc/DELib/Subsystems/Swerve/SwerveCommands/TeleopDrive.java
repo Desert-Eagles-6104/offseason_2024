@@ -73,7 +73,8 @@ public class TeleopDrive extends Command {
         m_useVisionLatch.reset();
       }
       setVisionTarget(m_VisionSubsystem.getTv(), m_VisionSubsystem.getTx(), m_VisionSubsystem.getTotalLatency());
-      chassisSpeeds =  m_headingController.calculateOmegaSpeed(!Robot.s_isAuto , shouldResetAngle(m_shouldResetYaw), m_useVision.getAsBoolean(), chassisSpeeds, m_swerve.getHeading(), m_swerve.getInterpolatedPose(m_VisionSubsystem.getTotalLatency()).getRotation());
+      chassisSpeeds =  m_headingController.calculateOmegaSpeed(!Robot.s_isAuto , 
+      shouldResetAngle(m_shouldResetYaw), m_useVision.getAsBoolean(), chassisSpeeds, m_swerve.getHeading(), m_swerve.getInterpolatedPose(m_VisionSubsystem.getTotalLatency()).getRotation());
       //heading controller
       m_swerve.drive(chassisSpeeds, true, m_fieldRelativeToggle.update(!m_fieldRelative.getAsBoolean()), m_centerOfRotation);
   }

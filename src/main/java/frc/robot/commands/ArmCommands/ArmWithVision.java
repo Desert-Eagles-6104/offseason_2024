@@ -22,7 +22,7 @@ public class ArmWithVision extends Command {
   public ArmWithVision(ArmSubsystem arm,VisionSubsystem visionSubsystem) {
     m_arm = arm;
     m_visionSubsystem = visionSubsystem;
-    m_filterTy = LinearFilter.movingAverage(5);
+    m_filterTy = LinearFilter.movingAverage(2);
     addRequirements(arm);
     }
 

@@ -14,7 +14,7 @@ public class ArmHoming extends Command {
   boolean done = false;
   boolean skipSetPosition = false;
   /** Creates a new ArmHoming. */
-  public ArmHoming(ArmSubsystem arm ) {
+  public ArmHoming(ArmSubsystem arm) {
     m_arm = arm;
     isAtResetPoint = new StableBoolean(0.2);
     addRequirements(arm);
@@ -49,7 +49,8 @@ public class ArmHoming extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_arm.setMotionMagicPosition(20);
+    // m_arm.setMotionMagicPosition(20);
+    // m_arm.setPrecentOutput(0);
     skipSetPosition = false;
     done = false;
     m_arm.ControlSoftLimit(true);

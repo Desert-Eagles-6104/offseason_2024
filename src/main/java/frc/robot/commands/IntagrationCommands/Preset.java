@@ -38,7 +38,7 @@ public class Preset extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(m_angleSupplier == null && m_velocitySupplier ==null){
+    if(m_angleSupplier == null && m_velocitySupplier == null){
       m_arm.setMotionMagicPosition(m_angle);
       m_shooter.setMotionMagicVelocityWithRatio(m_velocity);
     }

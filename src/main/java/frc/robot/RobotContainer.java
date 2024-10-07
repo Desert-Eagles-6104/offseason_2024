@@ -8,11 +8,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.DELib.Subsystems.Swerve.SwerveSubsystem;
 import frc.DELib.Subsystems.Swerve.SwerveCommands.ResetSwerveModules;
-import frc.DELib.Subsystems.Swerve.SwerveCommands.SwerveSysidCommands;
 import frc.DELib.Subsystems.Swerve.SwerveCommands.TeleopDrive;
 import frc.DELib.Subsystems.Vision.VisionSubsystem;
 import frc.DELib.Subsystems.Vision.VisionUtil.CameraSettings;
@@ -24,7 +22,6 @@ import frc.robot.commands.ArmCommands.ArmWithVision;
 import frc.robot.commands.IntagrationCommands.Amp;
 import frc.robot.commands.IntagrationCommands.Preset;
 import frc.robot.commands.IntakeCommnands.IntakeForTime;
-import frc.robot.commands.IntakeCommnands.IntakeSetPrecent;
 import frc.robot.commands.IntakeCommnands.SimpleIntake;
 import frc.robot.commands.ShooterCommands.ShooterSetVelocity;
 import frc.robot.subsystems.ArmSubsystem;
@@ -64,7 +61,8 @@ public class RobotContainer {
     intakeBinding();
     presets();
     resets();
-    SmartDashboard.putNumber("ArmAnglePreset", 10);
+    // drivercontroller.triangle().onTrue(new setArmPoseDashboard(m_arm));
+    // drivercontroller.triangle().onTrue(new ShooterSetVelocity(m_shooter, 7000));
   }
 
   public void disableMotors() {
@@ -92,6 +90,7 @@ public class RobotContainer {
   public void armBinding(){
     SmartDashboard.putData("Change Arm  NeutralMode", new ArmChangeNeutralMode(m_arm).ignoringDisable(true));
     SmartDashboard.putData("reset arm", new InstantCommand(() -> m_arm.resetPosition(9.57)).ignoringDisable(true));
+    SmartDashboard.putData("ArmDisableSoftLimit", new InstantCommand(() -> m_arm.ControlSoftLimit(false)).ignoringDisable(true));
     drivercontroller.R1().onTrue(new ArmWithVision(m_arm, m_vision));
   }
 
@@ -112,7 +111,7 @@ public class RobotContainer {
   }
 
   public void resets(){
-    operatorController.L1().onTrue(new Preset(m_shooter, m_arm, 9.57, 0));
+    operatorController.L1().onTrue(new Preset(m_shooter, m_arm, 10, 0));
     drivercontroller.povDown().onTrue(new ArmHoming(m_arm));
   }
 }
