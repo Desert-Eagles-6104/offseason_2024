@@ -33,7 +33,7 @@ public class ServoSubsystemTalon extends SubsystemBase implements IServoSubsyste
 
     // Requests
   private MotionMagicVoltage m_motiongMagicVoltageRequest = new MotionMagicVoltage(0).withSlot(0);
-  private PositionVoltage m_PositionVoltageRequest = new PositionVoltage(0);
+  private PositionVoltage m_PositionVoltageRequest = new PositionVoltage(0).withSlot(1);
   private DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0);
   private final VoltageOut m_sysidControlRequest = new VoltageOut(0);
 
@@ -116,7 +116,7 @@ public class ServoSubsystemTalon extends SubsystemBase implements IServoSubsyste
   @Override
   public void setPosition(double position) {
     setpoint = position;
-    m_masterFx.setControl(m_PositionVoltageRequest.withPosition(toRotations(position)));
+    m_masterFx.setControl(m_PositionVoltageRequest.withPosition(toRotations(position)).withSlot(1));
   }
 
   
@@ -124,9 +124,7 @@ public class ServoSubsystemTalon extends SubsystemBase implements IServoSubsyste
   public void ControlSoftLimit(boolean enableSoftLimit) {  
     m_masterFx.getConfigurator().apply(new SoftwareLimitSwitchConfigs()
     .withForwardSoftLimitEnable(enableSoftLimit)
-    .withForwardSoftLimitThreshold(m_configuration.forwardSoftLimit)
-    .withReverseSoftLimitEnable(enableSoftLimit)
-    .withReverseSoftLimitThreshold(m_configuration.reverseSoftLimit));
+    .withForwardSoftLimitThreshold(m_configuration.forwardSoftLimit));
   }
 
   @Override
@@ -161,7 +159,7 @@ public class ServoSubsystemTalon extends SubsystemBase implements IServoSubsyste
 
   @Override
   public double getClosedLoopError() {
-    return m_closedLoopError.getValue();
+    return setpoint - getPosition();
   }
 
   @Override

@@ -16,13 +16,13 @@ public class ArmWithVision extends Command {
   LinearFilter m_filterTy;
 
   private double Lastsetpoint = -9999;
-  private double threshold = 0.01;
+  private double threshold = 0.03;
 
 
   public ArmWithVision(ArmSubsystem arm,VisionSubsystem visionSubsystem) {
     m_arm = arm;
     m_visionSubsystem = visionSubsystem;
-    m_filterTy = LinearFilter.movingAverage(2);
+    m_filterTy = LinearFilter.movingAverage(4);
     addRequirements(arm);
     }
 

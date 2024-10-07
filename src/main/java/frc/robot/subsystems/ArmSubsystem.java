@@ -27,6 +27,17 @@ public class ArmSubsystem extends ServoSubsystemTalon {
     super.setMotionMagicPosition(position);
   }
 
+  public void setPosition(double position){
+    if(Math.abs(super.getClosedLoopError()) < 2){
+      super.setPosition(position);
+      SmartDashboard.putNumber("slot", 1);
+    }
+    else{
+      super.setMotionMagicPosition(position);
+      SmartDashboard.putNumber("slot", 0);
+    }
+  }
+
   @Override
   public void periodic() {
     super.periodic();
@@ -54,7 +65,7 @@ public class ArmSubsystem extends ServoSubsystemTalon {
 
   public void setUsingInterpulation(double value) {
     double angle = linearInterpolator.getInterpolatedValue(value);
-    this.setMotionMagicPosition(angle);
+    this.setPosition(angle);
   }
 
   double[][] interpulation = 
@@ -79,16 +90,16 @@ public class ArmSubsystem extends ServoSubsystemTalon {
     {9.87,33.5},
     {9.38,32.75},
     {8.89,32},
-    {8.36,31.75},
-    {7.87,31},
-    {7.32,31},
+    {8.36,32},
+    {7.87,32},
+    {7.32,32},
     {6.90,30.75},
     {6.60,30.33},
     {6.27,29.5},
     {5.87,29.5},
     {5.57,29.5},
     {5.25,29},
-    {4.92,28.75},
+    {4.92,28.5},
     {4.64,28.75},
     {4.24,28.75},
     {3.84,27.75},
@@ -99,11 +110,11 @@ public class ArmSubsystem extends ServoSubsystemTalon {
     {2.43,27},
     {2.24,27},
     {2.02,27},
-    {1.71,27},
+    {1.71,26.5},
     {1.59,26.5},
     {1.41,26.5},
-    {1.17,26.5},
-    {0.97,25.75},
+    {1.17,26.15},
+    {0.97,26.15},
     {0.81,25.75},
     {0.64,25.75},
     {0.43,25.75},

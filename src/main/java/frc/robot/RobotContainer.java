@@ -24,6 +24,7 @@ import frc.robot.commands.IntagrationCommands.Amp;
 import frc.robot.commands.IntagrationCommands.Preset;
 import frc.robot.commands.IntakeCommnands.IntakeForTime;
 import frc.robot.commands.IntakeCommnands.SimpleIntake;
+import frc.robot.commands.ShooterCommands.ShooterSetIfHasNote;
 import frc.robot.commands.ShooterCommands.ShooterSetVelocity;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -94,7 +95,7 @@ public class RobotContainer {
   }
 
   public void shooterBinding(){
-    drivercontroller.R1().onTrue(new ShooterSetVelocity(m_shooter, 7000));
+    drivercontroller.R1().onTrue(new ShooterSetIfHasNote(m_shooter, m_intakeSub, 7000));
   }
 
   public void intakeBinding(){

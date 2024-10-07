@@ -156,6 +156,7 @@ public final class Constants {
       
       pidContainerSlot0 = new PIDContainer(1.5, 3.0, 0.15, 0.15, 95.0, 2.0, 10.0);
 
+      pidContainerSlot1 = new PIDContainer(0.0, 0.0, 0.0, 0.15, 1000.0, 0.0, 0.0);
       //#region motion magic values
       motionMagicCruiseVelocity = 300;
       
@@ -177,7 +178,7 @@ public final class Constants {
       //#region soft limits 
       forwardSoftLimit = 95;
 
-      reverseSoftLimit = 9.57;
+      // reverseSoftLimit = 9.57;
       //#endregion sofr limits
 
       allowableError = 2.0;
