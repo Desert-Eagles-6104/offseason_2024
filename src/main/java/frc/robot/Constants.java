@@ -220,7 +220,7 @@ public final class Constants {
       enableStatorCurrentLimit = false;
       //#endregion current limit
   
-      allowableError = 50.0;
+      allowableError = 150.0;
   
       fileLocation = "";
     }};

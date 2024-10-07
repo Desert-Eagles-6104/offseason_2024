@@ -9,7 +9,6 @@ import frc.DELib.Subsystems.ServoSubsystem.Commands.ServoSubsystemSetPosition;
 
 /** Add your docs here. */
 public class ArmSetPosition extends ServoSubsystemSetPosition {
-
     public ArmSetPosition(ServoSubsystemTalon ServoSubsystemTalon, double Position, boolean motionMagic) {
         super(ServoSubsystemTalon, Position, motionMagic);
     }}

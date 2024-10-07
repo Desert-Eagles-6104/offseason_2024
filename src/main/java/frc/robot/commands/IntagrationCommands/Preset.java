@@ -15,9 +15,6 @@ public class Preset extends InstantCommand {
  private ArmSubsystem m_arm;
  private double m_angle;
  private double m_velocity;
-
- private DoubleSupplier m_angleSupplier = null;
- private DoubleSupplier m_velocitySupplier = null;
   /** Creates a new Preset. */
   public Preset(ShooterSubsystem shooter , ArmSubsystem arm, double angle ,double velocity) {
     m_shooter = shooter;
@@ -27,24 +24,10 @@ public class Preset extends InstantCommand {
     addRequirements(arm , shooter);
   }
 
-  public Preset(ShooterSubsystem shooter , ArmSubsystem arm, DoubleSupplier angle ,DoubleSupplier velocity) {
-    m_shooter = shooter;
-    m_arm = arm;
-    m_angleSupplier = angle;
-    m_velocitySupplier = velocity;
-    addRequirements(arm , shooter);
-  }
-
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(m_angleSupplier == null && m_velocitySupplier == null){
       m_arm.setMotionMagicPosition(m_angle);
       m_shooter.setMotionMagicVelocityWithRatio(m_velocity);
-    }
-    else{
-      m_arm.setMotionMagicPosition(m_angleSupplier.getAsDouble());
-      m_shooter.setMotionMagicVelocityWithRatio(m_velocitySupplier.getAsDouble());
-    }
   }
 }

@@ -61,8 +61,6 @@ public class RobotContainer {
     intakeBinding();
     presets();
     resets();
-    // drivercontroller.triangle().onTrue(new setArmPoseDashboard(m_arm));
-    // drivercontroller.triangle().onTrue(new ShooterSetVelocity(m_shooter, 7000));
   }
 
   public void disableMotors() {

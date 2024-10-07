@@ -18,7 +18,6 @@ public class ArmHoming extends Command {
     m_arm = arm;
     isAtResetPoint = new StableBoolean(0.2);
     addRequirements(arm);
-    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
@@ -49,8 +48,7 @@ public class ArmHoming extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // m_arm.setMotionMagicPosition(20);
-    // m_arm.setPrecentOutput(0);
+    m_arm.disableMotors();
     skipSetPosition = false;
     done = false;
     m_arm.ControlSoftLimit(true);
