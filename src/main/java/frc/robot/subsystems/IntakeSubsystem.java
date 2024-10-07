@@ -38,9 +38,9 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeSubsystem() {
     m_master = new TalonFX(55); 
     configurator = m_master.getConfigurator();
-    configurator.apply(new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive));
-    configurator.apply(new Slot0Configs().withKS(0.0).withKV(0.0).withKA(0.0).withKP(0.0).withKI(0.0).withKD(0.0));
-    configurator.apply(new FeedbackConfigs().withSensorToMechanismRatio(0.0));
+    configurator.apply(new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive).withDutyCycleNeutralDeadband(0.03));
+    configurator.apply(new Slot0Configs().withKS(1.5).withKV(0.0).withKA(0.0).withKP(4.0).withKI(0.0).withKD(0.0));
+    configurator.apply(new FeedbackConfigs().withSensorToMechanismRatio(1));
     configurator.apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(25).withSupplyCurrentLimitEnable(true));
     m_positionSignal = m_master.getPosition();
     m_velocitySignal = m_master.getVelocity();
@@ -66,7 +66,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public double getPosition(){
-    return m_positionSignal.getValueAsDouble();
+    return (m_positionSignal.getValueAsDouble());
   }
 
   public double getVelocity(){
@@ -78,12 +78,12 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setMotorPrecent(double precent){
-    m_master.set((precent));
+    m_master.set(precent);
     m_slave.set(precent);
   }
 
   public void setPosition(double position){
-    m_master.setControl(m_PositionVoltageRequest.withPosition(getPosition() + position));
+    m_master.setControl(m_PositionVoltageRequest.withPosition((getPosition() + position)));
   }
 
   public static IntakeSubsystem getInstance() {

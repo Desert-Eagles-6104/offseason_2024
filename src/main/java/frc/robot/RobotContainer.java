@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.DELib.Subsystems.Swerve.SwerveSubsystem;
 import frc.DELib.Subsystems.Swerve.SwerveCommands.ResetSwerveModules;
@@ -22,10 +23,12 @@ import frc.DELib.Util.SwerveAutoBuilder;
 import frc.robot.commands.ArmCommands.ArmChangeNeutralMode;
 import frc.robot.commands.ArmCommands.ArmHoming;
 import frc.robot.commands.ArmCommands.ArmWithVision;
+import frc.robot.commands.IntagrationCommands.Amp;
 import frc.robot.commands.IntagrationCommands.Amping;
 import frc.robot.commands.IntagrationCommands.Preset;
 import frc.robot.commands.IntakeCommnands.IntakeEatNote;
 import frc.robot.commands.IntakeCommnands.IntakeSetPrecent;
+import frc.robot.commands.IntakeCommnands.SimpleIntake;
 import frc.robot.commands.ShooterCommands.ShooterWithVision;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -67,6 +70,7 @@ public class RobotContainer {
     resets();
     swerveSysidCommands =new SwerveSysidCommands(m_swerve);
     driverStationController.LeftSwitch().onTrue(swerveSysidCommands.fullSysidRun());
+    SmartDashboard.putNumber("ArmAnglePreset", 10);
   }
 
   public void disableMotors() {
@@ -102,28 +106,31 @@ public class RobotContainer {
   }
 
   public void shooterBinding(){
-    drivercontroller.triangle().onTrue(new InstantCommand(() -> m_shooter.setMotionMagicVelocity(6000)));
+    drivercontroller.triangle().onTrue(new InstantCommand(() -> m_shooter.setMotionMagicVelocity(800)));
     drivercontroller.cross().onTrue(new InstantCommand(() -> m_shooter.disableMotors()));
-    operatorController.cross().onTrue(new ShooterWithVision(m_shooter, m_vision));
+    operatorController.cross().onTrue(new InstantCommand(() -> m_shooter.setMotionMagicVelocity(7000)));
   }
 
 
+
   public void intakeBinding(){
-    drivercontroller.R2().whileTrue(new IntakeSetPrecent(m_intakeSub, -0.3));
-    drivercontroller.L2().whileTrue(new IntakeSetPrecent(m_intakeSub, 0.3));
-    operatorController.L2().onTrue(new IntakeEatNote(m_intakeSub));
+    drivercontroller.R2().whileTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(0.3)));
+    drivercontroller.L2().whileTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(-0.3)));
+    operatorController.L3().onTrue(new SimpleIntake(m_intakeSub));
     }
 
   public void presets(){
-    drivercontroller.R3().onTrue(new Amping(m_arm, m_shooter, m_intakeSub, drivercontroller.R3()));
-    driverStationController.LeftBlue().onTrue(new Preset(m_shooter, m_arm, 10, 0));
-    driverStationController.RightYellow().onTrue(new Preset(m_shooter, m_arm, 40, 8000));
-    driverStationController.DownYellow().onTrue(new Preset(m_shooter, m_arm, 60, 7000));
-    driverStationController.UpBlue().onTrue(new Preset(m_shooter, m_arm, 70, 5000));
+    driverStationController.UpBlue().onTrue(new WaitCommand(0.25).andThen(new IntakeSetPrecent(m_intakeSub, 0.3)));
+    driverStationController.UpBlue().onTrue(new Amp(m_intakeSub, m_arm, m_shooter));
+    driverStationController.LeftBlue().onTrue(new Preset(m_shooter, m_arm, 45, 1000));
+    driverStationController.RightYellow().onTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(0.3)));
+    // driverStationController.DownYellow().onTrue(new Preset(m_shooter, m_arm,() -> SmartDashboard.getNumber("ArmAnglePreset", 10), () ->7000));
+    // driverStationController.UpBlue().onTrue(new Preset(m_shooter, m_arm, 70, 5000));
   }
 
   public void resets(){
     operatorController.L1().onTrue(new Preset(m_shooter, m_arm, 9.57, 0));
+    operatorController.L1().onTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(0)));
     drivercontroller.povDown().onTrue(new ArmHoming(m_arm));
   }
 }

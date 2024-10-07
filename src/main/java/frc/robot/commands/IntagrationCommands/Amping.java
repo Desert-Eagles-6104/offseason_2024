@@ -15,10 +15,10 @@ public class Amping extends Command {
   ShooterSubsystem m_shooter;
   IntakeSubsystem m_intake;
   BooleanSupplier m_start;
-  double m_startPos = 30.0;
+  double m_startPos = 70.0;
   double m_shootingPosition = 95.0;
   double m_startTriggerPosition = 60.0;
-  double m_Velocity = 3000;
+  double m_Velocity = 300;
   double m_intakePrecent = 0.3;
   /** Creates a new Amping. */
   public Amping(ArmSubsystem arm , ShooterSubsystem shooter , IntakeSubsystem intake, BooleanSupplier start) {

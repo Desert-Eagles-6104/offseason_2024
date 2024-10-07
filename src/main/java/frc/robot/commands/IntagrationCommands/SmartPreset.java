@@ -4,14 +4,13 @@
 
 package frc.robot.commands.IntagrationCommands;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import java.util.function.DoubleSupplier;
 
-
-public class Preset extends InstantCommand {
- private ShooterSubsystem m_shooter;
+public class SmartPreset extends Command {
+  private ShooterSubsystem m_shooter;
  private ArmSubsystem m_arm;
  private double m_angle;
  private double m_velocity;
@@ -19,7 +18,7 @@ public class Preset extends InstantCommand {
  private DoubleSupplier m_angleSupplier = null;
  private DoubleSupplier m_velocitySupplier = null;
   /** Creates a new Preset. */
-  public Preset(ShooterSubsystem shooter , ArmSubsystem arm, double angle ,double velocity) {
+  public SmartPreset(ShooterSubsystem shooter , ArmSubsystem arm, double angle ,double velocity) {
     m_shooter = shooter;
     m_arm = arm;
     m_angle = angle;
@@ -27,7 +26,7 @@ public class Preset extends InstantCommand {
     addRequirements(arm , shooter);
   }
 
-  public Preset(ShooterSubsystem shooter , ArmSubsystem arm, DoubleSupplier angle ,DoubleSupplier velocity) {
+  public SmartPreset(ShooterSubsystem shooter , ArmSubsystem arm, DoubleSupplier angle ,DoubleSupplier velocity) {
     m_shooter = shooter;
     m_arm = arm;
     m_angleSupplier = angle;
@@ -46,5 +45,18 @@ public class Preset extends InstantCommand {
       m_arm.setMotionMagicPosition(m_angleSupplier.getAsDouble());
       m_shooter.setMotionMagicVelocity(m_velocitySupplier.getAsDouble());
     }
+  }
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {}
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {}
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return m_arm.isAtSetpoint(); //TODO: add shooter is atSetpoint
   }
 }
