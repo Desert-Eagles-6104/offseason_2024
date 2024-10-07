@@ -85,6 +85,11 @@ public class ServoSubsystemTalon extends SubsystemBase implements IServoSubsyste
   @Override
   public void resetSubsystemToInitialState() {
     m_masterFx.setPosition(toRotations(m_configuration.homePosition));
+    if(m_slaveFX != null){
+      for(TalonFX talonFX : m_slaveFX){
+        talonFX.setPosition(m_configuration.homePosition);
+      }
+    }
   }
 
   @Override
