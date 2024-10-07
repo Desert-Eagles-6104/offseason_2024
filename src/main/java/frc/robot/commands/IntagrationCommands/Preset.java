@@ -7,8 +7,6 @@ package frc.robot.commands.IntagrationCommands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import java.util.function.DoubleSupplier;
-
 
 public class Preset extends InstantCommand {
  private ShooterSubsystem m_shooter;

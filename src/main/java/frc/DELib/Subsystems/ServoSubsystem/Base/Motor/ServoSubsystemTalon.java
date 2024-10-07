@@ -110,7 +110,7 @@ public class ServoSubsystemTalon extends SubsystemBase implements IServoSubsyste
   @Override
   public void setMotionMagicPosition(double position) {
     setpoint = position;
-    m_masterFx.setControl(m_motiongMagicVoltageRequest.withPosition(toRotations(position)));
+    m_masterFx.setControl(m_motiongMagicVoltageRequest.withPosition(toRotations(position)).withSlot(0));
   }
 
   @Override
