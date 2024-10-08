@@ -6,6 +6,7 @@ package frc.DELib.Subsystems.Swerve.SwerveCommands;
 
 import java.util.function.BooleanSupplier;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -15,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.DELib.BooleanUtil.LatchedBolean;
 import frc.DELib.BooleanUtil.ToggleBoolean;
 import frc.DELib.Motors.PIDContainer;
+import frc.DELib.Subsystems.PoseEstimator.PoseEstimatorSubsystem;
 import frc.DELib.Subsystems.Swerve.SwerveSubsystem;
 import frc.DELib.Subsystems.Swerve.SwerveUtil.HeadingController;
 import frc.DELib.Subsystems.Swerve.SwerveUtil.SwerveDriveHelper;
@@ -60,9 +62,9 @@ public class TeleopDrive extends Command {
   @Override
   public void execute() {
     ChassisSpeeds chassisSpeeds = new ChassisSpeeds(
-      MathUtil.applyDeadband(m_joystick.getLeftY(), 0.1),
-      MathUtil.applyDeadband(m_joystick.getLeftX(), 0.1),
-      MathUtil.applyDeadband(m_joystick.getRightX(), 0.1));
+      MathUtil.applyDeadband(-m_joystick.getLeftY(), 0.1),
+      MathUtil.applyDeadband(-m_joystick.getLeftX(), 0.1),
+      MathUtil.applyDeadband(-m_joystick.getRightX(), 0.1));
       chassisSpeeds = SwerveDriveHelper.updateChassisSpeeds(chassisSpeeds, m_lowPower, DriveMode.MadTown);
       chassisSpeeds = SwerveDriveHelper.joystickToRobotUnits(chassisSpeeds, Constants.Swerve.swerveConstants.maxSpeed, Constants.Swerve.swerveConstants.maxAngularVelocity);
       //heading controller
@@ -70,8 +72,15 @@ public class TeleopDrive extends Command {
       if (Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.05){
         m_useVisionLatch.reset();
       }
-      setVisionTarget(VisionSubsystem.getTv(), VisionSubsystem.getTx(), VisionSubsystem.getTotalLatency());
-      chassisSpeeds = m_headingController.calculateOmegaSpeed2(!Robot.s_isAuto ,shouldResetAngle(m_shouldResetYaw), m_useVision.getAsBoolean(), chassisSpeeds, m_swerve.getHeading(), m_swerve.getInterpolatedPose(VisionSubsystem.getTotalLatency()).getRotation(), m_swerve.getRobotRelativeVelocity()); //TODO: uncommet on robot
+      
+      //TODO: change by a boutton
+      //limelight
+      //setVisionTarget(VisionSubsystem.getTv(), VisionSubsystem.getTx(), VisionSubsystem.getTotalLatency());
+
+      //localization
+      setVisionTargetlocalization(true, PoseEstimatorSubsystem.getAngleToBlueSpeaker().getDegrees(), VisionSubsystem.getTotalLatency());
+
+      chassisSpeeds = m_headingController.calculateOmegaSpeed2(!Robot.s_isAuto ,shouldResetAngle(m_shouldResetYaw), m_useVision.getAsBoolean(), chassisSpeeds, m_swerve.getHeading(), PoseEstimatorSubsystem.getRobotPose().getRotation(), m_swerve.getRobotRelativeVelocity()); //TODO: uncommet on robot
       //heading controller
       m_swerve.drive(chassisSpeeds, true, m_fieldRelativeToggle.update(!m_fieldRelative.getAsBoolean()), m_centerOfRotation);
   }
@@ -103,8 +112,21 @@ public class TeleopDrive extends Command {
     if(m_useVisionLatch.get()){
       double errorDegrees = hasTarget ? -errorFromTarget : 0;
       Rotation2d target = m_swerve.getInterpolatedPose(VisionSubsystem.getTotalLatency()).getRotation().plus(Rotation2d.fromDegrees(errorDegrees));
-      SmartDashboard.putNumber("setpoint", target.getDegrees());
       m_headingController.setSetpoint(target);
     }
-}
+  }  
+
+    /**
+   * @param hasTarget camera sees target 
+   * @param errorFromTarget error from target in degrees
+   * @param latency camera total latency
+   */
+  private void setVisionTargetlocalization(boolean hasTarget, double errorFromTarget, double latency){
+    if(m_useVisionLatch.get()){
+      double errorDegrees = hasTarget ? -errorFromTarget : 0;
+      Rotation2d target = Rotation2d.fromDegrees(errorDegrees);
+      SmartDashboard.putNumber("setpointHeading", target.getDegrees());
+      m_headingController.setSetpoint(target);
+    }
+  } 
 }

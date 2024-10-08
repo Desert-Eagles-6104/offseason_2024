@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.units.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.DELib.Intepulation.LinearInterpolator;
 import frc.DELib.Sensors.BeamBreak;
@@ -20,6 +21,7 @@ public class ArmSubsystem extends ServoSubsystemTalon {
     m_armMagnet = new BeamBreak(0);
     linearInterpolator = new LinearInterpolator(interpulation);
     SmartDashboard.putNumber("armOffset", 0);
+    SmartDashboard.putNumber("ArmAngleToSet", 90);
   }
 
   @Override
@@ -68,6 +70,41 @@ public class ArmSubsystem extends ServoSubsystemTalon {
     this.setPosition(angle);
   }
 
+  public void Print(){
+    setPosition(SmartDashboard.getNumber("ArmAngleToSet", 90));
+  }
+  //position Interpulation
+  double[][] interpulationPOS = 
+  {
+    {37,54},
+    {35.93,52},
+    {32.93,51},
+    {29.44,50},
+    {26.59,48},
+    {23.85,46},
+    {20.92,44},
+    {18.81,42},
+    {17.1,40},
+    {16.1,38},
+    {15.1,38},
+    {14.1,37},
+    {12.95,36.5},
+    {12.12,36.25},
+    {11.57,35.5},
+    {11.14,34.5},
+    {10.56,34},
+    {9.87,33.5},
+    {9.38,32.75},
+    {8.89,32},
+    {8.36,32},
+    {7.87,32},
+    {7.32,32},
+    {6.90,30.75},
+    {6.60,30.33},
+    {6.27,29.5},
+
+  };
+  //vision Intepulation
   double[][] interpulation = 
   {
     {37,54},

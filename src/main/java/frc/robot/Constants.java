@@ -45,12 +45,12 @@ public final class Constants {
   }
 
   public final static class Swerve{
-    public static final double x = 0.4783 /2.0;
+    public static final double x = 0.4853 /2.0;
     public static final double y = 0.425 /2.0;
 
     public static SwerveConstants swerveConstants = new SwerveConstants(){{
       chosenModule =  //TODO: This must be tuned to specific robot
-      COTSTalonFXSwerveConstants.SDS.MK4.KrakenX60(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L3);
+      COTSTalonFXSwerveConstants.SDS.MK4.KrakenX60(COTSTalonFXSwerveConstants.SDS.MK4.driveRatios.L3);
 
       /* Drivetrain Constants */
       wheelCircumference = chosenModule.wheelCircumference;
@@ -230,7 +230,7 @@ public final class Constants {
   public static final class Intake{
     public static final int masterID = 55;
     public static final int SlaveID = 54;
-    public static final int beamBrakPort = 2;
+    public static final int beamBrakPort = 3;
     public static final double Ks = 1.5;
     public static final double Kp = 4.0;
     public static final double supplyCurrentLimit = 30;

@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "SheliAndRoniPath",
   "previewStartingState": {
     "rotation": -148.07507656411678,
     "velocity": 0

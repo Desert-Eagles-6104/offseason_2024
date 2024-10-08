@@ -13,7 +13,7 @@ import frc.DELib.Subsystems.Swerve.SwerveUtil.SwerveModuleConstants;
 
 public class SwerveConstants {
     public COTSTalonFXSwerveConstants chosenModule =  //TODO: This must be tuned to specific robot
-    COTSTalonFXSwerveConstants.SDS.MK4.KrakenX60(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L3);
+    COTSTalonFXSwerveConstants.SDS.MK4.KrakenX60(COTSTalonFXSwerveConstants.SDS.MK4.driveRatios.L3);
 
     /* Drivetrain Constants */
     public double wheelCircumference = chosenModule.wheelCircumference;

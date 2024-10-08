@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.DELib.Intepulation.InterpolatingDouble;
@@ -28,8 +29,10 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
   private static Pose2d m_estimatedRobotPose = new Pose2d();
   private static LimelightHelpers.PoseEstimate limelightMesermentMT2;
   private static InterpolatingTreeMap<InterpolatingDouble, Pose2d> m_pastPoses;
+  Field2d field2d;
   
   public PoseEstimatorSubsystem(SwerveSubsystem swerve) {
+    field2d = new Field2d();
     m_swerve = swerve;
     m_gyro = Pigeon.getInstance();
     int k_maxPoseHistorySize = 51;
@@ -43,6 +46,10 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
     updateVisionOdometry();
     m_pastPoses.put(new InterpolatingDouble(Timer.getFPGATimestamp()), getRobotPose());
     SmartDashboard.putString("estimatedRobotPose", getRobotPose().toString());
+    SmartDashboard.putNumber("distance from speaker", getDistanceToBlueSpeaker());
+    SmartDashboard.putNumber("angleSpeaker", getAngleToBlueSpeaker().getDegrees());
+    field2d.setRobotPose(getRobotPose());
+    SmartDashboard.putData("field2d ",field2d);
   }
 
   public static Pose2d getRobotPose(){
@@ -80,11 +87,11 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
     return m_pastPoses.getInterpolated(new InterpolatingDouble(timestamp));
   }
 
-  public double cala(){
+  public static double getDistanceToBlueSpeaker(){
     return getRobotPose().getTranslation().getDistance(new Translation2d(0.0, 5.55));
   }
 
-  public Rotation2d getAngleCalc(){
-    return Rotation2d.fromRadians(Math.tan((getRobotPose().getY() - 5.55)/(getRobotPose().getX())));
+  public static Rotation2d getAngleToBlueSpeaker(){
+    return Rotation2d.fromRadians(-Math.atan((5.55 - getRobotPose().getY())/(0 -getRobotPose().getX())));
   }
 }

@@ -64,12 +64,12 @@ public class IntakeGlubGlub extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if(secondStage){
-      m_intake.setPosition(8);
-    }
-    else{
-      m_intake.setMotorPrecent(0);
-    }
+    // if(secondStage){
+    //   m_intake.setPosition(8);
+    // }
+    // else{
+    //   m_intake.setMotorPrecent(0);
+    // }
   }
 
   // Returns true when the command should end.

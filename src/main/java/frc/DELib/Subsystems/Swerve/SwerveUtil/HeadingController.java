@@ -78,7 +78,7 @@ public class HeadingController  {
      * @return a setpoint to the pid controller
      */
     public double update(Rotation2d currentHeading){
-        return -clamp(m_pidController.calculate(currentHeading.getDegrees()),-Constants.Swerve.swerveConstants.maxAngularVelocity,Constants.Swerve.swerveConstants.maxAngularVelocity);
+        return clamp(m_pidController.calculate(currentHeading.getDegrees()),-Constants.Swerve.swerveConstants.maxAngularVelocity,Constants.Swerve.swerveConstants.maxAngularVelocity);
     }
 
     /**

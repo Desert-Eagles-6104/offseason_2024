@@ -20,6 +20,7 @@ import frc.DELib.Subsystems.Vision.VisionSubsystem;
 import frc.DELib.Subsystems.Vision.VisionUtil.CameraSettings;
 import frc.DELib.Util.DriverStationController;
 import frc.DELib.Util.SwerveAutoBuilder;
+import frc.robot.commands.ArmCommands.ArmAngleToDashBoard;
 import frc.robot.commands.ArmCommands.ArmChangeNeutralMode;
 import frc.robot.commands.ArmCommands.ArmHoming;
 import frc.robot.commands.ArmCommands.ArmWithVision;
@@ -68,6 +69,7 @@ public class RobotContainer {
     m_poseEstimator = new PoseEstimatorSubsystem(m_swerve);
     m_isLocalizetion = driverStationController.LeftSwitch();
     m_canShoot = new Trigger(() ->(m_shooter.isAtSetpoint() && m_arm.isAtSetpoint() && VisionSubsystem.getTv()));
+    SmartDashboard.putData("reset Odometry from limelight", new InstantCommand(() -> PoseEstimatorSubsystem.resetPositionFromCamera()));
     SwerveBinding();
     armBinding();
     shooterBinding();
@@ -103,6 +105,7 @@ public class RobotContainer {
     SmartDashboard.putData("reset arm", new InstantCommand(() -> m_arm.resetPosition(9.57)).ignoringDisable(true));
     SmartDashboard.putData("ArmDisableSoftLimit", new InstantCommand(() -> m_arm.ControlSoftLimit(false)).ignoringDisable(true));
     drivercontroller.R1().onTrue(new ArmWithVision(m_arm, m_vision).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    drivercontroller.povUp().onTrue(new ArmAngleToDashBoard(m_arm));
   }
 
   public void shooterBinding(){
