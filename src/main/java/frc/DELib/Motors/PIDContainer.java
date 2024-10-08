@@ -21,8 +21,21 @@ public class PIDContainer
     public double kD;
     //#endregion PID Values
 
+    public String headingType;
+
     public GravityTypeValue gravityTypeValue = GravityTypeValue.Elevator_Static; //only for talonFX
 
+        public PIDContainer(double kp, double ki, double kd, String headingType)
+    {
+        this.kS = 0.0;
+        this.kV = 0.0;
+        this.kA = 0.0;
+        this.kG = 0.0;
+        this.kP = kp;
+        this.kI = ki;
+        this.kD = kd;
+        this.headingType = headingType;
+    }
 
     public PIDContainer(double kS, double kV, double kA)
     {

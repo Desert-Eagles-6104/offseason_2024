@@ -111,7 +111,7 @@ public class RobotContainer {
   }
 
   public void resets(){
-    operatorController.L1().onTrue(new Preset(m_shooter, m_arm, 10, 0));
+    drivercontroller.L1().onTrue(new Preset(m_shooter, m_arm, 10, 0));
     drivercontroller.povDown().onTrue(new ArmHoming(m_arm));
   }
 }

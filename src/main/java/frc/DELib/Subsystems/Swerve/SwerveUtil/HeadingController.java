@@ -6,13 +6,18 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.DELib.BooleanUtil.StickyBoolean;
+import frc.DELib.Motors.PIDContainer;
 import frc.robot.Constants;
 
 public class HeadingController  {
 
-    private PIDController m_pidControllerStabalize;
-    private PIDController m_pidControllerSnap;
-    private PIDController m_pidControllerVision;
+    private PIDController m_pidController;
+    private PIDContainer m_pidContainerStabalize;
+    private PIDContainer m_pidContainerSnap;
+    private PIDContainer m_pidContainerVision;
+
+    private PIDContainer m_currentPIDContainer = new PIDContainer(0, 0, 0, "");
+
 
     private Mode mode = Mode.TeleopWithHeadingController;
 
@@ -28,26 +33,40 @@ public class HeadingController  {
     * @param kd d value
     */
     public HeadingController (double kp , double ki , double kd){
-        m_pidControllerStabalize = new PIDController(kp, ki, kd);
-        m_pidControllerStabalize.enableContinuousInput(-180, 180);
-        m_pidControllerStabalize.setIntegratorRange(-1*(9.9*Math.E+30), (9.9*Math.E+30));
+        m_pidController = new PIDController(kp, ki, kd);
+        m_pidController.enableContinuousInput(-180, 180);
+        m_pidController.setIntegratorRange(-1*(9.9*Math.E+30), (9.9*Math.E+30));
         m_useVisionLatch = new StickyBoolean();
     }
 
-    public HeadingController (double kpStabalize , double kiStabalize , double kdStabalize, double kpSnap , double kiSnap , double kdSnap, double kpVision , double kiVision , double kdVision){
-        m_pidControllerStabalize = new PIDController(kpStabalize, kiStabalize, kdStabalize);
-        m_pidControllerStabalize.enableContinuousInput(-180, 180);
-        m_pidControllerStabalize.setIntegratorRange(-1*(9.9*Math.E+30), (9.9*Math.E+30));
-        
-        m_pidControllerSnap = new PIDController(kpSnap, kiSnap, kdSnap);
-        m_pidControllerSnap.enableContinuousInput(-180, 180);
-        m_pidControllerSnap.setIntegratorRange(-1*(9.9*Math.E+30), (9.9*Math.E+30));
-        
-        m_pidControllerVision = new PIDController(kpVision, kiVision, kdVision);
-        m_pidControllerVision.enableContinuousInput(-180, 180);
-        m_pidControllerVision.setIntegratorRange(-1*(9.9*Math.E+30), (9.9*Math.E+30));
-        
+    /**
+    *  maintains the set direction by the joystick within a 3 degree error of the joystick
+    * @param kp p value
+    * @param ki i value
+    * @param kd d value
+    */
+    public HeadingController (PIDContainer pidSettings){
+        m_pidController = new PIDController(pidSettings.kP, pidSettings.kI, pidSettings.kD);
+        m_pidController.enableContinuousInput(-180, 180);
+        m_pidController.setIntegratorRange(-1*(9.9*Math.E+30), (9.9*Math.E+30));
         m_useVisionLatch = new StickyBoolean();
+    }
+
+        /**
+    *  maintains the set direction by the joystick within a 3 degree error of the joystick
+    * @param kp p value
+    * @param ki i value
+    * @param kd d value
+    */
+    public HeadingController (PIDContainer stabalize, PIDContainer snap, PIDContainer vision){
+        m_pidController = new PIDController(stabalize.kP, stabalize.kI, stabalize.kD);
+        m_pidController.enableContinuousInput(-180, 180);
+        m_pidController.setIntegratorRange(-1*(9.9*Math.E+30), (9.9*Math.E+30));
+        m_useVisionLatch = new StickyBoolean();
+
+        m_pidContainerStabalize = stabalize;
+        m_pidContainerSnap = snap;
+        m_pidContainerVision = vision;
     }
     
     /**
@@ -56,7 +75,7 @@ public class HeadingController  {
      * @return a setpoint to the pid controller
      */
     public double update(Rotation2d currentHeading){
-        return -clamp(m_pidControllerStabalize.calculate(currentHeading.getDegrees()),-Constants.Swerve.swerveConstants.maxAngularVelocity,Constants.Swerve.swerveConstants.maxAngularVelocity);
+        return -clamp(m_pidController.calculate(currentHeading.getDegrees()),-Constants.Swerve.swerveConstants.maxAngularVelocity,Constants.Swerve.swerveConstants.maxAngularVelocity);
     }
 
     /**
@@ -105,17 +124,19 @@ public class HeadingController  {
    * @param setpoint
    */
   public void setSetpoint(Rotation2d setpoint){
-      if(setpoint.getDegrees() == m_pidControllerStabalize.getSetpoint()) return;
-      m_pidControllerStabalize.reset();
-      m_pidControllerStabalize.setSetpoint(setpoint.getDegrees());
+      if(setpoint.getDegrees() == m_pidController.getSetpoint()) return;
+      m_pidController.reset();
+      m_pidController.setSetpoint(setpoint.getDegrees());
   }
 
-  public ChassisSpeeds calculateOmegaSpeed2(boolean shouldRun, boolean isSwerveReset, boolean useVision ,ChassisSpeeds chassisSpeeds, Rotation2d robotHeading, Rotation2d visionHeading){
+  public ChassisSpeeds calculateOmegaSpeed2(boolean shouldRun, boolean isSwerveReset, boolean useVision ,ChassisSpeeds chassisSpeeds, Rotation2d robotHeading, Rotation2d visionHeading, ChassisSpeeds robotRelativeVelocity){
     m_useVisionLatch.update(useVision);
     if(firstRun){
           setSetpoint(robotHeading);
           firstRun = false;
     }
+
+    smartChangePIDController(robotRelativeVelocity);
 
     if(isSwerveReset) mode = Mode.ResetHeading;
     else if(shouldRun) mode = Mode.TeleopWithoutHeadingController;
@@ -167,12 +188,15 @@ public class HeadingController  {
     double velocity = new Translation2d(robotRelativeVelocity.vxMetersPerSecond, robotRelativeVelocity.vyMetersPerSecond).getNorm();
     if(m_useVisionLatch.get()){
       // vision
+      setPIDSettings(m_pidContainerVision);
     }
     else if(velocity > Constants.Swerve.swerveConstants.maxSpeed * 0.3){
       // stabalize
+      setPIDSettings(m_pidContainerStabalize);
     }
     else{
       // snap
+      setPIDSettings(m_pidContainerSnap);
     }
   }
 
@@ -184,6 +208,13 @@ public class HeadingController  {
   */
   private double clamp(double value, double min, double max) {
   return Math.max(min, Math.min(max, value));
+  }
+
+  private void setPIDSettings(PIDContainer pidSettings){
+    if(!m_currentPIDContainer.headingType.equals(pidSettings.headingType)){
+      m_pidController.setPID(pidSettings.kP, pidSettings.kI, pidSettings.kD);
+      m_currentPIDContainer.headingType = pidSettings.headingType;
+    }
   }
 
   public enum Mode {
