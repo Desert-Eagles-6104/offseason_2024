@@ -19,6 +19,6 @@ public class Amp extends SequentialCommandGroup {
   /** Creates a new Amp. */
   // 103
   public Amp(IntakeSubsystem intake, ArmSubsystem arm, ShooterSubsystem shooter) {
-    addCommands(new InstantCommand(() -> arm.ControlSoftLimit(false)),new SmartPreset(shooter, arm, 80, 700, false),new WaitCommand(0), new IntakeForTime(intake, 0.6, 0.3).alongWith(new SmartPreset(shooter, arm, 98, 700, false)), new WaitCommand(0.5), new SmartPreset(shooter, arm, 20, 0), new WaitCommand(0.1) ,new InstantCommand(() -> arm.ControlSoftLimit(true)));
+    addCommands(new InstantCommand(() -> arm.ControlSoftLimit(false)),new SmartPreset(shooter, arm, 75, 1100, false),new WaitCommand(0), new IntakeForTime(intake, 0.6, 0.3).alongWith(new SmartPreset(shooter, arm, 100, 1100, false)), new WaitCommand(0.5), new SmartPreset(shooter, arm, 20, 0), new WaitCommand(0.1) ,new InstantCommand(() -> arm.ControlSoftLimit(true)));
   }
 }

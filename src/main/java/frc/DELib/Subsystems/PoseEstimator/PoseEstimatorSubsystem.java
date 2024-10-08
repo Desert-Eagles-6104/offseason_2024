@@ -8,6 +8,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -77,5 +78,13 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
   public static Pose2d getInterpolatedPose(double latencySeconds){
     double timestamp = Timer.getFPGATimestamp() - latencySeconds;
     return m_pastPoses.getInterpolated(new InterpolatingDouble(timestamp));
+  }
+
+  public double cala(){
+    return getRobotPose().getTranslation().getDistance(new Translation2d(0.0, 5.55));
+  }
+
+  public Rotation2d getAngleCalc(){
+    return Rotation2d.fromRadians(Math.tan((getRobotPose().getY() - 5.55)/(getRobotPose().getX())));
   }
 }

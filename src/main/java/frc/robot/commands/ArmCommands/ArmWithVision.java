@@ -34,10 +34,10 @@ public class ArmWithVision extends Command {
 
   @Override
   public void execute() {
-    if(m_visionSubsystem.getTv()){
-      if(Math.abs(Lastsetpoint - m_visionSubsystem.getTy()) > threshold){
+    if(VisionSubsystem.getTv()){
+      if(Math.abs(Lastsetpoint - VisionSubsystem.getTy()) > threshold){
       m_arm.setUsingInterpulation(m_filterTy.calculate(Lastsetpoint));
-      Lastsetpoint = m_visionSubsystem.getTy();
+      Lastsetpoint = VisionSubsystem.getTy();
       }
     }
   }

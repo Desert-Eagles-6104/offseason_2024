@@ -39,10 +39,10 @@ public class SmartPreset extends Command {
   public void initialize() {
     m_arm.setMotionMagicPosition(m_angle);
     if(m_spin){
-      m_shooter.setMotionMagicVelocityWithRatio(m_velocity);
+      m_shooter.setVelocityWithRatio(m_velocity);
     }
     else{
-      m_shooter.setMotionMagicVelocity(m_velocity);
+      m_shooter.setVelocity(m_velocity);
     }
   }
   // Called every time the scheduler runs while the command is scheduled.
