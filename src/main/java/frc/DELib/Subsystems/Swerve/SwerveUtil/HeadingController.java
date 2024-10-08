@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.DELib.BooleanUtil.StickyBoolean;
 import frc.DELib.Motors.PIDContainer;
 import frc.robot.Constants;
@@ -15,6 +16,7 @@ public class HeadingController  {
     private PIDContainer m_pidContainerStabalize;
     private PIDContainer m_pidContainerSnap;
     private PIDContainer m_pidContainerVision;
+    private PIDContainer m_pidContainerVisionLowError;
 
     private PIDContainer m_currentPIDContainer = new PIDContainer(0, 0, 0, "");
 
@@ -58,7 +60,7 @@ public class HeadingController  {
     * @param ki i value
     * @param kd d value
     */
-    public HeadingController (PIDContainer stabalize, PIDContainer snap, PIDContainer vision){
+    public HeadingController (PIDContainer stabalize, PIDContainer snap, PIDContainer vision, PIDContainer visionLowError){
         m_pidController = new PIDController(stabalize.kP, stabalize.kI, stabalize.kD);
         m_pidController.enableContinuousInput(-180, 180);
         m_pidController.setIntegratorRange(-1*(9.9*Math.E+30), (9.9*Math.E+30));
@@ -67,6 +69,7 @@ public class HeadingController  {
         m_pidContainerStabalize = stabalize;
         m_pidContainerSnap = snap;
         m_pidContainerVision = vision;
+        m_pidContainerVisionLowError = visionLowError;
     }
     
     /**
@@ -139,10 +142,13 @@ public class HeadingController  {
     smartChangePIDController(robotRelativeVelocity);
 
     if(isSwerveReset) mode = Mode.ResetHeading;
-    else if(shouldRun) mode = Mode.TeleopWithoutHeadingController;
-    else if(m_useVisionLatch.get()) mode = Mode.TeleopWithVision;
-    else mode = Mode.TeleopWithHeadingController;
+    else if(m_useVisionLatch.get() && shouldRun) mode = Mode.TeleopWithVision;
+    else if(shouldRun) mode = Mode.TeleopWithHeadingController;
+    else mode = Mode.TeleopWithoutHeadingController;
     
+    SmartDashboard.putString("HeadingMode", mode.toString());
+    SmartDashboard.putString("currentHeadingType", m_currentPIDContainer.headingType);
+
     switch (mode) {
       case TeleopWithHeadingController: 
         //BASE        
@@ -188,7 +194,12 @@ public class HeadingController  {
     double velocity = new Translation2d(robotRelativeVelocity.vxMetersPerSecond, robotRelativeVelocity.vyMetersPerSecond).getNorm();
     if(m_useVisionLatch.get()){
       // vision
-      setPIDSettings(m_pidContainerVision);
+      if(m_pidController.getPositionError() < 1){
+        setPIDSettings(m_pidContainerVisionLowError);
+      }
+      else{
+        setPIDSettings(m_pidContainerVision);
+      }
     }
     else if(velocity > Constants.Swerve.swerveConstants.maxSpeed * 0.3){
       // stabalize

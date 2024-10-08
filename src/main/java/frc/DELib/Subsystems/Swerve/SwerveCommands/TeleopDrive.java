@@ -42,7 +42,7 @@ public class TeleopDrive extends Command {
     m_swerve = swerve;
     m_VisionSubsystem = visionSubsystem;
     m_joystick = joystick;
-    m_headingController = new HeadingController(new PIDContainer(0.06, 0, 0, "stablize"), new PIDContainer(0.12, 0, 0, "snap"), new PIDContainer(0.3, 0, 0, "vision"));
+    m_headingController = new HeadingController(new PIDContainer(0.06, 0, 0, "stablize"), new PIDContainer(0.09, 0, 0, "snap"), new PIDContainer(0.2, 0.0, 0.0, "vision"), new PIDContainer(0.2, 0.00001, 0.0, "visionLowError"));
     m_lowPower = lowPower;
     m_fieldRelative = fieldRelative;
     m_shouldResetYaw = resetYaw;
@@ -74,8 +74,7 @@ public class TeleopDrive extends Command {
         m_useVisionLatch.reset();
       }
       setVisionTarget(m_VisionSubsystem.getTv(), m_VisionSubsystem.getTx(), m_VisionSubsystem.getTotalLatency());
-      chassisSpeeds =  m_headingController.calculateOmegaSpeed(!Robot.s_isAuto ,shouldResetAngle(m_shouldResetYaw), m_useVision.getAsBoolean(), chassisSpeeds, m_swerve.getHeading(), m_swerve.getInterpolatedPose(m_VisionSubsystem.getTotalLatency()).getRotation());
-      // chassisSpeeds = m_headingController.calculateOmegaSpeed2(!Robot.s_isAuto ,shouldResetAngle(m_shouldResetYaw), m_useVision.getAsBoolean(), chassisSpeeds, m_swerve.getHeading(), m_swerve.getInterpolatedPose(m_VisionSubsystem.getTotalLatency()).getRotation(), m_swerve.getRobotRelativeVelocity()); //TODO: uncommet on robot
+      chassisSpeeds = m_headingController.calculateOmegaSpeed2(!Robot.s_isAuto ,shouldResetAngle(m_shouldResetYaw), m_useVision.getAsBoolean(), chassisSpeeds, m_swerve.getHeading(), m_swerve.getInterpolatedPose(m_VisionSubsystem.getTotalLatency()).getRotation(), m_swerve.getRobotRelativeVelocity()); //TODO: uncommet on robot
       //heading controller
       m_swerve.drive(chassisSpeeds, true, m_fieldRelativeToggle.update(!m_fieldRelative.getAsBoolean()), m_centerOfRotation);
   }
