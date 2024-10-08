@@ -4,12 +4,15 @@
 
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.DELib.Subsystems.PoseEstimator.PoseEstimatorSubsystem;
 import frc.DELib.Subsystems.Swerve.SwerveSubsystem;
 import frc.DELib.Subsystems.Swerve.SwerveCommands.ResetSwerveModules;
 import frc.DELib.Subsystems.Swerve.SwerveCommands.TeleopDrive;
@@ -22,10 +25,12 @@ import frc.robot.commands.ArmCommands.ArmHoming;
 import frc.robot.commands.ArmCommands.ArmWithVision;
 import frc.robot.commands.IntagrationCommands.Amp;
 import frc.robot.commands.IntagrationCommands.Preset;
+import frc.robot.commands.IntakeCommnands.IntakeEatUntilHasNote;
 import frc.robot.commands.IntakeCommnands.IntakeForTime;
+import frc.robot.commands.IntakeCommnands.IntakeGlubGlub;
+import frc.robot.commands.IntakeCommnands.IntakeSetPrecent;
 import frc.robot.commands.IntakeCommnands.SimpleIntake;
 import frc.robot.commands.ShooterCommands.ShooterSetIfHasNote;
-import frc.robot.commands.ShooterCommands.ShooterSetVelocity;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -48,7 +53,10 @@ public class RobotContainer {
   private ArmSubsystem m_arm;
   private ShooterSubsystem m_shooter;
   private VisionSubsystem m_vision;
+  private PoseEstimatorSubsystem m_poseEstimator;
   private SwerveAutoBuilder swerveAutoBuilder;
+  public static BooleanSupplier m_isLocalizetion = ()-> false;
+  private Trigger m_hasNote;
 
   public RobotContainer() {
     m_swerve = SwerveSubsystem.createInstance(Constants.Swerve.swerveConstants);
@@ -57,6 +65,8 @@ public class RobotContainer {
     m_shooter = new ShooterSubsystem(Constants.Shooter.configuration);
     m_vision = new VisionSubsystem(new CameraSettings(-0.30821, 0, 0.10689, 0, 15.13, 180.0, true), new CameraSettings(0, 0, 0, 0, 0, 0, false));
     swerveAutoBuilder = new SwerveAutoBuilder(m_swerve);
+    m_poseEstimator = new PoseEstimatorSubsystem(m_swerve);
+    m_isLocalizetion = driverStationController.LeftSwitch();
     SwerveBinding();
     armBinding();
     shooterBinding();
@@ -84,7 +94,7 @@ public class RobotContainer {
   public void SwerveBinding(){
     SmartDashboard.putData("calibrate Swerve Modules", new ResetSwerveModules(m_swerve).ignoringDisable(true));
     SmartDashboard.putData("reset Odometry", new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d())).ignoringDisable(true));
-    m_swerve.setDefaultCommand(new TeleopDrive(m_swerve, m_vision, drivercontroller, drivercontroller.R2(), drivercontroller.create(), drivercontroller.options(), drivercontroller.R1()));
+    m_swerve.setDefaultCommand(new TeleopDrive(m_swerve, drivercontroller, drivercontroller.R2(), drivercontroller.create(), drivercontroller.options(), drivercontroller.R1()));
   }
 
   public void armBinding(){
@@ -99,7 +109,8 @@ public class RobotContainer {
   }
 
   public void intakeBinding(){
-    drivercontroller.L2().whileTrue(new SimpleIntake(m_intakeSub));
+    drivercontroller.L2().onTrue(new IntakeEatUntilHasNote(m_intakeSub, 0.3).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    drivercontroller.L2().onFalse(new IntakeForTime(m_intakeSub,0,0).andThen((new IntakeGlubGlub(m_intakeSub))));
     drivercontroller.R2().whileTrue(new IntakeForTime(m_intakeSub, -0.3, 2.0));
     drivercontroller.R1().debounce(0.4).onTrue(new IntakeForTime(m_intakeSub, 0.3, 3));
   }

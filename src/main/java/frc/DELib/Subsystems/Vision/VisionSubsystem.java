@@ -4,23 +4,21 @@
 
 package frc.DELib.Subsystems.Vision;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.DELib.Subsystems.Vision.VisionUtil.CameraSettings;
 import frc.DELib.Subsystems.Vision.VisionUtil.LimelightHelpers;
-import frc.robot.Constants;
 
 public class VisionSubsystem extends SubsystemBase {
   /** Creates a new VisionSubsystem. */
   
-  private CameraSettings m_aprilTagCameraSettings = null;
-  private double m_tx = 0; //Horizontal Offset From Crosshair To Target (-27 degrees to 27 degrees)
-  private double m_ty = 0; //Vertical Offset From Crosshair To Target (-20.5 degrees to 20.5 degrees)
+  private static CameraSettings m_aprilTagCameraSettings = null;
+  private static double m_tx = 0; //Horizontal Offset From Crosshair To Target (-27 degrees to 27 degrees)
+  private static double m_ty = 0; //Vertical Offset From Crosshair To Target (-20.5 degrees to 20.5 degrees)
   private double m_lastTy = 0;
   private double m_lastTx = 0;
-  private boolean m_tv = false; //Whether the limelight has any valid targets (0 or 1)
-  private Pose2d m_estimatedRobotPose = new Pose2d(); 
+  private static boolean m_tv = false; //Whether the limelight has any valid targets (0 or 1)
+  private static LimelightHelpers.PoseEstimate m_estimatedRobotPose = new LimelightHelpers.PoseEstimate(); 
   private double m_currentID = 0;
   
   private double cropXMin = -1;
@@ -34,21 +32,12 @@ public class VisionSubsystem extends SubsystemBase {
   int regularPipeline = 0;
   int pipelineX2 = 1;
 
-  private CameraSettings m_gamePieceCameraSettings = null;
-  private double m_gamePieceTX;
-  private double m_gamePieceTY;
-
   //*create a new VisionSubsystem constructor to apply the subsystem's properties */
   public VisionSubsystem(CameraSettings aprilTagCameraSettings, CameraSettings gamePieceCameraSettings) {
     m_aprilTagCameraSettings = aprilTagCameraSettings;
     if(aprilTagCameraSettings != null){
       LimelightHelpers.setCameraPose_RobotSpace(CameraType.AprilTagCamera.getCameraName(), aprilTagCameraSettings.m_forward, aprilTagCameraSettings.m_Side, aprilTagCameraSettings.m_up, aprilTagCameraSettings.m_roll, aprilTagCameraSettings.m_pitch, aprilTagCameraSettings.m_yaw);
     }
-    
-    // m_gamePieceCameraSettings = gamePieceCameraSettings;
-    // if(gamePieceCameraSettings != null){
-    //   LimelightHelpers.setCameraPose_RobotSpace(CameraType.GamePieceCamera.getCameraName(), gamePieceCameraSettings.m_forward, gamePieceCameraSettings.m_Side, gamePieceCameraSettings.m_up, gamePieceCameraSettings.m_roll, gamePieceCameraSettings.m_pitch, gamePieceCameraSettings.m_yaw);
-    // }
   }
 
   @Override
@@ -58,7 +47,7 @@ public class VisionSubsystem extends SubsystemBase {
       m_tx = LimelightHelpers.getTX(CameraType.AprilTagCamera.getCameraName(), m_lastTx);
       m_ty = LimelightHelpers.getTY(CameraType.AprilTagCamera.getCameraName(), m_lastTy);
       m_currentID = LimelightHelpers.getFiducialID(CameraType.AprilTagCamera.getCameraName());
-      m_estimatedRobotPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(CameraType.AprilTagCamera.getCameraName()).pose;
+      m_estimatedRobotPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(CameraType.AprilTagCamera.getCameraName());
       m_lastTy = m_ty;
       m_lastTx = m_tx;
     }
@@ -69,40 +58,22 @@ public class VisionSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("TX", getTx());
     SmartDashboard.putNumber("TY", getTy());
     SmartDashboard.putBoolean("TV", getTv());
-
-    SmartDashboard.putString("3D", m_estimatedRobotPose.toString());
-    SmartDashboard.putNumber("Dis", getDistance());
+    SmartDashboard.putString("3D", getEstimatedRobotPose().pose.toString());
   }
 
-  public double getDistance(){
-    if(getTv() ){
-      double highet = 1.368552 + 0.08255 - 0.10689;
-      return highet / Math.tan(getTy());
-    }
-    return 0;
-  }
-
-  public Pose2d getEstimatedRobotPose(){
+  public static LimelightHelpers.PoseEstimate getEstimatedRobotPose(){
     return m_estimatedRobotPose;
   }
   
-  public double getTx(){
+  public static double getTx(){
     return m_tx;
   }
-
-  public double getGamePieceTx(){
-    return m_gamePieceTX;
-  }
   
-  public double getTy(){
+  public static double getTy(){
     return m_ty + m_aprilTagCameraSettings.m_pitch;
   }
 
-  public double getGamePieceTy(){
-    return m_gamePieceTY;
-  }
-
-  public boolean getTv(){
+  public static boolean getTv(){
     return m_tv;
   }
 
@@ -113,7 +84,7 @@ public class VisionSubsystem extends SubsystemBase {
   /**   
    * @return Total vision latency (photons -> robot) in seconds
    */
-  public double getTotalLatency() {
+  public static double getTotalLatency() {
     double miliToSec = 0.001;
     return LimelightHelpers.getLatency_Pipeline(CameraType.AprilTagCamera.getCameraName()) + LimelightHelpers.getLatency_Capture(CameraType.AprilTagCamera.getCameraName()) * miliToSec;
   }
@@ -153,22 +124,6 @@ public class VisionSubsystem extends SubsystemBase {
     }
     crop( cropXMin , cropXMax , cropYMin , cropYMax );
   }
-
-  public double getDstX(double targetHeight){
-    double ty = m_ty + (m_aprilTagCameraSettings.m_pitch *2);
-    return  (targetHeight-Constants.Vision.cameraHeight)/Math.tan(Math.toRadians(ty));
-  }
-
-  public double getDstY( double targetHeight){
-    double tx = m_tx;
-    double ty = m_ty + m_aprilTagCameraSettings.m_pitch;
-    double distanceX = (targetHeight-Constants.Vision.cameraHeight)/Math.tan(Math.toRadians(ty));
-    return distanceX/Math.tan(Math.toRadians(tx));
-  }
- 
-  //  public Translation2d getDistance(double targetHeight){
-  //   return new Translation2d(getDstX(targetHeight),getDstY(targetHeight));
-  // }
 
   public void changePiplne(int pipeline){
     LimelightHelpers.setPipelineIndex(CameraType.AprilTagCamera.getCameraName(), pipeline);

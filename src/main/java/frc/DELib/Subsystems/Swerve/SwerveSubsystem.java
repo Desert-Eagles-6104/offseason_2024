@@ -9,7 +9,6 @@ import static edu.wpi.first.units.Units.Volts;
 import java.io.IOException;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -30,9 +29,6 @@ import frc.DELib.CSV.CSVWriter;
 import frc.DELib.Intepulation.InterpolatingDouble;
 import frc.DELib.Intepulation.InterpolatingTreeMap;
 import frc.DELib.Sensors.Pigeon;
-import frc.DELib.Subsystems.PoseEstimator.PoseEstimatorUtil.FOMHelper;
-import frc.DELib.Subsystems.Vision.VisionUtil.LimelightHelpers;
-import frc.robot.Constants;
 
 public class SwerveSubsystem extends SubsystemBase {
   private static SwerveSubsystem swerve = null;
@@ -50,7 +46,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
   private SwerveDriveKinematics m_kinematics;
   private SwerveDriveOdometry m_odometry;
-  private SwerveDrivePoseEstimator m_poseEstimator;
   private InterpolatingTreeMap<InterpolatingDouble, Pose2d> m_pastPoses;
 
   private Pigeon m_gyro;
@@ -72,7 +67,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
     m_kinematics = new SwerveDriveKinematics(swerveConstants.frontLeftPos, swerveConstants.frontRightPos, swerveConstants.backLeftPos, swerveConstants.backRightPos);
     m_odometry = new SwerveDriveOdometry(m_kinematics, Rotation2d.fromDegrees(0), getModulesPositions());
-    m_poseEstimator = new SwerveDrivePoseEstimator(m_kinematics, Rotation2d.fromDegrees(0), getModulesPositions(), new Pose2d());
 
     try {
       m_writer = new CSVWriter(swerveConstants.filepath);
@@ -114,6 +108,10 @@ public class SwerveSubsystem extends SubsystemBase {
     return m_odometry.getPoseMeters();
   }
 
+  public SwerveDriveKinematics getKinematics(){
+    return m_kinematics;
+  }
+
   public Pose2d getInterpolatedPose(double latencySeconds){
     double timestamp = Timer.getFPGATimestamp() - latencySeconds;
     return m_pastPoses.getInterpolated(new InterpolatingDouble(timestamp));
@@ -147,14 +145,9 @@ public class SwerveSubsystem extends SubsystemBase {
       m.refreshAllSignals(); 
     }
     m_gyro.getYawStatusSignal().refresh();
-
-    m_poseEstimator.update(m_gyro.getYaw(), getModulesPositions());
-    updateVisionOdometry();
-    SmartDashboard.putString("EstimatedPose", m_poseEstimator.getEstimatedPosition().toString());
     Pose2d currentPose = m_odometry.update(m_gyro.getYaw(), getModulesPositions());
     m_pastPoses.put(new InterpolatingDouble(Timer.getFPGATimestamp()), currentPose);
     SmartDashboard.putNumber("gyroYaw", m_gyro.getYaw().getDegrees());
-    SmartDashboard.putString("pose", getPose().toString());
   }
 
   public void zeroHeading(){
@@ -189,18 +182,6 @@ public class SwerveSubsystem extends SubsystemBase {
     double[][] angleOffsets = m_reader.readAsDouble(1);
     for(int i = 0; i < angleOffsets.length; i++){
       m_swerveModules[i].setAngleOffset(Rotation2d.fromRotations(angleOffsets[i][0]));
-    }
-  }
-
-  public void updateVisionOdometry(){
-    boolean rejectUpdate = false;
-    LimelightHelpers.SetRobotOrientation("limelight", getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-    LimelightHelpers.PoseEstimate limelightMeserment = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-    if(Math.abs(m_gyro.getRateStatusSignal().getValueAsDouble()) > 360){
-      rejectUpdate = true;
-    }
-    if(!rejectUpdate && LimelightHelpers.getTV("limelight")){
-      m_poseEstimator.addVisionMeasurement(limelightMeserment.pose, limelightMeserment.timestampSeconds, VecBuilder.fill(0.7, 0.7, 9999999));
     }
   }
 

@@ -5,7 +5,6 @@
 package frc.DELib.Subsystems.Swerve.SwerveCommands;
 
 import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -26,7 +25,6 @@ import frc.robot.Robot;
 
 public class TeleopDrive extends Command {
  private  SwerveSubsystem m_swerve;
- private VisionSubsystem m_VisionSubsystem;
  private CommandPS5Controller m_joystick;
  private HeadingController m_headingController;
  private BooleanSupplier m_lowPower;
@@ -38,9 +36,8 @@ public class TeleopDrive extends Command {
  private Translation2d m_centerOfRotation;
 
 
-  public TeleopDrive(SwerveSubsystem swerve, VisionSubsystem visionSubsystem ,CommandPS5Controller joystick, BooleanSupplier lowPower, BooleanSupplier fieldRelative, BooleanSupplier resetYaw, BooleanSupplier useVision) {
+  public TeleopDrive(SwerveSubsystem swerve ,CommandPS5Controller joystick, BooleanSupplier lowPower, BooleanSupplier fieldRelative, BooleanSupplier resetYaw, BooleanSupplier useVision) {
     m_swerve = swerve;
-    m_VisionSubsystem = visionSubsystem;
     m_joystick = joystick;
     m_headingController = new HeadingController(new PIDContainer(0.06, 0, 0, "stablize"), new PIDContainer(0.09, 0, 0, "snap"), new PIDContainer(0.2, 0.0, 0.0, "vision"), new PIDContainer(0.2, 0.00001, 0.0, "visionLowError"));
     m_lowPower = lowPower;
@@ -73,8 +70,8 @@ public class TeleopDrive extends Command {
       if (Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.05){
         m_useVisionLatch.reset();
       }
-      setVisionTarget(m_VisionSubsystem.getTv(), m_VisionSubsystem.getTx(), m_VisionSubsystem.getTotalLatency());
-      chassisSpeeds = m_headingController.calculateOmegaSpeed2(!Robot.s_isAuto ,shouldResetAngle(m_shouldResetYaw), m_useVision.getAsBoolean(), chassisSpeeds, m_swerve.getHeading(), m_swerve.getInterpolatedPose(m_VisionSubsystem.getTotalLatency()).getRotation(), m_swerve.getRobotRelativeVelocity()); //TODO: uncommet on robot
+      setVisionTarget(VisionSubsystem.getTv(), VisionSubsystem.getTx(), VisionSubsystem.getTotalLatency());
+      chassisSpeeds = m_headingController.calculateOmegaSpeed2(!Robot.s_isAuto ,shouldResetAngle(m_shouldResetYaw), m_useVision.getAsBoolean(), chassisSpeeds, m_swerve.getHeading(), m_swerve.getInterpolatedPose(VisionSubsystem.getTotalLatency()).getRotation(), m_swerve.getRobotRelativeVelocity()); //TODO: uncommet on robot
       //heading controller
       m_swerve.drive(chassisSpeeds, true, m_fieldRelativeToggle.update(!m_fieldRelative.getAsBoolean()), m_centerOfRotation);
   }
@@ -105,7 +102,7 @@ public class TeleopDrive extends Command {
   private void setVisionTarget(boolean hasTarget, double errorFromTarget, double latency){
     if(m_useVisionLatch.get()){
       double errorDegrees = hasTarget ? -errorFromTarget : 0;
-      Rotation2d target = m_swerve.getInterpolatedPose(m_VisionSubsystem.getTotalLatency()).getRotation().plus(Rotation2d.fromDegrees(errorDegrees));
+      Rotation2d target = m_swerve.getInterpolatedPose(VisionSubsystem.getTotalLatency()).getRotation().plus(Rotation2d.fromDegrees(errorDegrees));
       SmartDashboard.putNumber("setpoint", target.getDegrees());
       m_headingController.setSetpoint(target);
     }
