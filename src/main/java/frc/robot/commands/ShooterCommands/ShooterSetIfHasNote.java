@@ -25,23 +25,28 @@ public class ShooterSetIfHasNote extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_shooter.setMotionMagicVelocityWithRatio(0.0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if(m_intake.hasGamePiece()){
+      m_shooter.setVelocityWithRatio(m_velocity);
+    }
+    else{
+      m_shooter.setVelocityWithRatio(0.0);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_shooter.setMotionMagicVelocityWithRatio(m_velocity);
+    m_shooter.disableMotors();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_intake.hasGamePiece();
+    return false;
   }
 }

@@ -65,6 +65,8 @@ public class ShooterSubsystem extends SubsystemBase{
   private double leftSetpoint = 0;
   private double rightSetpoint = 0;
 
+  private PIDContainer left = new PIDContainer(0.0, 0.068, 0.0, 0.0, 0.0, 0.0, 0.0);  
+
   public ShooterSubsystem(VelocitySubsystemConfiguration configuration) {
     m_configuration =  configuration;
 

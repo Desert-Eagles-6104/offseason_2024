@@ -201,12 +201,12 @@ public final class Constants {
   
       sensorToMechanismRatio = 0.5;
       
-      pidContainer = new PIDContainer(0.28, 0.075, 0.05, 0.0, 0.15, 0.0, 0);
+      pidContainer = new PIDContainer(0.0, 0.063, 0.0, 0.0, 0.02, 0.0, 0.0);
   
       //#region motion magic values
-      motionMagicCruiseVelocity = 3000;
+      motionMagicCruiseVelocity = 0.0;
       
-      motionMagicAcceleration = 4000;
+      motionMagicAcceleration = 0.0;
   
       motionMagicJerk = 0.0;
       //#endregion motion magic values

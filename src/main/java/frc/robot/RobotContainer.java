@@ -56,7 +56,7 @@ public class RobotContainer {
   private PoseEstimatorSubsystem m_poseEstimator;
   private SwerveAutoBuilder swerveAutoBuilder;
   public static BooleanSupplier m_isLocalizetion = ()-> false;
-  private Trigger m_hasNote;
+  private Trigger m_canShoot;
 
   public RobotContainer() {
     m_swerve = SwerveSubsystem.createInstance(Constants.Swerve.swerveConstants);
@@ -67,6 +67,7 @@ public class RobotContainer {
     swerveAutoBuilder = new SwerveAutoBuilder(m_swerve);
     m_poseEstimator = new PoseEstimatorSubsystem(m_swerve);
     m_isLocalizetion = driverStationController.LeftSwitch();
+    m_canShoot = new Trigger(() ->(m_shooter.isAtSetpoint() && m_arm.isAtSetpoint() && VisionSubsystem.getTv()));
     SwerveBinding();
     armBinding();
     shooterBinding();
@@ -109,10 +110,10 @@ public class RobotContainer {
   }
 
   public void intakeBinding(){
-    drivercontroller.L2().onTrue(new IntakeEatUntilHasNote(m_intakeSub, 0.3).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    drivercontroller.L2().onTrue(new IntakeEatUntilHasNote(m_intakeSub, 0.3).andThen(new IntakeGlubGlub(m_intakeSub)));
     drivercontroller.L2().onFalse(new IntakeForTime(m_intakeSub,0,0).andThen((new IntakeGlubGlub(m_intakeSub))));
     drivercontroller.R2().whileTrue(new IntakeForTime(m_intakeSub, -0.3, 2.0));
-    drivercontroller.R1().debounce(0.4).onTrue(new IntakeForTime(m_intakeSub, 0.3, 3));
+    drivercontroller.R1().debounce(0.4).and(m_canShoot).onTrue(new IntakeForTime(m_intakeSub, 0.3, 1.0));
   }
 
   public void presets(){

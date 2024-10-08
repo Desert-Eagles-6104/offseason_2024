@@ -19,7 +19,7 @@ public class ShooterSetVelocitySmart extends Command {
 
   @Override
   public void initialize() {
-    m_shooter.setMotionMagicVelocityWithRatio(m_velocity);
+    m_shooter.setVelocityWithRatio(m_velocity);
   }
 
   @Override
