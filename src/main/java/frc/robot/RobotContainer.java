@@ -57,6 +57,7 @@ public class RobotContainer {
   private PoseEstimatorSubsystem m_poseEstimator;
   private SwerveAutoBuilder swerveAutoBuilder;
   public static BooleanSupplier m_isLocalizetion = ()-> false;
+  public static BooleanSupplier m_isLocalizetionOmega = () -> false;
   private Trigger m_canShoot;
 
   public RobotContainer() {
@@ -68,6 +69,7 @@ public class RobotContainer {
     swerveAutoBuilder = new SwerveAutoBuilder(m_swerve);
     m_poseEstimator = new PoseEstimatorSubsystem(m_swerve);
     m_isLocalizetion = driverStationController.LeftSwitch();
+    m_isLocalizetionOmega = driverStationController.LeftMidSwitch();
     m_canShoot = new Trigger(() ->(m_shooter.isAtSetpoint() && m_arm.isAtSetpoint() && VisionSubsystem.getTv()));
     SmartDashboard.putData("reset Odometry from limelight", new InstantCommand(() -> PoseEstimatorSubsystem.resetPositionFromCamera()));
     SwerveBinding();
@@ -105,7 +107,7 @@ public class RobotContainer {
     SmartDashboard.putData("reset arm", new InstantCommand(() -> m_arm.resetPosition(9.57)).ignoringDisable(true));
     SmartDashboard.putData("ArmDisableSoftLimit", new InstantCommand(() -> m_arm.ControlSoftLimit(false)).ignoringDisable(true));
     drivercontroller.R1().onTrue(new ArmWithVision(m_arm, m_vision).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    drivercontroller.povUp().onTrue(new ArmAngleToDashBoard(m_arm));
+    drivercontroller.povUp().onTrue(new ArmAngleToDashBoard(m_arm, m_shooter));
   }
 
   public void shooterBinding(){

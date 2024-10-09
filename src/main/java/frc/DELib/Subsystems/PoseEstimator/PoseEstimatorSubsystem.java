@@ -11,6 +11,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -31,6 +32,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
   private static Pose2d m_estimatedRobotPose = new Pose2d();
   private static LimelightHelpers.PoseEstimate limelightMesermentMT2;
   private static InterpolatingTreeMap<InterpolatingDouble, Pose2d> m_pastPoses;
+  private static double speakerHighetFromRobot = 2.049-0.136;
+  private static double odometryToArmDistance = 0.13784;
   Field2d field2d;
   
   
@@ -53,6 +56,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("angleSpeaker", getAngleToBlueSpeaker().getDegrees());
     field2d.setRobotPose(getRobotPose());
     SmartDashboard.putData("field2d ",field2d);
+    SmartDashboard.putNumber("anglearmgoodhoo", getArmAngleToBlueSpeaker());
   }
 
   public static Pose2d getRobotPose(){
@@ -63,7 +67,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
     boolean rejectUpdate = false;
     LimelightHelpers.SetRobotOrientation("limelight", m_swerve.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     limelightMesermentMT2 = VisionSubsystem.getEstimatedRobotPose();
-    if(Math.abs(m_gyro.getRateStatusSignal().getValueAsDouble()) > 360){
+    if(Math.abs(m_gyro.getRateStatusSignal().getValueAsDouble()) > 360 && getRobotPose().getX() < 5){
       rejectUpdate = true;
     }
     if(!rejectUpdate && VisionSubsystem.getTv()){
@@ -97,4 +101,19 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
   public static Rotation2d getAngleToBlueSpeaker(){
     return Rotation2d.fromRadians(-Math.atan((5.55 - getRobotPose().getY())/(0 -getRobotPose().getX())));
   }
+
+  public static double getArmAngleToBlueSpeaker(){
+    double distanceToSpeaker = getDistanceToBlueSpeaker()+odometryToArmDistance + 0.06;
+    return clamp(Math.toDegrees(Math.atan((speakerHighetFromRobot)/(distanceToSpeaker))), 10, 100);
+  } 
+
+   /**
+  @param value clamped value
+  @param min min value
+  @param max max value
+  @return sets a range for the value if its between the max and min points
+  */
+  private static double clamp(double value, double min, double max) {
+    return Math.max(min, Math.min(max, value));
+    }
 }

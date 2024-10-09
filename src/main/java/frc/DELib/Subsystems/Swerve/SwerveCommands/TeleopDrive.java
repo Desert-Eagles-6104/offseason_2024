@@ -75,7 +75,7 @@ public class TeleopDrive extends Command {
       }
       
 
-      if(RobotContainer.m_isLocalizetion.getAsBoolean()){
+      if(RobotContainer.m_isLocalizetionOmega.getAsBoolean()){
         //localization
         setVisionTargetlocalization(true, PoseEstimatorSubsystem.getAngleToBlueSpeaker().getDegrees(), VisionSubsystem.getTotalLatency());
         chassisSpeeds = m_headingController.calculateOmegaSpeed2(!Robot.s_isAuto ,shouldResetAngle(m_shouldResetYaw), m_useVision.getAsBoolean(), chassisSpeeds, m_swerve.getHeading(), PoseEstimatorSubsystem.getRobotPose().getRotation(), m_swerve.getRobotRelativeVelocity()); //TODO: uncommet on robot
