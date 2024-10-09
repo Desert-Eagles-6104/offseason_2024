@@ -24,6 +24,7 @@ import frc.DELib.Subsystems.Swerve.SwerveUtil.SwerveDriveHelper.DriveMode;
 import frc.DELib.Subsystems.Vision.VisionSubsystem;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 
 public class TeleopDrive extends Command {
  private  SwerveSubsystem m_swerve;
@@ -73,15 +74,18 @@ public class TeleopDrive extends Command {
         m_useVisionLatch.reset();
       }
       
-      //TODO: change by a boutton
-      //limelight
-      //setVisionTarget(VisionSubsystem.getTv(), VisionSubsystem.getTx(), VisionSubsystem.getTotalLatency());
 
-      //localization
-      setVisionTargetlocalization(true, PoseEstimatorSubsystem.getAngleToBlueSpeaker().getDegrees(), VisionSubsystem.getTotalLatency());
+      if(RobotContainer.m_isLocalizetion.getAsBoolean()){
+        //localization
+        setVisionTargetlocalization(true, PoseEstimatorSubsystem.getAngleToBlueSpeaker().getDegrees(), VisionSubsystem.getTotalLatency());
+        chassisSpeeds = m_headingController.calculateOmegaSpeed2(!Robot.s_isAuto ,shouldResetAngle(m_shouldResetYaw), m_useVision.getAsBoolean(), chassisSpeeds, m_swerve.getHeading(), PoseEstimatorSubsystem.getRobotPose().getRotation(), m_swerve.getRobotRelativeVelocity()); //TODO: uncommet on robot
+      }
+      else {
+        //limelight
+        setVisionTarget(VisionSubsystem.getTv(), VisionSubsystem.getTx(), VisionSubsystem.getTotalLatency());
+        chassisSpeeds = m_headingController.calculateOmegaSpeed2(!Robot.s_isAuto ,shouldResetAngle(m_shouldResetYaw), m_useVision.getAsBoolean(), chassisSpeeds, m_swerve.getHeading(), m_swerve.getInterpolatedPose(VisionSubsystem.getTotalLatency()).getRotation(), m_swerve.getRobotRelativeVelocity()); //TODO: uncommet on robot
+      }
 
-      chassisSpeeds = m_headingController.calculateOmegaSpeed2(!Robot.s_isAuto ,shouldResetAngle(m_shouldResetYaw), m_useVision.getAsBoolean(), chassisSpeeds, m_swerve.getHeading(), PoseEstimatorSubsystem.getRobotPose().getRotation(), m_swerve.getRobotRelativeVelocity()); //TODO: uncommet on robot
-      //heading controller
       m_swerve.drive(chassisSpeeds, true, m_fieldRelativeToggle.update(!m_fieldRelative.getAsBoolean()), m_centerOfRotation);
   }
 

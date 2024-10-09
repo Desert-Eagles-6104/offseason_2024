@@ -30,7 +30,7 @@ public class ShooterSetIfHasNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(m_intake.hasGamePiece()){
+    if(m_intake.firstBeamBreak()){
       m_shooter.setVelocityWithRatio(m_velocity);
     }
     else{

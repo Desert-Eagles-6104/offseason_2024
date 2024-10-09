@@ -14,12 +14,15 @@ import frc.DELib.Subsystems.ServoSubsystem.Base.Motor.ServoSubsystemTalon;
 public class ArmSubsystem extends ServoSubsystemTalon {
   private BeamBreak m_armMagnet;
   private boolean magnetState = false;
-  private LinearInterpolator linearInterpolator;
+  private LinearInterpolator linearVision;
+  private LinearInterpolator linearInterpolatorPOS;
+  
   
   public ArmSubsystem(ServoSubsystemConfiguration configuration) {
     super(configuration);
     m_armMagnet = new BeamBreak(0);
-    linearInterpolator = new LinearInterpolator(interpulation);
+    linearVision = new LinearInterpolator(interpulationVision);
+    linearInterpolatorPOS = new LinearInterpolator(interpulationPOS);
     SmartDashboard.putNumber("armOffset", 0);
     SmartDashboard.putNumber("ArmAngleToSet", 90);
   }
@@ -61,12 +64,21 @@ public class ArmSubsystem extends ServoSubsystemTalon {
     return setpoint;
   }
 
-  public double getInterpulatedAngle(double limeVal){
-    return linearInterpolator.getInterpolatedValue(limeVal);
+  public double getInterpulatedAngleVision(double limeVal){
+    return linearVision.getInterpolatedValue(limeVal);
   }
 
-  public void setUsingInterpulation(double value) {
-    double angle = linearInterpolator.getInterpolatedValue(value);
+  public void setUsingInterpulationVision(double value) {
+    double angle = linearVision.getInterpolatedValue(value);
+    this.setPosition(angle);
+  }
+
+  public double getInterpulatedAnglePOS(double limeVal){
+    return linearInterpolatorPOS.getInterpolatedValue(limeVal);
+  }
+
+  public void setUsingInterpulationPOS(double value) {
+    double angle = linearInterpolatorPOS.getInterpolatedValue(value);
     this.setPosition(angle);
   }
 
@@ -105,7 +117,7 @@ public class ArmSubsystem extends ServoSubsystemTalon {
 
   };
   //vision Intepulation
-  double[][] interpulation = 
+  double[][] interpulationVision = 
   {
     {37,54},
     {35.93,52},

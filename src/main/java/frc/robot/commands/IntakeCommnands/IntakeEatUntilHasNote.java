@@ -11,10 +11,12 @@ public class IntakeEatUntilHasNote extends Command {
 
   IntakeSubsystem m_IntakeSubsystem;
   double m_precent;
+  boolean m_isFirst = true;
 
-  public IntakeEatUntilHasNote(IntakeSubsystem intakeSubsystem, double precent) {
+  public IntakeEatUntilHasNote(IntakeSubsystem intakeSubsystem, double precent, boolean isFirst) {
     m_IntakeSubsystem = intakeSubsystem;
     m_precent = precent;
+    m_isFirst = isFirst;
     addRequirements(intakeSubsystem);
   }
 
@@ -35,6 +37,11 @@ public class IntakeEatUntilHasNote extends Command {
 
   @Override
   public boolean isFinished() {
-    return m_IntakeSubsystem.hasGamePiece();
+    if(m_isFirst){
+      return m_IntakeSubsystem.firstBeamBreak();
+    }
+    else{
+      return m_IntakeSubsystem.secondBeamBreak();
+    }
   }
 }

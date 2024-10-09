@@ -15,7 +15,6 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.DELib.BooleanUtil.LatchedBolean;
 import frc.DELib.Sensors.BeamBreak;
 import frc.robot.Constants;
 
@@ -24,8 +23,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private TalonFX m_master;
   private TalonFX m_slave;
-  private BeamBreak m_beamBreak;
-  private boolean m_hasGamePiece;
+  private BeamBreak m_firstBeamBreak;
+  private BeamBreak m_secondBeamBreak;
+  private boolean m_first;
+  private boolean m_second;
 
   private PositionVoltage m_PositionVoltageRequest = new PositionVoltage(0);
 
@@ -58,16 +59,20 @@ public class IntakeSubsystem extends SubsystemBase {
     m_slave.getConfigurator().apply(new MotorOutputConfigs().withInverted(Constants.Intake.slaveInvert));
     
     //BeamBreak
-    m_beamBreak = new BeamBreak(Constants.Intake.beamBrakPort);
+    m_firstBeamBreak = new BeamBreak(Constants.Intake.firstBeamBrakPort);
+    m_secondBeamBreak = new BeamBreak(Constants.Intake.secondBeamBrakPort);
 
   }
 
   @Override
   public void periodic() {
     BaseStatusSignal.refreshAll(m_positionSignal, m_velocitySignal, m_closedLoopErrorSignal);
-    m_beamBreak.update();
-    m_hasGamePiece = m_beamBreak.get();
-    SmartDashboard.putBoolean("HasNote", m_hasGamePiece);
+    m_firstBeamBreak.update();
+    m_secondBeamBreak.update();
+    m_first = m_firstBeamBreak.get();
+    m_second = m_secondBeamBreak.get();
+    SmartDashboard.putBoolean("firstBeamBreak", m_first);
+    SmartDashboard.putBoolean("secondBeamBreak", m_second);
   }
 
   public void disableMotors(){
@@ -83,8 +88,12 @@ public class IntakeSubsystem extends SubsystemBase {
     return m_velocitySignal.getValueAsDouble();
   }
 
-  public boolean hasGamePiece(){
-    return m_hasGamePiece;
+  public boolean firstBeamBreak(){
+    return m_first;
+  }
+
+  public boolean secondBeamBreak(){
+    return m_second;
   }
 
   public void setMotorPrecent(double precent){

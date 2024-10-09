@@ -6,7 +6,9 @@ package frc.robot.commands.ArmCommands;
 
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.DELib.Subsystems.PoseEstimator.PoseEstimatorSubsystem;
 import frc.DELib.Subsystems.Vision.VisionSubsystem;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmSubsystem;
 
 public class ArmWithVision extends Command {
@@ -34,11 +36,16 @@ public class ArmWithVision extends Command {
 
   @Override
   public void execute() {
-    if(VisionSubsystem.getTv()){
-      if(Math.abs(Lastsetpoint - VisionSubsystem.getTy()) > threshold){
-      m_arm.setUsingInterpulation(m_filterTy.calculate(Lastsetpoint));
-      Lastsetpoint = VisionSubsystem.getTy();
+    if(!RobotContainer.m_isLocalizetion.getAsBoolean()){
+      if(VisionSubsystem.getTv()){
+        if(Math.abs(Lastsetpoint - VisionSubsystem.getTy()) > threshold){
+        m_arm.setUsingInterpulationVision(m_filterTy.calculate(Lastsetpoint));
+        Lastsetpoint = VisionSubsystem.getTy();
+        }
       }
+    }
+    else{
+      m_arm.setUsingInterpulationPOS(PoseEstimatorSubsystem.getDistanceToBlueSpeaker());
     }
   }
 

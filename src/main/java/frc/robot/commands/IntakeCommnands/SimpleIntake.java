@@ -42,24 +42,24 @@ public class SimpleIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_firstStage.update(m_intake.hasGamePiece()); 
+    m_firstStage.update(m_intake.firstBeamBreak()); 
     if(first){
       m_intake.setMotorPrecent(intakePower);
       first = !m_firstStage.get();
       m_timer.reset();
     }
     else if(i < 4){
-      if(m_intake.hasGamePiece() && m_timer.hasElapsed(0.1)){
+      if(m_intake.firstBeamBreak() && m_timer.hasElapsed(0.1)){
         m_intake.setMotorPrecent(-intakePower);
         m_timer.reset();
         i++;
       }
-      else if(!m_intake.hasGamePiece() && m_timer.hasElapsed(0.1)){
+      else if(!m_intake.firstBeamBreak() && m_timer.hasElapsed(0.1)){
         m_intake.setMotorPrecent(intakePower);
         m_timer.reset();
       }
     }
-    else if(i == 4 && m_intake.hasGamePiece()){
+    else if(i == 4 && m_intake.firstBeamBreak()){
       m_intake.setMotorPrecent(-slowOutake);
     }
     else{

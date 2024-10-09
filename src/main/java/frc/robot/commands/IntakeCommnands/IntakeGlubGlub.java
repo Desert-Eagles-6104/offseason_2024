@@ -14,16 +14,19 @@ public class IntakeGlubGlub extends Command {
   private IntakeSubsystem m_intake;
   private Timer m_timer;
   private LatchedBolean m_firstStage;
+  private boolean m_isFirstBeamBreak;
   private int i = 0;
   private boolean secondStage = false;
   private double intakePower = 0.3;
   private double slowOutake = 0.08;
+  private int m_howManyGlubGlub = 4;
   
   
-  public IntakeGlubGlub(IntakeSubsystem intake) {
+  public IntakeGlubGlub(IntakeSubsystem intake, Boolean isFirstBeambreak) {
     m_intake = intake;
     m_timer = new Timer();
     m_firstStage = new LatchedBolean();
+    m_isFirstBeamBreak = isFirstBeambreak;
     addRequirements(m_intake);
   }
 
@@ -35,30 +38,59 @@ public class IntakeGlubGlub extends Command {
     m_timer.start();
     i = 0;
     secondStage = false;
+    if(!m_isFirstBeamBreak){
+      m_howManyGlubGlub = 4;
+    }
+    else{
+      m_howManyGlubGlub = 2;
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_firstStage.update(m_intake.hasGamePiece()); 
-    if(i < 4 && m_firstStage.get()){
-      if(m_intake.hasGamePiece() && m_timer.hasElapsed(0.1)){
-        m_intake.setMotorPrecent(-intakePower);
-        m_timer.reset();
-        i++;
+    if(m_isFirstBeamBreak){
+      m_firstStage.update(m_intake.firstBeamBreak()); 
+      if(i < m_howManyGlubGlub && m_firstStage.get()){
+        if(m_intake.firstBeamBreak() && m_timer.hasElapsed(0.1)){
+          m_intake.setMotorPrecent(-intakePower);
+          m_timer.reset();
+          i++;
+        }
+        else if(!m_intake.firstBeamBreak() && m_timer.hasElapsed(0.1)){
+          m_intake.setMotorPrecent(intakePower);
+          m_timer.reset();
+        }
       }
-      else if(!m_intake.hasGamePiece() && m_timer.hasElapsed(0.1)){
-        m_intake.setMotorPrecent(intakePower);
-        m_timer.reset();
+      else if(i == m_howManyGlubGlub && m_intake.secondBeamBreak() && !m_isFirstBeamBreak){
+        m_intake.setMotorPrecent(-slowOutake);
       }
-    }
-    else if(i == 4 && m_intake.hasGamePiece()){
-      m_intake.setMotorPrecent(-slowOutake);
+      else{
+        m_intake.setMotorPrecent(0);
+        secondStage = true;
+      }
     }
     else{
-      m_intake.setMotorPrecent(0);
-      secondStage = true;
-    }
+      m_firstStage.update(m_intake.secondBeamBreak()); 
+      if(i < m_howManyGlubGlub && m_firstStage.get()){
+        if(m_intake.secondBeamBreak() && m_timer.hasElapsed(0.05)){
+          m_intake.setMotorPrecent(-intakePower);
+          m_timer.reset();
+          i++;
+        }
+        else if(!m_intake.secondBeamBreak() && m_timer.hasElapsed(0.05)){
+          m_intake.setMotorPrecent(intakePower);
+          m_timer.reset();
+        }
+      }
+      else if(i == m_howManyGlubGlub && m_intake.secondBeamBreak() && !m_isFirstBeamBreak){
+        m_intake.setMotorPrecent(-slowOutake);
+      }
+      else{
+        m_intake.setMotorPrecent(0);
+        secondStage = true;
+      }
+    } 
   }
 
   // Called once the command ends or is interrupted.

@@ -6,8 +6,10 @@ package frc.DELib.Subsystems.Vision;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.DELib.Subsystems.PoseEstimator.PoseEstimatorSubsystem;
 import frc.DELib.Subsystems.Vision.VisionUtil.CameraSettings;
 import frc.DELib.Subsystems.Vision.VisionUtil.LimelightHelpers;
+import frc.robot.RobotContainer;
 
 public class VisionSubsystem extends SubsystemBase {
   /** Creates a new VisionSubsystem. */
@@ -32,6 +34,11 @@ public class VisionSubsystem extends SubsystemBase {
   int regularPipeline = 0;
   int pipelineX2 = 1;
 
+  int[] visionID = {7};
+
+  int[] localizationVisionID = {7,8,6};
+  
+
   //*create a new VisionSubsystem constructor to apply the subsystem's properties */
   public VisionSubsystem(CameraSettings aprilTagCameraSettings, CameraSettings gamePieceCameraSettings) {
     m_aprilTagCameraSettings = aprilTagCameraSettings;
@@ -52,13 +59,20 @@ public class VisionSubsystem extends SubsystemBase {
       m_lastTx = m_tx;
     }
 
+    if(RobotContainer.m_isLocalizetion.getAsBoolean()){
+      LimelightHelpers.SetFiducialIDFiltersOverride("Limelight",localizationVisionID);
+    }
+    else{
+      LimelightHelpers.SetFiducialIDFiltersOverride("Limelight",visionID);
+    }
+
     //bounding april tag
     orbitCalculation();
     //limelight values
     SmartDashboard.putNumber("TX", getTx());
     SmartDashboard.putNumber("TY", getTy());
     SmartDashboard.putBoolean("TV", getTv());
-    SmartDashboard.putString("3D", getEstimatedRobotPose().pose.toString());
+    // SmartDashboard.putString("3D", getEstimatedRobotPose().pose.toString());
   }
 
   public static LimelightHelpers.PoseEstimate getEstimatedRobotPose(){

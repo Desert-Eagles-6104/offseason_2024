@@ -113,8 +113,8 @@ public class RobotContainer {
   }
 
   public void intakeBinding(){
-    drivercontroller.L2().onTrue(new IntakeEatUntilHasNote(m_intakeSub, 0.3).andThen(new IntakeGlubGlub(m_intakeSub)));
-    drivercontroller.L2().onFalse(new IntakeForTime(m_intakeSub,0,0).andThen((new IntakeGlubGlub(m_intakeSub))));
+    drivercontroller.L2().onTrue(new IntakeEatUntilHasNote(m_intakeSub, 0.7, true).andThen(new IntakeGlubGlub(m_intakeSub, true)).andThen(new IntakeEatUntilHasNote(m_intakeSub, 0.5, false)).andThen(new IntakeGlubGlub(m_intakeSub, false)));
+    // drivercontroller.L2().onFalse(new IntakeForTime(m_intakeSub,0,0).andThen((new IntakeGlubGlub(m_intakeSub, false))));
     drivercontroller.R2().whileTrue(new IntakeForTime(m_intakeSub, -0.3, 2.0));
     drivercontroller.R1().debounce(0.4).and(m_canShoot).onTrue(new IntakeForTime(m_intakeSub, 0.3, 1.0));
   }
@@ -122,7 +122,7 @@ public class RobotContainer {
   public void presets(){
     driverStationController.RightYellow().onTrue(new InstantCommand(() -> m_intakeSub.setMotorPrecent(0.3)));
     driverStationController.DownYellow().onTrue(new Preset(m_shooter, m_arm, 9.57, 7000));
-    driverStationController.UpBlue().onTrue(new Amp(m_intakeSub, m_arm, m_shooter));
+    drivercontroller.triangle().onTrue(new Amp(m_intakeSub, m_arm, m_shooter));
   }
 
   public void resets(){

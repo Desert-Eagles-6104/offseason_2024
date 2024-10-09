@@ -230,7 +230,8 @@ public final class Constants {
   public static final class Intake{
     public static final int masterID = 55;
     public static final int SlaveID = 54;
-    public static final int beamBrakPort = 3;
+    public static final int firstBeamBrakPort = 2;
+    public static final int secondBeamBrakPort = 3;
     public static final double Ks = 1.5;
     public static final double Kp = 4.0;
     public static final double supplyCurrentLimit = 30;
