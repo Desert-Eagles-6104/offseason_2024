@@ -34,6 +34,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
   private static InterpolatingTreeMap<InterpolatingDouble, Pose2d> m_pastPoses;
   private static double speakerHighetFromRobot = 2.049-0.136;
   private static double odometryToArmDistance = 0.13784;
+  private static boolean first = true;
   Field2d field2d;
   
   
@@ -64,14 +65,19 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
   }
 
   private static void updateVisionOdometry(){
-    boolean rejectUpdate = false;
-    LimelightHelpers.SetRobotOrientation("limelight", m_swerve.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-    limelightMesermentMT2 = VisionSubsystem.getEstimatedRobotPose();
-    if(Math.abs(m_gyro.getRateStatusSignal().getValueAsDouble()) > 360 && getRobotPose().getX() < 5){
-      rejectUpdate = true;
+    if(!first){
+      boolean rejectUpdate = false;
+      LimelightHelpers.SetRobotOrientation("limelight", m_swerve.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+      limelightMesermentMT2 = VisionSubsystem.getEstimatedRobotPose();
+      if(Math.abs(m_gyro.getRateStatusSignal().getValueAsDouble()) > 360 && getRobotPose().getX() < 5){
+        rejectUpdate = true;
+      }
+      if(!rejectUpdate && VisionSubsystem.getTv()){
+        m_poseEstimator.addVisionMeasurement(limelightMesermentMT2.pose, limelightMesermentMT2.timestampSeconds, VecBuilder.fill(0.7, 0.7, 9999999));
+      }
     }
-    if(!rejectUpdate && VisionSubsystem.getTv()){
-      m_poseEstimator.addVisionMeasurement(limelightMesermentMT2.pose, limelightMesermentMT2.timestampSeconds, VecBuilder.fill(0.7, 0.7, 9999999));
+    else{
+      first = false;
     }
   }
 

@@ -5,6 +5,9 @@
 package frc.robot;
 
 import java.util.function.BooleanSupplier;
+
+import javax.swing.text.StyledEditorKit.BoldAction;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -58,6 +61,8 @@ public class RobotContainer {
   private SwerveAutoBuilder swerveAutoBuilder;
   public static BooleanSupplier m_isLocalizetion = ()-> false;
   public static BooleanSupplier m_isLocalizetionOmega = () -> false;
+  private static BooleanSupplier m_firstIntake = () -> false;
+  private static BooleanSupplier m_secondIntake = () -> false;
   private Trigger m_canShoot;
 
   public RobotContainer() {
@@ -71,6 +76,8 @@ public class RobotContainer {
     m_isLocalizetion = driverStationController.LeftSwitch();
     m_isLocalizetionOmega = driverStationController.LeftMidSwitch();
     m_canShoot = new Trigger(() ->(m_shooter.isAtSetpoint() && m_arm.isAtSetpoint() && VisionSubsystem.getTv()));
+    m_firstIntake = () -> m_intakeSub.firstBeamBreak();
+    m_secondIntake = () -> !m_intakeSub.firstBeamBreak();
     SmartDashboard.putData("reset Odometry from limelight", new InstantCommand(() -> PoseEstimatorSubsystem.resetPositionFromCamera()));
     SwerveBinding();
     armBinding();
@@ -115,7 +122,9 @@ public class RobotContainer {
   }
 
   public void intakeBinding(){
-    drivercontroller.L2().onTrue(new IntakeEatUntilHasNote(m_intakeSub, 0.7, true).andThen(new IntakeGlubGlub(m_intakeSub, true)).andThen(new IntakeEatUntilHasNote(m_intakeSub, 0.5, false)).andThen(new IntakeGlubGlub(m_intakeSub, false)));
+    drivercontroller.L2().and(m_firstIntake).onTrue(new IntakeEatUntilHasNote(m_intakeSub, 0.5, false).andThen(new IntakeGlubGlub(m_intakeSub, false)));
+    drivercontroller.L2().and(m_secondIntake).onTrue(new IntakeEatUntilHasNote(m_intakeSub, 0.7, true).andThen(new IntakeGlubGlub(m_intakeSub, true)).andThen(new IntakeEatUntilHasNote(m_intakeSub, 0.5, false)).andThen(new IntakeGlubGlub(m_intakeSub, false)));
+    // drivercontroller.L2().onTrue(new IntakeEatUntilHasNote(m_intakeSub, 0.7, true).andThen(new IntakeGlubGlub(m_intakeSub, true)).andThen(new IntakeEatUntilHasNote(m_intakeSub, 0.5, false)).andThen(new IntakeGlubGlub(m_intakeSub, false)));
     // drivercontroller.L2().onFalse(new IntakeForTime(m_intakeSub,0,0).andThen((new IntakeGlubGlub(m_intakeSub, false))));
     drivercontroller.R2().whileTrue(new IntakeForTime(m_intakeSub, -0.3, 2.0));
     drivercontroller.R1().debounce(0.4).and(m_canShoot).onTrue(new IntakeForTime(m_intakeSub, 0.3, 1.0));

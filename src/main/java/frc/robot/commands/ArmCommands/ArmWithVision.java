@@ -5,9 +5,6 @@
 package frc.robot.commands.ArmCommands;
 
 import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.DELib.Subsystems.PoseEstimator.PoseEstimatorSubsystem;
 import frc.DELib.Subsystems.Vision.VisionSubsystem;
@@ -39,7 +36,7 @@ public class ArmWithVision extends Command {
 
   @Override
   public void execute() {
-    if(!RobotContainer.m_isLocalizetion.getAsBoolean()){
+    if(RobotContainer.m_isLocalizetion.getAsBoolean()){
       if(VisionSubsystem.getTv()){
         if(Math.abs(Lastsetpoint - VisionSubsystem.getTy()) > threshold){
         m_arm.setUsingInterpulationVision(m_filterTy.calculate(Lastsetpoint));

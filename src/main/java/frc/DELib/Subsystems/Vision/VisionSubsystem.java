@@ -15,6 +15,7 @@ import frc.robot.RobotContainer;
 public class VisionSubsystem extends SubsystemBase {
   /** Creates a new VisionSubsystem. */
   
+  //First AprilTag Limelight
   private static CameraSettings m_aprilTagCameraSettings = null;
   private static double m_tx = 0; //Horizontal Offset From Crosshair To Target (-27 degrees to 27 degrees)
   private static double m_ty = 0; //Vertical Offset From Crosshair To Target (-20.5 degrees to 20.5 degrees)
@@ -38,7 +39,13 @@ public class VisionSubsystem extends SubsystemBase {
   int[] visionID = {7};
 
   int[] localizationVisionID = {7,8,6};
-  
+
+  //second limelight values
+  private static double m_TxNote = 0;
+  private static double m_TyNote = 0; 
+  private double m_LastTyNote = 0;
+  private double m_LastTxNote = 0;
+  private static boolean m_TvNote = false; 
 
   //*create a new VisionSubsystem constructor to apply the subsystem's properties */
   public VisionSubsystem(CameraSettings aprilTagCameraSettings, CameraSettings gamePieceCameraSettings) {
@@ -58,6 +65,14 @@ public class VisionSubsystem extends SubsystemBase {
       m_estimatedRobotPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(CameraType.AprilTagCamera.getCameraName());
       m_lastTy = m_ty;
       m_lastTx = m_tx;
+    }
+
+    m_TvNote = LimelightHelpers.getTV(CameraType.GamePieceCamera.getCameraName());
+    if(m_TvNote){
+      m_TxNote = LimelightHelpers.getTX(CameraType.GamePieceCamera.getCameraName(), m_lastTx);
+      m_TyNote = LimelightHelpers.getTY(CameraType.GamePieceCamera.getCameraName(), m_lastTy);
+      m_LastTyNote = m_TyNote;
+      m_LastTxNote = m_TxNote;
     }
 
     if(RobotContainer.m_isLocalizetion.getAsBoolean()){
@@ -92,6 +107,18 @@ public class VisionSubsystem extends SubsystemBase {
     return m_tv;
   }
 
+  public static double getTxNote(){
+    return m_TxNote;
+  }
+  
+  public static double getTyNote(){
+    return m_TyNote;
+  }
+
+  public static boolean getTvNote(){
+    return m_TvNote;
+  }
+
   public void crop(double cropXMin, double cropXMax, double cropYMin, double cropYMax){
     LimelightHelpers.setCropWindow(CameraType.AprilTagCamera.getCameraName(), cropXMin, cropXMax, cropYMin, cropYMax);
   }
@@ -102,6 +129,14 @@ public class VisionSubsystem extends SubsystemBase {
   public static double getTotalLatency() {
     double miliToSec = 0.001;
     return LimelightHelpers.getLatency_Pipeline(CameraType.AprilTagCamera.getCameraName()) + LimelightHelpers.getLatency_Capture(CameraType.AprilTagCamera.getCameraName()) * miliToSec;
+  }
+
+    /**   
+   * @return Total vision latency (photons -> robot) in seconds
+   */
+  public static double getTotalLatencyNote() {
+    double miliToSec = 0.001;
+    return LimelightHelpers.getLatency_Pipeline(CameraType.GamePieceCamera.getCameraName()) + LimelightHelpers.getLatency_Capture(CameraType.GamePieceCamera.getCameraName()) * miliToSec;
   }
 
   public int getCurrentID(){
@@ -146,7 +181,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public enum CameraType{
     AprilTagCamera("limelight"),
-    GamePieceCamera("GamePieceCamera");
+    GamePieceCamera("limelight-notes");
 
     final String m_cameraName;
 
