@@ -18,6 +18,7 @@ import frc.DELib.BooleanUtil.ToggleBoolean;
 import frc.DELib.Motors.PIDContainer;
 import frc.DELib.Subsystems.PoseEstimator.PoseEstimatorSubsystem;
 import frc.DELib.Subsystems.Swerve.SwerveSubsystem;
+import frc.DELib.Subsystems.Swerve.SwerveUtil.DriveAssist;
 import frc.DELib.Subsystems.Swerve.SwerveUtil.HeadingController;
 import frc.DELib.Subsystems.Swerve.SwerveUtil.SwerveDriveHelper;
 import frc.DELib.Subsystems.Swerve.SwerveUtil.SwerveDriveHelper.DriveMode;
@@ -30,6 +31,7 @@ public class TeleopDrive extends Command {
  private  SwerveSubsystem m_swerve;
  private CommandPS5Controller m_joystick;
  private HeadingController m_headingController;
+ private DriveAssist m_driveAssistController;
  private BooleanSupplier m_lowPower;
  private BooleanSupplier m_fieldRelative;
  private BooleanSupplier m_shouldResetYaw;
@@ -39,10 +41,11 @@ public class TeleopDrive extends Command {
  private Translation2d m_centerOfRotation;
 
 
-  public TeleopDrive(SwerveSubsystem swerve ,CommandPS5Controller joystick, BooleanSupplier lowPower, BooleanSupplier fieldRelative, BooleanSupplier resetYaw, BooleanSupplier useVision) {
+  public TeleopDrive(SwerveSubsystem swerve ,CommandPS5Controller joystick, BooleanSupplier lowPower, BooleanSupplier fieldRelative, BooleanSupplier resetYaw, BooleanSupplier useVision, BooleanSupplier intakeButton) {
     m_swerve = swerve;
     m_joystick = joystick;
     m_headingController = new HeadingController(new PIDContainer(0.06, 0, 0, "stablize"), new PIDContainer(0.09, 0, 0, "snap"), new PIDContainer(0.2, 0.0, 0.0, "vision"), new PIDContainer(0.2, 0.00001, 0.0, "visionLowError")); //vision note: p=0.1  visionNoteLowError: p =0.1 i = 0.00001
+    m_driveAssistController = new DriveAssist(0.01, intakeButton); //TODO: change
     m_lowPower = lowPower;
     m_fieldRelative = fieldRelative;
     m_shouldResetYaw = resetYaw;
@@ -85,6 +88,8 @@ public class TeleopDrive extends Command {
         setVisionTarget(VisionSubsystem.getTv(), VisionSubsystem.getTx(), VisionSubsystem.getTotalLatency());
         chassisSpeeds = m_headingController.calculateOmegaSpeed2(!Robot.s_isAuto ,shouldResetAngle(m_shouldResetYaw), m_useVision.getAsBoolean(), chassisSpeeds, m_swerve.getHeading(), m_swerve.getInterpolatedPose(VisionSubsystem.getTotalLatency()).getRotation(), m_swerve.getRobotRelativeVelocity()); //TODO: uncommet on robot nigger hufeer
       }
+
+      // chassisSpeeds = m_driveAssistController.update(chassisSpeeds, m_swerve.getInterpolatedPose(VisionSubsystem.getTotalLatencyNote()).getRotation());
 
       m_swerve.drive(chassisSpeeds, true, m_fieldRelativeToggle.update(!m_fieldRelative.getAsBoolean()), m_centerOfRotation);
   }
