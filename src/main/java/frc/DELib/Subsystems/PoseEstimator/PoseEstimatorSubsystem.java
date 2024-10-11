@@ -122,4 +122,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
   private static double clamp(double value, double min, double max) {
     return Math.max(min, Math.min(max, value));
     }
+
+  public static Rotation2d getHeading() {
+    return getRobotPose().getRotation();
+  }
 }
