@@ -4,14 +4,11 @@
 
 package frc.DELib.Subsystems.PoseEstimator;
 
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -67,7 +64,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
   private static void updateVisionOdometry(){
     if(!first){
       boolean rejectUpdate = false;
-      LimelightHelpers.SetRobotOrientation("limelight", m_swerve.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+      LimelightHelpers.SetRobotOrientation("limelight", getRobotPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
       limelightMesermentMT2 = VisionSubsystem.getEstimatedRobotPose();
       if(Math.abs(m_gyro.getRateStatusSignal().getValueAsDouble()) > 360 && getRobotPose().getX() < 5){
         rejectUpdate = true;

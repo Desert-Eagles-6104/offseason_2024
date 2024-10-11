@@ -36,10 +36,10 @@ public class RotateToTarget extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double errorDegrees = m_VisionSubsystem.getTv() ? -m_VisionSubsystem.getTx() : 0;
-    Rotation2d target = m_swerve.getInterpolatedPose(m_VisionSubsystem.getTotalLatency()).getRotation().plus(Rotation2d.fromDegrees(errorDegrees));
+    double errorDegrees = VisionSubsystem.getTv() ? -VisionSubsystem.getTx() : 0;
+    Rotation2d target = m_swerve.getInterpolatedPose(VisionSubsystem.getTotalLatency()).getRotation().plus(Rotation2d.fromDegrees(errorDegrees));
     m_headingController.setSetpoint(target);
-    ChassisSpeeds chassisSpeeds = new ChassisSpeeds(m_controller.getLeftX(), m_controller.getLeftY(), m_headingController.update(m_swerve.getInterpolatedPose(m_VisionSubsystem.getTotalLatency()).getRotation()));
+    ChassisSpeeds chassisSpeeds = new ChassisSpeeds(m_controller.getLeftX(), m_controller.getLeftY(), m_headingController.update(m_swerve.getInterpolatedPose(VisionSubsystem.getTotalLatency()).getRotation()));
     m_swerve.drive(chassisSpeeds, true, true, new Translation2d());
   }
 

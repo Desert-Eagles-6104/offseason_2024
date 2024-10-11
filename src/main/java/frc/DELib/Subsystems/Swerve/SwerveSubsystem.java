@@ -15,7 +15,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.Measure;
@@ -45,7 +44,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private SwerveModule[] m_swerveModules = new SwerveModule[4];
 
   private SwerveDriveKinematics m_kinematics;
-  private SwerveDriveOdometry m_odometry;
+  private SwerveDrivePoseEstimator m_odometry;
   private InterpolatingTreeMap<InterpolatingDouble, Pose2d> m_pastPoses;
 
   private Pigeon m_gyro;
@@ -66,7 +65,7 @@ public class SwerveSubsystem extends SubsystemBase {
     m_swerveModules[3] = m_backRight;
 
     m_kinematics = new SwerveDriveKinematics(swerveConstants.frontLeftPos, swerveConstants.frontRightPos, swerveConstants.backLeftPos, swerveConstants.backRightPos);
-    m_odometry = new SwerveDriveOdometry(m_kinematics, Rotation2d.fromDegrees(0), getModulesPositions());
+    m_odometry = new SwerveDrivePoseEstimator(m_kinematics, Rotation2d.fromDegrees(0), getModulesPositions(), new Pose2d());
 
     try {
       m_writer = new CSVWriter(swerveConstants.filepath);
@@ -105,7 +104,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public Pose2d getPose() {
-    return m_odometry.getPoseMeters();
+    return m_odometry.getEstimatedPosition();
   }
 
   public SwerveDriveKinematics getKinematics(){
@@ -136,7 +135,6 @@ public class SwerveSubsystem extends SubsystemBase {
   public ChassisSpeeds getRobotRelativeVelocity(){
     return m_kinematics.toChassisSpeeds(getStates());
   }
-    
 
   @Override
   public void periodic() {
@@ -147,7 +145,6 @@ public class SwerveSubsystem extends SubsystemBase {
     m_gyro.getYawStatusSignal().refresh();
     Pose2d currentPose = m_odometry.update(m_gyro.getYaw(), getModulesPositions());
     m_pastPoses.put(new InterpolatingDouble(Timer.getFPGATimestamp()), currentPose);
-    SmartDashboard.putNumber("gyroYaw", m_gyro.getYaw().getDegrees());
   }
 
   public void zeroHeading(){
