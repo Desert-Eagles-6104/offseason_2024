@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.units.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.DELib.Intepulation.LinearInterpolator;
 import frc.DELib.Sensors.BeamBreak;

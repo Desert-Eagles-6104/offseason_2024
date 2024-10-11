@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.DELib.Subsystems.PoseEstimator.PoseEstimatorSubsystem;
 import frc.DELib.Subsystems.Swerve.SwerveSubsystem;
 
 /** Add your docs here. */
@@ -37,8 +38,8 @@ public class SwerveAutoBuilder {
         m_swerve = swerve;
         m_fullAutoCommands = new HashMap<String, Command>();
         AutoBuilder.configureHolonomic(
-            m_swerve::getPose, // Robot pose supplier
-            m_swerve::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+            PoseEstimatorSubsystem::getRobotPose, // Robot pose supplier
+            PoseEstimatorSubsystem::resetPosition, // Method to reset odometry (will be called if your auto has a starting pose)
             m_swerve::getRobotRelativeVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             this::autoDrive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
             new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class

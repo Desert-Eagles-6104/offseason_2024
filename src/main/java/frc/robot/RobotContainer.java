@@ -6,9 +6,6 @@ package frc.robot;
 
 import java.util.function.BooleanSupplier;
 
-import javax.swing.text.StyledEditorKit.BoldAction;
-
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -23,17 +20,15 @@ import frc.DELib.Subsystems.Vision.VisionSubsystem;
 import frc.DELib.Subsystems.Vision.VisionUtil.CameraSettings;
 import frc.DELib.Util.DriverStationController;
 import frc.DELib.Util.SwerveAutoBuilder;
-import frc.robot.commands.ArmCommands.ArmAngleToDashBoard;
 import frc.robot.commands.ArmCommands.ArmChangeNeutralMode;
 import frc.robot.commands.ArmCommands.ArmHoming;
 import frc.robot.commands.ArmCommands.ArmWithVision;
 import frc.robot.commands.IntagrationCommands.Amp;
 import frc.robot.commands.IntagrationCommands.Preset;
+import frc.robot.commands.IntagrationCommands.ResetAllSubsystems;
 import frc.robot.commands.IntakeCommnands.IntakeEatUntilHasNote;
 import frc.robot.commands.IntakeCommnands.IntakeForTime;
 import frc.robot.commands.IntakeCommnands.IntakeGlubGlub;
-import frc.robot.commands.IntakeCommnands.IntakeSetPrecent;
-import frc.robot.commands.IntakeCommnands.SimpleIntake;
 import frc.robot.commands.ShooterCommands.ShooterSetIfHasNote;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -105,7 +100,6 @@ public class RobotContainer {
 
   public void SwerveBinding(){
     SmartDashboard.putData("calibrate Swerve Modules", new ResetSwerveModules(m_swerve).ignoringDisable(true));
-    SmartDashboard.putData("reset Odometry", new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d())).ignoringDisable(true));
     m_swerve.setDefaultCommand(new TeleopDrive(m_swerve, drivercontroller, drivercontroller.R2(), drivercontroller.create(), drivercontroller.options(), drivercontroller.R1(), drivercontroller.L2()));
   }
 
@@ -114,7 +108,7 @@ public class RobotContainer {
     SmartDashboard.putData("reset arm", new InstantCommand(() -> m_arm.resetPosition(9.57)).ignoringDisable(true));
     SmartDashboard.putData("ArmDisableSoftLimit", new InstantCommand(() -> m_arm.ControlSoftLimit(false)).ignoringDisable(true));
     drivercontroller.R1().onTrue(new ArmWithVision(m_arm, m_vision).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    drivercontroller.povUp().onTrue(new ArmAngleToDashBoard(m_arm, m_shooter));
+    // drivercontroller.povUp().onTrue(new ArmAngleToDashBoard(m_arm, m_shooter));
   }
 
   public void shooterBinding(){
@@ -124,8 +118,6 @@ public class RobotContainer {
   public void intakeBinding(){
     drivercontroller.L2().and(m_firstIntake).onTrue(new IntakeEatUntilHasNote(m_intakeSub, 0.5, false).andThen(new IntakeGlubGlub(m_intakeSub, false)));
     drivercontroller.L2().and(m_secondIntake).onTrue(new IntakeEatUntilHasNote(m_intakeSub, 0.7, true).andThen(new IntakeGlubGlub(m_intakeSub, true)).andThen(new IntakeEatUntilHasNote(m_intakeSub, 0.5, false)).andThen(new IntakeGlubGlub(m_intakeSub, false)));
-    // drivercontroller.L2().onTrue(new IntakeEatUntilHasNote(m_intakeSub, 0.7, true).andThen(new IntakeGlubGlub(m_intakeSub, true)).andThen(new IntakeEatUntilHasNote(m_intakeSub, 0.5, false)).andThen(new IntakeGlubGlub(m_intakeSub, false)));
-    // drivercontroller.L2().onFalse(new IntakeForTime(m_intakeSub,0,0).andThen((new IntakeGlubGlub(m_intakeSub, false))));
     drivercontroller.R2().whileTrue(new IntakeForTime(m_intakeSub, -0.3, 2.0));
     drivercontroller.R1().debounce(0.4).and(m_canShoot).onTrue(new IntakeForTime(m_intakeSub, 0.3, 1.0));
   }
@@ -137,7 +129,7 @@ public class RobotContainer {
   }
 
   public void resets(){
-    drivercontroller.L1().onTrue(new Preset(m_shooter, m_arm, 10, 0));
+    drivercontroller.L1().onTrue(new ResetAllSubsystems(m_shooter, m_intakeSub, m_arm));
     drivercontroller.povDown().onTrue(new ArmHoming(m_arm));
   }
 }

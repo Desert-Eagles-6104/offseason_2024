@@ -4,10 +4,8 @@
 
 package frc.DELib.Subsystems.Vision;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.DELib.Subsystems.PoseEstimator.PoseEstimatorSubsystem;
 import frc.DELib.Subsystems.Vision.VisionUtil.CameraSettings;
 import frc.DELib.Subsystems.Vision.VisionUtil.LimelightHelpers;
 import frc.robot.RobotContainer;
@@ -69,8 +67,8 @@ public class VisionSubsystem extends SubsystemBase {
 
     m_TvNote = LimelightHelpers.getTV(CameraType.GamePieceCamera.getCameraName());
     if(m_TvNote){
-      m_TxNote = LimelightHelpers.getTX(CameraType.GamePieceCamera.getCameraName(), m_lastTx);
-      m_TyNote = LimelightHelpers.getTY(CameraType.GamePieceCamera.getCameraName(), m_lastTy);
+      m_TxNote = LimelightHelpers.getTX(CameraType.GamePieceCamera.getCameraName(), m_LastTxNote);
+      m_TyNote = LimelightHelpers.getTY(CameraType.GamePieceCamera.getCameraName(), m_LastTyNote);
       m_LastTyNote = m_TyNote;
       m_LastTxNote = m_TxNote;
     }

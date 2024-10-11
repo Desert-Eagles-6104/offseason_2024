@@ -18,13 +18,13 @@ public class DriveAssist {
         m_filter = LinearFilter.movingAverage(4);
     }
 
-    // public ChassisSpeeds update(ChassisSpeeds chassisSpeeds, Rotation2d robotHeading){
-    //     ChassisSpeeds toReturn;
-    //     if(VisionSubsystem.getTvNote() && m_intakeButton.getAsBoolean()){
-    //         toReturn = ChassisSpeeds.fromRobotRelativeSpeeds(0, m_filter.calculate(VisionSubsystem.getTxNote())*m_kp, 0, robotHeading);
-    //     }
-    //     chassisSpeeds.vxMetersPerSecond = toReturn.vxMetersPerSecond + chassisSpeeds.vxMetersPerSecond;
-    //     chassisSpeeds.vyMetersPerSecond = toReturn.vyMetersPerSecond + chassisSpeeds.vyMetersPerSecond;
-    //     return chassisSpeeds;
-    // }
+    public ChassisSpeeds update(ChassisSpeeds chassisSpeeds, Rotation2d robotHeading){
+        ChassisSpeeds toReturn = new ChassisSpeeds();
+        if(VisionSubsystem.getTvNote() && m_intakeButton.getAsBoolean()){
+            toReturn = ChassisSpeeds.fromRobotRelativeSpeeds(0, m_filter.calculate(VisionSubsystem.getTxNote())*m_kp, 0, robotHeading);
+        }
+        chassisSpeeds.vxMetersPerSecond = toReturn.vxMetersPerSecond + chassisSpeeds.vxMetersPerSecond;
+        chassisSpeeds.vyMetersPerSecond = toReturn.vyMetersPerSecond + chassisSpeeds.vyMetersPerSecond;
+        return chassisSpeeds;
+    }
 }

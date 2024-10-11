@@ -26,6 +26,6 @@ public class Preset extends InstantCommand {
   @Override
   public void initialize() {
       m_arm.setMotionMagicPosition(m_angle);
-      m_shooter.setMotionMagicVelocityWithRatio(m_velocity);
+      m_shooter.setVelocityWithRatio(m_velocity);
   }
 }
