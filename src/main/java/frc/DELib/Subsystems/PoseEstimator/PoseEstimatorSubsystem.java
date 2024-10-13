@@ -61,7 +61,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
   }
 
   public static boolean isCentered(){
-    return Math.abs(getHeading().getDegrees() - getAngleToBlueSpeaker().getDegrees()) < 1.5;
+    return Math.abs(getHeading().getDegrees() - getAngleToBlueSpeaker().getDegrees()) < 1.5; //TODO: cheak
   }
 
   public static Pose2d getRobotPose(){

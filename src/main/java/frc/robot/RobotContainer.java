@@ -77,7 +77,7 @@ public class RobotContainer {
     m_poseEstimator = new PoseEstimatorSubsystem(m_swerve);
     m_isLocalizetion = driverStationController.LeftSwitch().negate();
     m_isLocalizetionOmega = driverStationController.LeftMidSwitch().negate();
-    m_canShoot = new Trigger(() ->(m_shooter.isAtSetpoint() && m_arm.isAtSetpoint() && PoseEstimatorSubsystem.isCentered()));
+    m_canShoot = new Trigger(() ->(m_shooter.isAtSetpoint() && m_arm.isAtSetpoint())); //TODO: add isCentered 
     m_firstBeamBreakSees =  new Trigger(() -> m_intake.firstBeamBreak());
     m_firdtBeamBreakDontSees = new Trigger(() -> !m_intake.firstBeamBreak());
     SmartDashboard.putData("reset Odometry from limelight", new InstantCommand(() -> PoseEstimatorSubsystem.resetPositionFromCamera()));
@@ -139,9 +139,9 @@ public class RobotContainer {
 
   public void intakeBinding(){
     drivercontroller.L2().onTrue(new ArmSetPosition(m_arm, 10, true));
-    drivercontroller.L2().whileTrue(new IntakeSetPrecent(m_intake, 0.8));
-    (m_firstBeamBreakSees).onTrue(new IntakeEatUntilHasNote(m_intake, 0.5, false).andThen(new IntakeGlubGlub(m_intake, false)));
-    (m_firdtBeamBreakDontSees).onTrue(new IntakeEatUntilHasNote(m_intake, 0.7, true).andThen(new IntakeGlubGlub(m_intake, true)).andThen(new IntakeEatUntilHasNote(m_intake, 0.5, false)).andThen(new IntakeGlubGlub(m_intake, false)));
+    // drivercontroller.L2().whileTrue(new IntakeSetPrecent(m_intake, 0.8));
+    drivercontroller.L2().and(m_firstBeamBreakSees).onTrue(new IntakeEatUntilHasNote(m_intake, 0.5, false).andThen(new IntakeGlubGlub(m_intake, false)));
+    drivercontroller.L2().and(m_firdtBeamBreakDontSees).onTrue(new IntakeEatUntilHasNote(m_intake, 0.7, true).andThen(new IntakeGlubGlub(m_intake, true)).andThen(new IntakeEatUntilHasNote(m_intake, 0.5, false)).andThen(new IntakeGlubGlub(m_intake, false)));
     drivercontroller.R2().whileTrue(new IntakeForTime(m_intake, -0.3, 2.0));
     drivercontroller.R1().debounce(0.4).and(m_canShoot).onTrue(new IntakeForTime(m_intake, 0.3, 1.0).andThen(new WaitCommand(0.5)).andThen(new ArmSetPosition(m_arm, 10, true)));
     //TODO: try and change intake output to shooter

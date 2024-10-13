@@ -226,7 +226,6 @@ public final class Constants {
       fileLocation = "";
     }};
   }
-
   public static final class Intake{
     public static final int masterID = 55;
     public static final int SlaveID = 54;
