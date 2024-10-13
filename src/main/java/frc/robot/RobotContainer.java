@@ -9,6 +9,7 @@ import java.util.function.BooleanSupplier;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -22,6 +23,7 @@ import frc.DELib.Util.DriverStationController;
 import frc.DELib.Util.SwerveAutoBuilder;
 import frc.robot.commands.ArmCommands.ArmChangeNeutralMode;
 import frc.robot.commands.ArmCommands.ArmHoming;
+import frc.robot.commands.ArmCommands.ArmSetPosition;
 import frc.robot.commands.ArmCommands.ArmWithVision;
 import frc.robot.commands.IntagrationCommands.Amp;
 import frc.robot.commands.IntagrationCommands.Preset;
@@ -29,6 +31,7 @@ import frc.robot.commands.IntagrationCommands.ResetAllSubsystems;
 import frc.robot.commands.IntakeCommnands.IntakeEatUntilHasNote;
 import frc.robot.commands.IntakeCommnands.IntakeForTime;
 import frc.robot.commands.IntakeCommnands.IntakeGlubGlub;
+import frc.robot.commands.IntakeCommnands.IntakeSetPrecent;
 import frc.robot.commands.ShooterCommands.ShooterSetIfHasNote;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -56,8 +59,8 @@ public class RobotContainer {
   private SwerveAutoBuilder swerveAutoBuilder;
   public static BooleanSupplier m_isLocalizetion = ()-> false;
   public static BooleanSupplier m_isLocalizetionOmega = () -> false;
-  private static BooleanSupplier m_firstIntake = () -> false;
-  private static BooleanSupplier m_secondIntake = () -> false;
+  private static Trigger m_firstIntake;
+  private static Trigger m_secondIntake;
   private Trigger m_canShoot;
 
   public RobotContainer() {
@@ -70,9 +73,9 @@ public class RobotContainer {
     m_poseEstimator = new PoseEstimatorSubsystem(m_swerve);
     m_isLocalizetion = driverStationController.LeftSwitch();
     m_isLocalizetionOmega = driverStationController.LeftMidSwitch();
-    m_canShoot = new Trigger(() ->(m_shooter.isAtSetpoint() && m_arm.isAtSetpoint() && VisionSubsystem.getTv()));
-    m_firstIntake = () -> m_intakeSub.firstBeamBreak();
-    m_secondIntake = () -> !m_intakeSub.firstBeamBreak();
+    m_canShoot = new Trigger(() ->(m_shooter.isAtSetpoint() && m_arm.isAtSetpoint()));
+    m_firstIntake =  new Trigger(() -> m_intakeSub.firstBeamBreak());
+    m_secondIntake = new Trigger(() -> !m_intakeSub.firstBeamBreak());
     SmartDashboard.putData("reset Odometry from limelight", new InstantCommand(() -> PoseEstimatorSubsystem.resetPositionFromCamera()));
     SwerveBinding();
     armBinding();
@@ -112,14 +115,17 @@ public class RobotContainer {
   }
 
   public void shooterBinding(){
-    drivercontroller.R1().onTrue(new ShooterSetIfHasNote(m_shooter, m_intakeSub, 7000));
+    drivercontroller.R1().debounce(0.2).onTrue(new ShooterSetIfHasNote(m_shooter, m_intakeSub, 7000));
   }
 
   public void intakeBinding(){
-    drivercontroller.L2().and(m_firstIntake).onTrue(new IntakeEatUntilHasNote(m_intakeSub, 0.5, false).andThen(new IntakeGlubGlub(m_intakeSub, false)));
-    drivercontroller.L2().and(m_secondIntake).onTrue(new IntakeEatUntilHasNote(m_intakeSub, 0.7, true).andThen(new IntakeGlubGlub(m_intakeSub, true)).andThen(new IntakeEatUntilHasNote(m_intakeSub, 0.5, false)).andThen(new IntakeGlubGlub(m_intakeSub, false)));
+    drivercontroller.L2().onTrue(new ArmSetPosition(m_arm, 10, true));
+    drivercontroller.L2().whileTrue(new IntakeSetPrecent(m_intakeSub, 0.8));
+    (m_firstIntake).onTrue(new IntakeEatUntilHasNote(m_intakeSub, 0.5, false).andThen(new IntakeGlubGlub(m_intakeSub, false)));
+    (m_secondIntake).onTrue(new IntakeEatUntilHasNote(m_intakeSub, 0.7, true).andThen(new IntakeGlubGlub(m_intakeSub, true)).andThen(new IntakeEatUntilHasNote(m_intakeSub, 0.5, false)).andThen(new IntakeGlubGlub(m_intakeSub, false)));
     drivercontroller.R2().whileTrue(new IntakeForTime(m_intakeSub, -0.3, 2.0));
-    drivercontroller.R1().debounce(0.4).and(m_canShoot).onTrue(new IntakeForTime(m_intakeSub, 0.3, 1.0));
+    drivercontroller.R1().debounce(0.4).and(m_canShoot).onTrue(new IntakeForTime(m_intakeSub, 0.3, 1.0).andThen(new WaitCommand(0.5)).andThen(new ArmSetPosition(m_arm, 10, true)));
+    //TODO: try and change intake output to shooter
   }
 
   public void presets(){

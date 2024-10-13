@@ -5,7 +5,6 @@
 package frc.robot.commands.IntakeCommnands;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.DELib.BooleanUtil.LatchedBolean;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -53,7 +52,6 @@ public class IntakeGlubGlub extends Command {
   @Override
   public void execute() {
     if(m_isFirstBeamBreak){
-      SmartDashboard.putString("isIntakeFirst", "yes");
       m_firstStage.update(m_intake.firstBeamBreak()); 
       if(i < m_howManyGlubGlub && m_firstStage.get()){
         if(m_intake.firstBeamBreak() && m_timer.hasElapsed(0.1)){
@@ -72,8 +70,6 @@ public class IntakeGlubGlub extends Command {
       }
     }
     else{
-      SmartDashboard.putString("isIntakeFirst", "NO");
-      SmartDashboard.putBoolean("t", Ligma);
       m_firstStage.update(m_intake.secondBeamBreak()); 
       if(i < m_howManyGlubGlub && m_firstStage.get()){
         if(m_intake.secondBeamBreak() && m_timer.hasElapsed(0.05)){
@@ -88,16 +84,13 @@ public class IntakeGlubGlub extends Command {
       }
       else if(i == m_howManyGlubGlub && m_intake.secondBeamBreak() && !Ligma){
         Ligma = true;
-        SmartDashboard.putString("stateIntake", "seesNote");
         m_intake.setMotorPrecent(-slowOutake);
       }
       else if(i == m_howManyGlubGlub && !m_intake.secondBeamBreak()){
         if(Ligma){
           secondStage = !m_intake.secondBeamBreak();
-          SmartDashboard.putString("stateIntake", "seesNote");
         }
         else{
-          SmartDashboard.putString("stateIntake", "NOTseesNote");
           m_intake.setMotorPrecent(slowOutake);
           // secondStage = m_intake.secondBeamBreak();
         }
@@ -114,7 +107,6 @@ public class IntakeGlubGlub extends Command {
     // else{
     //   m_intake.setMotorPrecent(0);
     // }
-    SmartDashboard.putBoolean("t", Ligma);
     Ligma = false;
     m_intake.setMotorPrecent(0);
   }
