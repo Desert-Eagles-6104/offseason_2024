@@ -63,8 +63,9 @@ public class RobotContainer {
   private SwerveAutoBuilder swerveAutoBuilder;
   public static BooleanSupplier m_isLocalizetion = ()-> false;
   public static BooleanSupplier m_isLocalizetionOmega = () -> false;
-  private static Trigger m_firstBeamBreakSees;
-  private static Trigger m_firdtBeamBreakDontSees;
+  private Trigger m_firstBeamBreakSees;
+  private Trigger m_firstBeamBreakDontSees;
+  private BooleanSupplier m_canStartNoteGlublub = () -> false;
   private Trigger m_canShoot;
 
   public RobotContainer() {
@@ -79,7 +80,7 @@ public class RobotContainer {
     m_isLocalizetionOmega = driverStationController.LeftMidSwitch().negate();
     m_canShoot = new Trigger(() ->(m_shooter.isAtSetpoint() && m_arm.isAtSetpoint())); //TODO: add isCentered 
     m_firstBeamBreakSees =  new Trigger(() -> m_intake.firstBeamBreak());
-    m_firdtBeamBreakDontSees = new Trigger(() -> !m_intake.firstBeamBreak());
+    m_firstBeamBreakDontSees = new Trigger(() -> !m_intake.firstBeamBreak());
     SmartDashboard.putData("reset Odometry from limelight", new InstantCommand(() -> PoseEstimatorSubsystem.resetPositionFromCamera()));
     SwerveBinding();
     armBinding();
@@ -139,17 +140,15 @@ public class RobotContainer {
 
   public void intakeBinding(){
     drivercontroller.L2().onTrue(new ArmSetPosition(m_arm, 10, true));
-    // drivercontroller.L2().whileTrue(new IntakeSetPrecent(m_intake, 0.8));
-    drivercontroller.L2().and(m_firstBeamBreakSees).onTrue(new IntakeEatUntilHasNote(m_intake, 0.5, false).andThen(new IntakeGlubGlub(m_intake, false)));
-    drivercontroller.L2().and(m_firdtBeamBreakDontSees).onTrue(new IntakeEatUntilHasNote(m_intake, 0.7, true).andThen(new IntakeGlubGlub(m_intake, true)).andThen(new IntakeEatUntilHasNote(m_intake, 0.5, false)).andThen(new IntakeGlubGlub(m_intake, false)));
+    drivercontroller.L2().whileTrue(new IntakeEatUntilHasNote(m_intake, 0.65, false).andThen(new InstantCommand(() -> m_canStartNoteGlublub = () -> true)));
+    (m_firstBeamBreakSees).and(m_canStartNoteGlublub).onTrue(new IntakeEatUntilHasNote(m_intake, 0.5, false).andThen(new IntakeGlubGlub(m_intake, false)).andThen(new InstantCommand(() -> m_canStartNoteGlublub = () -> false)));
+    (m_firstBeamBreakDontSees).and(m_canStartNoteGlublub).onTrue(new IntakeEatUntilHasNote(m_intake, 0.7, true).andThen(new IntakeGlubGlub(m_intake, true)).andThen(new IntakeEatUntilHasNote(m_intake, 0.5, false)).andThen(new IntakeGlubGlub(m_intake, false)).andThen(new InstantCommand(() -> m_canStartNoteGlublub = () -> false)));
     drivercontroller.R2().whileTrue(new IntakeForTime(m_intake, -0.3, 2.0));
     drivercontroller.R1().debounce(0.4).and(m_canShoot).onTrue(new IntakeForTime(m_intake, 0.3, 1.0).andThen(new WaitCommand(0.5)).andThen(new ArmSetPosition(m_arm, 10, true)));
-    //TODO: try and change intake output to shooter
   }
 
   public void presets(){
     driverStationController.RightYellow().onTrue(new InstantCommand(() -> m_intake.setMotorPrecent(0.3)));
-    driverStationController.DownYellow().onTrue(new Preset(m_shooter, m_arm, 9.57, 7000));
     drivercontroller.triangle().onTrue(new Amp(m_intake, m_arm, m_shooter));
   }
 

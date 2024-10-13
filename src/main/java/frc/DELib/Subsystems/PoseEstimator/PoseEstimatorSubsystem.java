@@ -88,6 +88,14 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
     return m_swerve.getInterpolatedPose(latencySeconds);
   }
 
+    public static Rotation2d getAngleToDeliveryCloseToSpeaker(){
+    return Rotation2d.fromRadians(-Math.atan((7.0 - getRobotPose().getY())/(0.95 -getRobotPose().getX())));
+  }
+
+    public static double getDistanceToDeliveryCloseToSpeaker(){
+    return getRobotPose().getTranslation().getDistance(new Translation2d(0.95, 7.0));
+  }
+
   public static double getDistanceToBlueSpeaker(){
     return getRobotPose().getTranslation().getDistance(new Translation2d(0.0, 5.55));
   }
