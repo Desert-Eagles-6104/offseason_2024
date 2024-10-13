@@ -21,7 +21,7 @@ public class DriveAssist {
     public ChassisSpeeds update(ChassisSpeeds chassisSpeeds, Rotation2d robotHeading){
         ChassisSpeeds toReturn = new ChassisSpeeds();
         if(VisionSubsystem.getTvNote() && m_intakeButton.getAsBoolean()){
-            toReturn = ChassisSpeeds.fromRobotRelativeSpeeds(0, m_filter.calculate(VisionSubsystem.getTxNote())*m_kp, 0, robotHeading);
+            toReturn = ChassisSpeeds.fromRobotRelativeSpeeds(0, m_filter.calculate(-VisionSubsystem.getTxNote())*m_kp, 0, robotHeading);
         }
         chassisSpeeds.vxMetersPerSecond = toReturn.vxMetersPerSecond + chassisSpeeds.vxMetersPerSecond;
         chassisSpeeds.vyMetersPerSecond = toReturn.vyMetersPerSecond + chassisSpeeds.vyMetersPerSecond;

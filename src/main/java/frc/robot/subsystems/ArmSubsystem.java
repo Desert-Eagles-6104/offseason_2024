@@ -112,6 +112,7 @@ public class ArmSubsystem extends ServoSubsystemTalon {
     {4.48, 29.1},
     {4.55, 28.25},
     {4.71,27.7},
+    {4.91, 27.5},
     {5.07, 27.25},
     {5.21, 26.0},
     {5.40, 26.75},

@@ -43,8 +43,8 @@ public class ArmWithVision extends Command {
       }
     }
     else{
-      // m_arm.setUsingInterpulationPOS(PoseEstimatorSubsystem.getDistanceToBlueSpeaker()); //TODO: if shooter not working uncomment
-      m_arm.setPosition(PoseEstimatorSubsystem.getArmAngleToBlueSpeaker());
+      m_arm.setUsingInterpulationPOS(PoseEstimatorSubsystem.getDistanceToBlueSpeaker()); //TODO: if shooter not working uncomment
+      // m_arm.setPosition(PoseEstimatorSubsystem.getArmAngleToBlueSpeaker());
     }
   }
 

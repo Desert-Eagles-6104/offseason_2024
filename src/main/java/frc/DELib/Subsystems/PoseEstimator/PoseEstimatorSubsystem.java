@@ -34,13 +34,18 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
 
   @Override
   public void periodic() {
-    updateVisionOdometry();
-    SmartDashboard.putString("estimatedRobotPose", getRobotPose().toString());
-    SmartDashboard.putNumber("distance from speaker", getDistanceToBlueSpeaker());
-    SmartDashboard.putNumber("angleSpeaker", getAngleToBlueSpeaker().getDegrees());
-    field2d.setRobotPose(getRobotPose());
-    SmartDashboard.putData("field2d ",field2d);
-    SmartDashboard.putBoolean("isCentered", isCentered());
+    if(!first){
+      updateVisionOdometry();
+      SmartDashboard.putString("estimatedRobotPose", getRobotPose().toString());
+      SmartDashboard.putNumber("distance from speaker", getDistanceToBlueSpeaker());
+      SmartDashboard.putNumber("angleSpeaker", getAngleToBlueSpeaker().getDegrees());
+      field2d.setRobotPose(getRobotPose());
+      SmartDashboard.putData("field2d ",field2d);
+      SmartDashboard.putBoolean("isCentered", isCentered());
+    }
+    else{
+      first = false;
+    }
   }
 
   private static void updateVisionOdometry(){
@@ -51,7 +56,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
       if(Math.abs(m_gyro.getRateStatusSignal().getValueAsDouble()) > 360 && getRobotPose().getX() < 5){
         rejectUpdate = true;
       }
-      if(!rejectUpdate && VisionSubsystem.getTv()){
+      if(!rejectUpdate && VisionSubsystem.getTv() && limelightMesermentMT2.pose != null){
         m_swerve.addVisionMeasurement(limelightMesermentMT2.pose, limelightMesermentMT2.timestampSeconds);
       }
     }

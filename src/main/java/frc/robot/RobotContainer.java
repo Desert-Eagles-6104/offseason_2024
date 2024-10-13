@@ -6,6 +6,8 @@ package frc.robot;
 
 import java.util.function.BooleanSupplier;
 
+import com.fasterxml.jackson.core.TreeCodec;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -135,14 +137,14 @@ public class RobotContainer {
   }
 
   public void shooterBinding(){
-    drivercontroller.R1().debounce(0.2).onTrue(new ShooterSetIfHasNote(m_shooter, m_intake, 7000));
+    drivercontroller.R1().onTrue(new ShooterSetIfHasNote(m_shooter, m_intake, 7000));
   }
 
   public void intakeBinding(){
     drivercontroller.L2().onTrue(new ArmSetPosition(m_arm, 10, true));
-    drivercontroller.L2().whileTrue(new IntakeEatUntilHasNote(m_intake, 0.65, false).andThen(new InstantCommand(() -> m_canStartNoteGlublub = () -> true)));
-    (m_firstBeamBreakSees).and(m_canStartNoteGlublub).onTrue(new IntakeEatUntilHasNote(m_intake, 0.5, false).andThen(new IntakeGlubGlub(m_intake, false)).andThen(new InstantCommand(() -> m_canStartNoteGlublub = () -> false)));
-    (m_firstBeamBreakDontSees).and(m_canStartNoteGlublub).onTrue(new IntakeEatUntilHasNote(m_intake, 0.7, true).andThen(new IntakeGlubGlub(m_intake, true)).andThen(new IntakeEatUntilHasNote(m_intake, 0.5, false)).andThen(new IntakeGlubGlub(m_intake, false)).andThen(new InstantCommand(() -> m_canStartNoteGlublub = () -> false)));
+    // drivercontroller.L2().whileTrue(new IntakeEatUntilHasNote(m_intake, 0.5, true).andThen(new InstantCommand(() -> m_canStartNoteGlublub = () -> true)));
+    (m_firstBeamBreakSees).and(drivercontroller.L2()).onTrue(new IntakeEatUntilHasNote(m_intake, 0.5, false).andThen(new IntakeGlubGlub(m_intake, false)).andThen(new InstantCommand(() -> m_canStartNoteGlublub = () -> false)));
+    (m_firstBeamBreakDontSees).and(drivercontroller.L2()).onTrue(new IntakeEatUntilHasNote(m_intake, 0.7, true).andThen(new IntakeGlubGlub(m_intake, true)).andThen(new IntakeEatUntilHasNote(m_intake, 0.5, false)).andThen(new IntakeGlubGlub(m_intake, false)).andThen(new InstantCommand(() -> m_canStartNoteGlublub = () -> false)));
     drivercontroller.R2().whileTrue(new IntakeForTime(m_intake, -0.3, 2.0));
     drivercontroller.R1().debounce(0.4).and(m_canShoot).onTrue(new IntakeForTime(m_intake, 0.3, 1.0).andThen(new WaitCommand(0.5)).andThen(new ArmSetPosition(m_arm, 10, true)));
   }
