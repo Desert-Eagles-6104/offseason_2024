@@ -14,16 +14,14 @@ import frc.robot.subsystems.ArmSubsystem;
 public class ArmWithVision extends Command {
   /** Creates a new ArmWithVision. */
   ArmSubsystem m_arm;
-  VisionSubsystem m_visionSubsystem;
   LinearFilter m_filterTy;
 
   private double Lastsetpoint = -9999;
   private double threshold = 0.03;
 
 
-  public ArmWithVision(ArmSubsystem arm,VisionSubsystem visionSubsystem) {
+  public ArmWithVision(ArmSubsystem arm) {
     m_arm = arm;
-    m_visionSubsystem = visionSubsystem;
     m_filterTy = LinearFilter.movingAverage(4);
     addRequirements(arm);
     }
@@ -36,7 +34,7 @@ public class ArmWithVision extends Command {
 
   @Override
   public void execute() {
-    if(RobotContainer.m_isLocalizetion.getAsBoolean()){
+    if(!RobotContainer.m_isLocalizetion.getAsBoolean()){
       if(VisionSubsystem.getTv()){
         if(Math.abs(Lastsetpoint - VisionSubsystem.getTy()) > threshold){
         m_arm.setUsingInterpulationVision(m_filterTy.calculate(Lastsetpoint));

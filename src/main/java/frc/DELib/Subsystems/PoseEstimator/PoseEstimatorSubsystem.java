@@ -4,18 +4,12 @@
 
 package frc.DELib.Subsystems.PoseEstimator;
 
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.DELib.Intepulation.InterpolatingDouble;
-import frc.DELib.Intepulation.InterpolatingTreeMap;
 import frc.DELib.Sensors.Pigeon;
 import frc.DELib.Subsystems.Swerve.SwerveSubsystem;
 import frc.DELib.Subsystems.Vision.VisionSubsystem;
@@ -25,10 +19,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
   /** Creates a new PoseEstimator. */
   private static SwerveSubsystem m_swerve;
   private static Pigeon m_gyro;
-  private static SwerveDrivePoseEstimator m_poseEstimator;
-  private static Pose2d m_estimatedRobotPose = new Pose2d();
   private static LimelightHelpers.PoseEstimate limelightMesermentMT2;
-  private static InterpolatingTreeMap<InterpolatingDouble, Pose2d> m_pastPoses;
   private static double speakerHighetFromRobot = 2.049-0.136;
   private static double odometryToArmDistance = 0.13784;
   private static boolean first = true;
@@ -39,26 +30,17 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
     field2d = new Field2d();
     m_swerve = swerve;
     m_gyro = Pigeon.getInstance();
-    int k_maxPoseHistorySize = 51;
-    m_pastPoses = new InterpolatingTreeMap<>(k_maxPoseHistorySize);
-    m_poseEstimator = new SwerveDrivePoseEstimator(m_swerve.getKinematics(), Rotation2d.fromDegrees(0), m_swerve.getModulesPositions(), new Pose2d());
   }
 
   @Override
   public void periodic() {
-    m_estimatedRobotPose = m_poseEstimator.update(m_gyro.getYaw(), m_swerve.getModulesPositions());
     updateVisionOdometry();
-    m_pastPoses.put(new InterpolatingDouble(Timer.getFPGATimestamp()), getRobotPose());
     SmartDashboard.putString("estimatedRobotPose", getRobotPose().toString());
     SmartDashboard.putNumber("distance from speaker", getDistanceToBlueSpeaker());
     SmartDashboard.putNumber("angleSpeaker", getAngleToBlueSpeaker().getDegrees());
     field2d.setRobotPose(getRobotPose());
     SmartDashboard.putData("field2d ",field2d);
-    SmartDashboard.putNumber("anglearmgoodhoo", getArmAngleToBlueSpeaker());
-  }
-
-  public static Pose2d getRobotPose(){
-    return m_estimatedRobotPose;
+    SmartDashboard.putBoolean("isCentered", isCentered());
   }
 
   private static void updateVisionOdometry(){
@@ -70,7 +52,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
         rejectUpdate = true;
       }
       if(!rejectUpdate && VisionSubsystem.getTv()){
-        m_poseEstimator.addVisionMeasurement(limelightMesermentMT2.pose, limelightMesermentMT2.timestampSeconds, VecBuilder.fill(0.7, 0.7, 9999999));
+        m_swerve.addVisionMeasurement(limelightMesermentMT2.pose, limelightMesermentMT2.timestampSeconds);
       }
     }
     else{
@@ -78,8 +60,16 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
     }
   }
 
+  public static boolean isCentered(){
+    return Math.abs(getHeading().getDegrees() - getAngleToBlueSpeaker().getDegrees()) < 1.5;
+  }
+
+  public static Pose2d getRobotPose(){
+    return m_swerve.getPose();
+  }
+
   public static void resetPosition(Pose2d pose){
-    m_poseEstimator.resetPosition(m_gyro.getYaw(), m_swerve.getModulesPositions(), pose);
+    m_swerve.resetOdometry(pose);
   }
 
   public static void resetPositionFromCamera(){
@@ -87,14 +77,15 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
   }
   
   public static void zeroHeading(){
-    Rotation2d heading = (DriverStation.getAlliance().isPresent() && (DriverStation.getAlliance().get() == DriverStation.Alliance.Red)) ? Rotation2d.fromDegrees(180) : new Rotation2d();
-    m_poseEstimator.resetPosition(m_gyro.getYaw(), m_swerve.getModulesPositions(), new Pose2d(getRobotPose().getTranslation(), heading));
-    m_gyro.setYaw(heading.getDegrees());
+    m_swerve.zeroHeading();
+  }
+
+    public static Rotation2d getHeading() {
+    return getRobotPose().getRotation();
   }
 
   public static Pose2d getInterpolatedPose(double latencySeconds){
-    double timestamp = Timer.getFPGATimestamp() - latencySeconds;
-    return m_pastPoses.getInterpolated(new InterpolatingDouble(timestamp));
+    return m_swerve.getInterpolatedPose(latencySeconds);
   }
 
   public static double getDistanceToBlueSpeaker(){
@@ -106,7 +97,22 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
   }
 
   public static double getArmAngleToBlueSpeaker(){
-    double distanceToSpeaker = getDistanceToBlueSpeaker()+odometryToArmDistance + 0.06;
+    double distanceToSpeaker = getDistanceToBlueSpeaker()+odometryToArmDistance;
+    return clamp(Math.toDegrees(Math.atan((speakerHighetFromRobot)/(distanceToSpeaker)))+7.9  , 10, 100);
+  } 
+
+  
+  public static double getDistanceToBlueSpeakerOnTheMove(){
+    return getInterpolatedPose(0.02).getTranslation().getDistance(new Translation2d(0.0, 5.55));
+  }
+
+  public static Rotation2d getAngleToBlueSpeakerOnTheMove(){
+    Pose2d pose = getInterpolatedPose(0.02);
+    return Rotation2d.fromRadians(-Math.atan((5.55 - pose.getY())/(0 -pose.getX())));
+  }
+
+  public static double getArmAngleToBlueSpeakerOnTheMove(){
+    double distanceToSpeaker = getDistanceToBlueSpeakerOnTheMove()+odometryToArmDistance - 0.1;
     return clamp(Math.toDegrees(Math.atan((speakerHighetFromRobot)/(distanceToSpeaker))), 10, 100);
   } 
 
@@ -119,8 +125,4 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
   private static double clamp(double value, double min, double max) {
     return Math.max(min, Math.min(max, value));
     }
-
-  public static Rotation2d getHeading() {
-    return getRobotPose().getRotation();
-  }
 }
