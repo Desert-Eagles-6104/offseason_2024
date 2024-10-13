@@ -38,8 +38,8 @@ public class SwerveAutoBuilder {
         m_swerve = swerve;
         m_fullAutoCommands = new HashMap<String, Command>();
         AutoBuilder.configureHolonomic(
-            PoseEstimatorSubsystem::getRobotPose, // Robot pose supplier
-            PoseEstimatorSubsystem::resetPosition, // Method to reset odometry (will be called if your auto has a starting pose)
+            m_swerve::getPose, // Robot pose supplier
+            m_swerve::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
             m_swerve::getRobotRelativeVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             this::autoDrive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
             new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
@@ -65,7 +65,7 @@ public class SwerveAutoBuilder {
         m_autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", m_autoChooser);
         m_rotationOverrideConditionSupplier = () -> false;
-        m_rotationTargetSupplier = () -> 0;
+        m_rotationTargetSupplier = () -> PoseEstimatorSubsystem.getAngleToBlueSpeaker().getDegrees();
 
         NamedCommands.registerCommand("EnableRotationOverride", new InstantCommand(() ->setRotationOverrideConditionSupplier(() -> true)));
         NamedCommands.registerCommand("DisableRotationOverride", new InstantCommand(() ->setRotationOverrideConditionSupplier(() -> false)));   }
@@ -134,7 +134,6 @@ public class SwerveAutoBuilder {
     }
 
     private void autoDrive(ChassisSpeeds chassisSpeeds){
-        chassisSpeeds.omegaRadiansPerSecond = -chassisSpeeds.omegaRadiansPerSecond;
         m_swerve.drive(chassisSpeeds, false, false, new Translation2d());;
     }
 }

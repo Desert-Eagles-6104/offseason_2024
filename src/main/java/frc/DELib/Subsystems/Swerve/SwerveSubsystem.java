@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.Volts;
 import java.io.IOException;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -105,6 +106,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public Pose2d getPose() {
     return m_odometry.getEstimatedPosition();
+  }
+
+  public void addVisionMeasurement(Pose2d visionPose, double timestamp){
+    m_odometry.addVisionMeasurement(visionPose, timestamp, VecBuilder.fill(0.7, 0.7, 9999999));
   }
 
   public SwerveDriveKinematics getKinematics(){
