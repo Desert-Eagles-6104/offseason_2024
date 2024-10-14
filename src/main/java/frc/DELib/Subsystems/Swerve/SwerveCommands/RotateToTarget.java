@@ -9,22 +9,22 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
+import frc.DELib.BooleanUtil.StableBoolean;
+import frc.DELib.Subsystems.PoseEstimator.PoseEstimatorSubsystem;
 import frc.DELib.Subsystems.Swerve.SwerveSubsystem;
 import frc.DELib.Subsystems.Swerve.SwerveUtil.HeadingController;
 import frc.DELib.Subsystems.Vision.VisionSubsystem;
 
 public class RotateToTarget extends Command {
   SwerveSubsystem m_swerve;
-  VisionSubsystem m_VisionSubsystem;
   HeadingController m_headingController;
-  CommandPS5Controller m_controller;
+  Rotation2d target = new Rotation2d();
+  StableBoolean isFinish;
   /** Creates a new RotateToTarget. */
-  public RotateToTarget(SwerveSubsystem swerve , VisionSubsystem vision, CommandPS5Controller controller) {
+  public RotateToTarget(SwerveSubsystem swerve) {
     m_swerve = swerve;
-    m_VisionSubsystem = vision;
-    m_controller = controller;
-    m_headingController = new HeadingController(0.1, 0, 0);
-    addRequirements(swerve);
+    m_headingController = new HeadingController(0.2, 0, 0);
+    isFinish = new StableBoolean(0.3);
   }
 
   // Called when the command is initially scheduled.
@@ -36,10 +36,9 @@ public class RotateToTarget extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double errorDegrees = VisionSubsystem.getTv() ? -VisionSubsystem.getTx() : 0;
-    Rotation2d target = m_swerve.getInterpolatedPose(VisionSubsystem.getTotalLatency()).getRotation().plus(Rotation2d.fromDegrees(errorDegrees));
+    target = PoseEstimatorSubsystem.getAngleToBlueSpeaker().unaryMinus();
     m_headingController.setSetpoint(target);
-    ChassisSpeeds chassisSpeeds = new ChassisSpeeds(m_controller.getLeftX(), m_controller.getLeftY(), m_headingController.update(m_swerve.getInterpolatedPose(VisionSubsystem.getTotalLatency()).getRotation()));
+    ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0,0,m_headingController.update(PoseEstimatorSubsystem.getHeading()));
     m_swerve.drive(chassisSpeeds, true, true, new Translation2d());
   }
 
@@ -52,6 +51,6 @@ public class RotateToTarget extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return isFinish.get(Math.abs(target.getDegrees() - PoseEstimatorSubsystem.getHeading().getDegrees()) < 2);
   }
 }

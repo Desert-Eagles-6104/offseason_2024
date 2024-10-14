@@ -90,7 +90,7 @@ public final class Constants {
       /* These values are used by the drive falcon to ramp in open loop and closed loop driving.
       * We found a small open loop ramp (0.25) helps with tread wear, tipping, etc */
       openLoopRamp = 0.2;
-      closedLoopRamp = 0.0;
+      closedLoopRamp = 0.2;
 
       /* Angle Motor PID Values */
       angleKP = chosenModule.angleKP;

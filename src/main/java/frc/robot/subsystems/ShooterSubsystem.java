@@ -221,6 +221,14 @@ public class ShooterSubsystem extends SubsystemBase{
     m_leftMotor.setControl(m_dutyCycleRequest.withOutput(precent));
   }
 
+  public double getRightSetpoint(){
+    return rightSetpoint;
+  }
+
+  public double getLeftSetpoint(){
+    return leftSetpoint;
+  }
+
   public boolean isAtSetpointRight() {
    return Math.abs(rightSetpoint - getVelocityRight()) < m_configuration.allowableError;
   }

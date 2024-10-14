@@ -24,8 +24,8 @@ public class ArmSubsystem extends ServoSubsystemTalon {
     linearVision = new LinearInterpolator(interpulationVisionSpeaker);
     linearInterpolatorLocalizationSpeaker = new LinearInterpolator(interpulationLocalizationSpeaker);
     linearInterpulationDeliverySpeaker = new LinearInterpolator(interpulationDeliverySpeaker);
-    SmartDashboard.putNumber("armOffset", 0);
     SmartDashboard.putNumber("ArmAngleToSet", 90);
+    SmartDashboard.putNumber("ArmAngleOffset", 0.75);
   }
 
   @Override
@@ -80,7 +80,7 @@ public class ArmSubsystem extends ServoSubsystemTalon {
 
   public void setUsingInterpulationPOS(double value) {
     double angle = linearInterpolatorLocalizationSpeaker.getInterpolatedValue(value);
-    this.setPosition(angle);
+    this.setPosition(angle+SmartDashboard.getNumber("ArmAngleOffset", 0.75));
   }
 
   public double getInterpulationDeliverySpeaker(double limeVal){
@@ -97,31 +97,30 @@ public class ArmSubsystem extends ServoSubsystemTalon {
   }
   //position Interpulation
   double[][] interpulationLocalizationSpeaker = 
-  {
-    {1.183, 57.0},
-    {1.48, 51.0},
-    {1.779, 47.0},
-    {2.041, 44.0},
-    {2.30, 40.0},
-    {2.60, 39.0},
-    {2.92, 36.5},
-    {3.29, 34.0},
-    {3.51, 33.0},
-    {3.95, 31.0},
-    {4.15, 30.25},
-    {4.48, 29.1},
-    {4.55, 28.25},
-    {4.71,27.7},
-    {4.91, 27.5},
-    {5.07, 27.25},
-    {5.21, 26.0},
-    {5.40, 26.75},
-    {5.56,26.5},
-    {5.67, 26.4},
-    {5.90, 26.0},
-    {6.10, 25.8},
-    {6.65, 25.4},
-    {6.74, 24.9}};
+  {{1.32, 55.0},
+  {1.57, 51.0},
+  {1.88, 47.0},
+  {2.20, 43.0},
+  {2.30, 42.0},
+  {2.47, 41.0},
+  {2.77, 38},
+  {3.1, 35.5},
+  {3.38, 33.5},
+  {3.74, 33.0},
+  {4.12, 31.0},
+  {4.31, 29.75},
+  {4.62, 28.8},
+  {4.94,27.7},
+  {5.21, 27.25},
+  {5.51, 26.35},
+  {5.80, 26.15},
+  {6.104, 25.85},
+  {6.47,25.75},
+  {6.76, 25.75},
+  {7.06, 25.20},
+  {7.41, 24.5}};
+
+ 
 
 
   //vision Intepulation

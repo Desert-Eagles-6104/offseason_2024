@@ -66,7 +66,7 @@ public class SwerveSubsystem extends SubsystemBase {
     m_swerveModules[3] = m_backRight;
 
     m_kinematics = new SwerveDriveKinematics(swerveConstants.frontLeftPos, swerveConstants.frontRightPos, swerveConstants.backLeftPos, swerveConstants.backRightPos);
-    m_odometry = new SwerveDrivePoseEstimator(m_kinematics, Rotation2d.fromDegrees(0), getModulesPositions(), new Pose2d());
+    m_odometry = new SwerveDrivePoseEstimator(m_kinematics, Rotation2d.fromDegrees(0), getModulesPositions(), new Pose2d(), VecBuilder.fill(0.1, 0.1, 0.1), VecBuilder.fill(0.3, 0.3, 9999999));
 
     try {
       m_writer = new CSVWriter(swerveConstants.filepath);

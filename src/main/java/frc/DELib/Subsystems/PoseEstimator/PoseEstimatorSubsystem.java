@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.DELib.BooleanUtil.StableBoolean;
 import frc.DELib.Sensors.Pigeon;
 import frc.DELib.Subsystems.Swerve.SwerveSubsystem;
 import frc.DELib.Subsystems.Vision.VisionSubsystem;
@@ -23,6 +24,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
   private static double speakerHighetFromRobot = 2.049-0.136;
   private static double odometryToArmDistance = 0.13784;
   private static boolean first = true;
+  private static StableBoolean tvStableBoolean;
   Field2d field2d;
   
   
@@ -30,17 +32,18 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
     field2d = new Field2d();
     m_swerve = swerve;
     m_gyro = Pigeon.getInstance();
+    tvStableBoolean = new StableBoolean(0.15);
   }
 
   @Override
   public void periodic() {
     if(!first){
       updateVisionOdometry();
-      SmartDashboard.putString("estimatedRobotPose", getRobotPose().toString());
+      // SmartDashboard.putString("estimatedRobotPose", getRobotPose().toString());
       SmartDashboard.putNumber("distance from speaker", getDistanceToBlueSpeaker());
       SmartDashboard.putNumber("angleSpeaker", getAngleToBlueSpeaker().getDegrees());
-      field2d.setRobotPose(getRobotPose());
-      SmartDashboard.putData("field2d ",field2d);
+      // field2d.setRobotPose(getRobotPose());
+      // SmartDashboard.putData("field2d ",field2d);
       SmartDashboard.putBoolean("isCentered", isCentered());
     }
     else{
@@ -53,10 +56,10 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
       boolean rejectUpdate = false;
       LimelightHelpers.SetRobotOrientation("limelight", getRobotPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
       limelightMesermentMT2 = VisionSubsystem.getEstimatedRobotPose();
-      if(Math.abs(m_gyro.getRateStatusSignal().getValueAsDouble()) > 360 && getRobotPose().getX() < 5){
+      if(Math.abs(m_gyro.getRateStatusSignal().getValueAsDouble()) > 360 && getRobotPose().getX() < 5 || limelightMesermentMT2.pose == null){
         rejectUpdate = true;
       }
-      if(!rejectUpdate && VisionSubsystem.getTv() && limelightMesermentMT2.pose != null){
+      if(!rejectUpdate && tvStableBoolean.get(VisionSubsystem.getTv()) && limelightMesermentMT2.pose != null){
         m_swerve.addVisionMeasurement(limelightMesermentMT2.pose, limelightMesermentMT2.timestampSeconds);
       }
     }

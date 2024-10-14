@@ -1,0 +1,128 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.787031987758696,
+        "y": 6.511225119454518
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.787031987758696,
+        "y": 6.511225119454518
+      },
+      "isLocked": false,
+      "linkedName": "start1,4"
+    },
+    {
+      "anchor": {
+        "x": 3.2580184989185943,
+        "y": 6.991369417831561
+      },
+      "prevControl": {
+        "x": 2.672476671629519,
+        "y": 6.862550215827963
+      },
+      "nextControl": {
+        "x": 3.999600237897561,
+        "y": 7.154517400406935
+      },
+      "isLocked": false,
+      "linkedName": "note1"
+    },
+    {
+      "anchor": {
+        "x": 4.920957288419569,
+        "y": 7.190453639109847
+      },
+      "prevControl": {
+        "x": 4.221896410230032,
+        "y": 7.154206038018537
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "SlowDrive",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 3.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 839.77,
+        "maxAngularAcceleration": 750.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "FirstShoot",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "EnableRotationOverride"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoShoot"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "ShortIntake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoShoot"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0.1
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "DisableShooter"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.9,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 839.77,
+    "maxAngularAcceleration": 750.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "SheliAndRoniPath",
+  "previewStartingState": {
+    "rotation": 60.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

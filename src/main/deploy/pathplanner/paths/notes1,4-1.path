@@ -3,24 +3,24 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7050561319382253,
-        "y": 6.710309340732804
+        "x": 0.787031987758696,
+        "y": 6.511225119454518
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6770555652380903,
-        "y": 6.8391285427364
+        "x": 1.7121880748754352,
+        "y": 6.745441850370149
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "start1,4"
     },
     {
       "anchor": {
-        "x": 2.918404239090931,
+        "x": 3.2580184989185943,
         "y": 6.991369417831561
       },
       "prevControl": {
-        "x": 1.6851532715097113,
+        "x": 2.0247675313373747,
         "y": 6.86217169741829
       },
       "nextControl": null,
@@ -29,7 +29,19 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.0,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 3.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 839.77,
+        "maxAngularAcceleration": 750.0
+      }
+    }
+  ],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.9,
@@ -39,8 +51,8 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
-    "rotateFast": false
+    "rotation": 5.0,
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "SheliAndRoniPath",
