@@ -20,7 +20,7 @@ public class SwerveSysidCommands {
                 new SysIdRoutine.Config(
                     Volts.of(4).per(Seconds.of(4)),  // Default ramp rate is acceptable
                     Volts.of(4), // Reduce dynamic voltage to 4 to prevent motor brownout
-                    Seconds.of(10), // Default timeout is acceptable
+                    Seconds.of(6), // Default timeout is acceptable
                                         // Log state with Phoenix SignalLogger class
                     (state)->SignalLogger.writeString("state", state.toString())),
                 new SysIdRoutine.Mechanism(

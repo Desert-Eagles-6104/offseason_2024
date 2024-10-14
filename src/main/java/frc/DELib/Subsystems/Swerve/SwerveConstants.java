@@ -58,7 +58,7 @@ public class SwerveConstants {
     public double angleKD = chosenModule.angleKD;
 
     /* Drive Motor PID Values */
-    public double driveKP = 0.2; //TODO: This must be tuned to specific robot
+    public double driveKP = 3.0; //TODO: This must be tuned to specific robot
     public double driveKI = 0.0;
     public double driveKD = 0.0;
     public double driveKF = 0.0;
@@ -72,9 +72,9 @@ public class SwerveConstants {
 
     /* Drive Motor Characterization Values 
     * Divide SYSID values by 12 to convert from volts to percent output for CTRE */
-    public double driveKS = (0.32 / 12); //TODO: This must be tuned to specific robot
-    public double driveKV = (1.51 / 12);
-    public double driveKA = (0.27 / 12);
+    public double driveKS = (0.0); //TODO: This must be tuned to specific robot
+    public double driveKV = (0.0);
+    public double driveKA = (0.0);
 
     /*wheel parameters */
     public static double WheelRadius = 0.0508;
@@ -87,7 +87,7 @@ public class SwerveConstants {
     public double maxAngularVelocity = 10.0; //TODO: This must be tuned to specific robot
 
     /* Neutral Modes */
-    public NeutralMode angleNeutralMode = NeutralMode.Coast;
+    public NeutralMode angleNeutralMode = NeutralMode.Brake;
     public NeutralMode driveNeutralMode = NeutralMode.Brake;
 
 

@@ -3,13 +3,16 @@
   "robotLength": 0.65,
   "holonomicMode": true,
   "pathFolders": [
-    "New Folder",
+    "Test",
     "SheliAndRoniPath"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "Test",
+    "SheliAndRoniAuto"
+  ],
   "defaultMaxVel": 4.9,
   "defaultMaxAccel": 6.0,
-  "defaultMaxAngVel": 540.0,
-  "defaultMaxAngAccel": 720.0,
+  "defaultMaxAngVel": 839.77,
+  "defaultMaxAngAccel": 750.0,
   "maxModuleSpeed": 5.2
 }

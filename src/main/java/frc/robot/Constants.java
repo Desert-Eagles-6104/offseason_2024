@@ -98,10 +98,11 @@ public final class Constants {
       angleKD = chosenModule.angleKD;
 
       /* Drive Motor PID Values */
-      driveKP = 1.0; //TODO: This must be tuned to specific robot
+      driveKP = 3.5; //TODO: This must be tuned to specific robot
       driveKI = 0.0;
       driveKD = 0.0;
-      driveKS = 0.0;
+      driveKS = 1.2;
+      driveKV = 0.0;
 
       /* Heading PID Values */
       HeadingKP = 0.5;
@@ -122,12 +123,12 @@ public final class Constants {
 
       /* Swerve Profiling Values */
       /** Meters per Second */
-      maxSpeed = 5.21 * 0.8; //TODO: This must be tuned to specific robot
+      maxSpeed = 4.9; //TODO: This must be tuned to specific robot
       /** Radians per Second */
-      maxAngularVelocity = 5.21 / 0.31992 * 0.8; //Robot linear max speed divided by the robot radius 
+      maxAngularVelocity = 5.21 / 0.31992 * 0.9; //Robot linear max speed divided by the robot radius 
 
       /* Neutral Modes */
-      angleNeutralMode = NeutralMode.Coast;
+      angleNeutralMode = NeutralMode.Brake;
       driveNeutralMode = NeutralMode.Brake;
 
 

@@ -88,7 +88,7 @@ public class TeleopDrive extends Command {
         chassisSpeeds = m_headingController.calculateOmegaSpeed2(!Robot.s_isAuto ,shouldResetAngle(m_shouldResetYaw), m_useVision.getAsBoolean(), chassisSpeeds, PoseEstimatorSubsystem.getHeading(), PoseEstimatorSubsystem.getInterpolatedPose(VisionSubsystem.getTotalLatency()).getRotation(), m_swerve.getRobotRelativeVelocity()); 
       }
 
-      chassisSpeeds = m_driveAssistController.update(chassisSpeeds, PoseEstimatorSubsystem.getInterpolatedPose(VisionSubsystem.getTotalLatencyNote()).getRotation());
+      chassisSpeeds = m_driveAssistController.update(chassisSpeeds, PoseEstimatorSubsystem.getHeading());
 
       m_swerve.drive(chassisSpeeds, true, m_fieldRelativeToggle.update(!m_fieldRelative.getAsBoolean()), m_centerOfRotation);
   }
