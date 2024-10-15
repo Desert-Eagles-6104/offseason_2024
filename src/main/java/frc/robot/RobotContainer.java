@@ -130,6 +130,8 @@ public class RobotContainer {
     swerveAutoBuilder.addCommand("DisableSwerveMotors", new SwerveDisableMotors(m_swerve));
     swerveAutoBuilder.addCommand("IntakePrecent", new IntakeSetPrecent(m_intake,0.8));
     swerveAutoBuilder.addCommand("DriveAssist", new DriveAssistAuto(m_swerve));
+    swerveAutoBuilder.addCommand("EnableOffset", new InstantCommand(() -> SmartDashboard.putNumber("ArmAngleOffset", 1)));
+    swerveAutoBuilder.addCommand("DisableOffset", new InstantCommand(() -> SmartDashboard.putNumber("ArmAngleOffset", 0.75)));
     //last
     swerveAutoBuilder.buildAutos();
   }

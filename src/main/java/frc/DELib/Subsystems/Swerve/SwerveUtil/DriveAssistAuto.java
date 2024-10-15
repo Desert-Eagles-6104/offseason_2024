@@ -13,7 +13,7 @@ import frc.DELib.Subsystems.Vision.VisionSubsystem;
 
 public class DriveAssistAuto extends Command {
   private SwerveSubsystem m_swerveSubsystem;
-  private double m_kpSide = 0.03;
+  private double m_kpSide = 0.05;
   private double m_kpForward = 0.08;
   private LinearFilter m_filterSide;
   private LinearFilter m_filterForward;

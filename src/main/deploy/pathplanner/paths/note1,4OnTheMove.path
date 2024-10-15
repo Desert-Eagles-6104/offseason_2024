@@ -124,6 +124,40 @@
           ]
         }
       }
+    },
+    {
+      "name": "armOffset",
+      "waypointRelativePos": 0.85,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "EnableOffset"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "armOffestDisable",
+      "waypointRelativePos": 2.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "DisableOffset"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
