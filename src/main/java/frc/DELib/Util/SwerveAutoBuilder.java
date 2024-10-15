@@ -65,7 +65,7 @@ public class SwerveAutoBuilder {
         m_autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", m_autoChooser);
         m_rotationOverrideConditionSupplier = () -> false;
-        m_rotationTargetSupplier = () -> PoseEstimatorSubsystem.getAngleToBlueSpeaker().getDegrees();
+        m_rotationTargetSupplier = () -> -PoseEstimatorSubsystem.getAngleToBlueSpeaker().getDegrees();
 
         NamedCommands.registerCommand("EnableRotationOverride", new InstantCommand(() ->setRotationOverrideConditionSupplier(() -> true)));
         NamedCommands.registerCommand("DisableRotationOverride", new InstantCommand(() ->setRotationOverrideConditionSupplier(() -> false)));   }

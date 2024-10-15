@@ -6,6 +6,9 @@ package frc.robot.commands.IntagrationCommands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.DELib.BooleanUtil.StableBoolean;
+import frc.DELib.Subsystems.PoseEstimator.PoseEstimatorSubsystem;
+import frc.DELib.Subsystems.Vision.VisionSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -15,11 +18,13 @@ public class AutoShoot extends Command {
   private ShooterSubsystem m_shooter;
   private ArmSubsystem m_arm;
   private IntakeSubsystem m_intake;
+  private StableBoolean m_tvStable;
   private boolean isFinish = false;
   public AutoShoot(ShooterSubsystem shooter, ArmSubsystem arm, IntakeSubsystem intake) {
     m_shooter = shooter;
     m_intake = intake;
     m_arm = arm;
+    m_tvStable = new StableBoolean(0.1);
   }
 
   // Called when the command is initially scheduled.
@@ -31,7 +36,7 @@ public class AutoShoot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(m_arm.isAtSetpoint() && m_shooter.isAtSetpoint() && m_shooter.getRightSetpoint() == 7000){
+    if(m_arm.isAtSetpoint() && m_shooter.isAtSetpoint() && m_shooter.getRightSetpoint() == 7000 && m_tvStable.get(VisionSubsystem.getTv())){
       m_intake.setMotorPrecent(0.3);
       isFinish = !m_intake.secondBeamBreak();
     }

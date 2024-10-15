@@ -1,0 +1,94 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.787031987758696,
+      "y": 6.511225119454518
+    },
+    "rotation": 60.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "note1,4OnTheMove"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DisableRotationOverride"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "notes1,4-2OnTheMove"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ArmHoming"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "InatkeUntilHasNote"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DriveAssist"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "EnableRotationOverride"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "workPLS"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "FullIntake"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Test",
+  "choreoAuto": false
+}

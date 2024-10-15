@@ -14,12 +14,14 @@ import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.DELib.Subsystems.PoseEstimator.PoseEstimatorSubsystem;
+import frc.DELib.Subsystems.ServoSubsystem.Commands.ServoSubsystemManualControl;
 import frc.DELib.Subsystems.Swerve.SwerveSubsystem;
 import frc.DELib.Subsystems.Swerve.SwerveCommands.ResetSwerveModules;
 import frc.DELib.Subsystems.Swerve.SwerveCommands.RotateToTarget;
 import frc.DELib.Subsystems.Swerve.SwerveCommands.SwerveDisableMotors;
 import frc.DELib.Subsystems.Swerve.SwerveCommands.SwerveSysidCommands;
 import frc.DELib.Subsystems.Swerve.SwerveCommands.TeleopDrive;
+import frc.DELib.Subsystems.Swerve.SwerveUtil.DriveAssistAuto;
 import frc.DELib.Subsystems.Vision.VisionSubsystem;
 import frc.DELib.Subsystems.Vision.VisionUtil.CameraSettings;
 import frc.DELib.Util.DriverStationController;
@@ -37,6 +39,7 @@ import frc.robot.commands.IntakeCommnands.DisableIntake;
 import frc.robot.commands.IntakeCommnands.IntakeEatUntilHasNote;
 import frc.robot.commands.IntakeCommnands.IntakeForTime;
 import frc.robot.commands.IntakeCommnands.IntakeGlubGlub;
+import frc.robot.commands.IntakeCommnands.IntakeSetPrecent;
 import frc.robot.commands.ShooterCommands.DisableShooter;
 import frc.robot.commands.ShooterCommands.ShooterSetIfHasNote;
 import frc.robot.commands.ShooterCommands.ShooterSetVelocity;
@@ -112,6 +115,7 @@ public class RobotContainer {
   public void auto(){
     //add commands 
     swerveAutoBuilder.addCommand("InatkeUntilHasNote", new IntakeEatUntilHasNote(m_intake, 0.7, true));
+    swerveAutoBuilder.addCommand("InatkeUntilHasNoteSecondBeamBreak", new IntakeEatUntilHasNote(m_intake, 0.08, false));
     swerveAutoBuilder.addCommand("FullIntake", new IntakeEatUntilHasNote(m_intake, 0.7, true).andThen(new IntakeGlubGlub(m_intake, true)).andThen(new IntakeEatUntilHasNote(m_intake, 0.5, false)).andThen(new IntakeGlubGlub(m_intake, false)));
     swerveAutoBuilder.addCommand("ShortIntake", new IntakeEatUntilHasNote(m_intake, 0.5, false).andThen(new IntakeGlubGlub(m_intake, false)));
     swerveAutoBuilder.addCommand("ArmWithVision", new ArmWithVision(m_arm));
@@ -124,6 +128,8 @@ public class RobotContainer {
     swerveAutoBuilder.addCommand("ResetAll", new ResetAllSubsystems(m_shooter,m_intake,m_arm));
     swerveAutoBuilder.addCommand("RotateToSpeaker", new RotateToTarget(m_swerve));
     swerveAutoBuilder.addCommand("DisableSwerveMotors", new SwerveDisableMotors(m_swerve));
+    swerveAutoBuilder.addCommand("IntakePrecent", new IntakeSetPrecent(m_intake,0.8));
+    swerveAutoBuilder.addCommand("DriveAssist", new DriveAssistAuto(m_swerve));
     //last
     swerveAutoBuilder.buildAutos();
   }
@@ -139,6 +145,7 @@ public class RobotContainer {
     SmartDashboard.putData("ArmDisableSoftLimit", new InstantCommand(() -> m_arm.ControlSoftLimit(false)).ignoringDisable(true));
     drivercontroller.R1().onTrue(new ArmWithVision(m_arm).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     drivercontroller.povUp().onTrue(new ArmAngleToDashBoard(m_arm, m_shooter));
+    operatorController.cross().onTrue(new ServoSubsystemManualControl(m_arm, ()-> operatorController.getRightY()));
   }
 
   public void shooterBinding(){
@@ -156,7 +163,7 @@ public class RobotContainer {
   public void presets(){
     driverStationController.RightYellow().onTrue(new InstantCommand(() -> m_intake.setMotorPrecent(0.8)));
     drivercontroller.triangle().onTrue(new Amp(m_intake, m_arm, m_shooter));
-    driverStationController.LeftBlue().onTrue(new RotateToTarget(m_swerve));
+    driverStationController.LeftBlue().onTrue(new DriveAssistAuto(m_swerve));
   }
 
   public void resets(){

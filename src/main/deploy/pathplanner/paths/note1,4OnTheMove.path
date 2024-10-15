@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.787031987758696,
-        "y": 6.511225119454518
+        "x": 2.2977299021645106,
+        "y": 6.37069508090514
       },
       "isLocked": false,
       "linkedName": "start1,4"
@@ -41,18 +41,29 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "OnTheMove1"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
       "name": "SlowDrive",
-      "minWaypointRelativePos": 0,
+      "minWaypointRelativePos": 0.5,
       "maxWaypointRelativePos": 2.0,
       "constraints": {
-        "maxVelocity": 3.0,
-        "maxAcceleration": 3.0,
+        "maxVelocity": 2.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 839.77,
+        "maxAngularAcceleration": 750.0
+      }
+    },
+    {
+      "name": "VerySlowDrive",
+      "minWaypointRelativePos": 0.0,
+      "maxWaypointRelativePos": 0.5,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 1.0,
         "maxAngularVelocity": 839.77,
         "maxAngularAcceleration": 750.0
       }
@@ -73,33 +84,41 @@
               }
             },
             {
-              "type": "named",
+              "type": "deadline",
               "data": {
-                "name": "AutoShoot"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "ShortIntake"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "AutoShoot"
-              }
-            },
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 0.1
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "DisableShooter"
+                "commands": [
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "ArmWithVision"
+                    }
+                  },
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "Shoot"
+                    }
+                  },
+                  {
+                    "type": "sequential",
+                    "data": {
+                      "commands": [
+                        {
+                          "type": "wait",
+                          "data": {
+                            "waitTime": 1.0
+                          }
+                        },
+                        {
+                          "type": "named",
+                          "data": {
+                            "name": "IntakePrecent"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
               }
             }
           ]
@@ -114,7 +133,7 @@
     "maxAngularAcceleration": 750.0
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 2.0,
     "rotation": 0,
     "rotateFast": false
   },
