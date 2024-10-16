@@ -3,33 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.918404239090931,
-        "y": 5.58606903233778
+        "x": 2.7,
+        "y": 5.562647359246215
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.9301150756367123,
-        "y": 4.6960454548583845
+        "x": 1.7941639306959054,
+        "y": 5.632912378520905
       },
       "isLocked": false,
       "linkedName": "note2"
     },
     {
       "anchor": {
-        "x": 2.918404239090931,
-        "y": 4.098792791023527
+        "x": 3.03,
+        "y": 7.01
       },
       "prevControl": {
-        "x": 2.8715608929078047,
-        "y": 4.941973022319796
+        "x": 1.9112722961537205,
+        "y": 6.604911811820771
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "note3"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 4.0,
+        "maxAcceleration": 6.0,
+        "maxAngularVelocity": 839.77,
+        "maxAngularAcceleration": 750.0
+      }
+    }
+  ],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.9,
@@ -39,13 +51,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -89.57559458063854,
-    "rotateFast": false
+    "rotation": 25.84595166044268,
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "SheliAndRoniPath",
   "previewStartingState": {
-    "rotation": -91.1233027140755,
+    "rotation": 0.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

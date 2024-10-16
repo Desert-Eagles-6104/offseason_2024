@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.937853498395036,
-        "y": 1.852405973615894
+        "x": 2.7310308543584263,
+        "y": 2.728624915167091
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.344872243381971,
-        "y": 1.923263032715955
+        "x": 4.253439605310023,
+        "y": 1.5575412605889405
       },
       "isLocked": false,
       "linkedName": "shoot2"
     },
     {
       "anchor": {
-        "x": 8.280378977527375,
-        "y": 2.4192624464163845
+        "x": 8.27025654051308,
+        "y": 2.435854001522554
       },
       "prevControl": {
-        "x": 8.229766792455903,
-        "y": 2.490119505516447
+        "x": 7.017197030114458,
+        "y": 1.8386013376876964
       },
       "nextControl": null,
       "isLocked": false,
@@ -38,14 +38,14 @@
     "maxAngularAcceleration": 750.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0,
+    "velocity": 2.0,
+    "rotation": 40.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "SheliAndRoniPath",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -30.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

@@ -147,7 +147,7 @@ public class VisionSubsystem extends SubsystemBase {
    */
   public void orbitCalculation(){
     double precentY = 0.5;
-    double precentX = 0.1;
+    double precentX = 0.0;
     double outerLayer = 10.0;
     double _xFOV = xFOV;
     double _yFOV = yFOV;
@@ -159,8 +159,8 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     if(m_tv){
-      cropXMin = (m_tx - outerLayer) / (precentX * _xFOV);
-      cropXMax = (m_tx + outerLayer) / (precentX * _xFOV);
+      // cropXMin = (m_tx - outerLayer) / (precentX * _xFOV);
+      // cropXMax = (m_tx + outerLayer) / (precentX * _xFOV);
       cropYMin = (m_ty - outerLayer) / (precentY * _yFOV);
       cropYMax = (m_ty + outerLayer) / (precentY * _yFOV);
     }

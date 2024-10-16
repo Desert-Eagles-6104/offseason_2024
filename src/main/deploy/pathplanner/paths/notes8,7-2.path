@@ -3,34 +3,64 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.7514071033074243,
-        "y": 4.990361448047188
+        "x": 0.7987428243044774,
+        "y": 4.602358762492133
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2474065170078545,
-        "y": -0.06073462208576725
+        "x": 3.1291992969149973,
+        "y": 1.2413486738528394
       },
       "isLocked": false,
       "linkedName": "shoot1"
     },
     {
       "anchor": {
-        "x": 8.300623851555963,
-        "y": 0.7591827760720883
+        "x": 8.293678213604645,
+        "y": 0.772915212021579
       },
       "prevControl": {
-        "x": 7.369359646240869,
-        "y": 0.7591827760720883
+        "x": 6.401287891782501,
+        "y": 0.8686235037915401
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "note8"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.2,
+      "rotationDegrees": -60.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "DisableIntake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "ArmHoming"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.9,
     "maxAcceleration": 6.0,
@@ -38,15 +68,15 @@
     "maxAngularAcceleration": 750.0
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 2.0,
     "rotation": 0,
-    "rotateFast": false
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "SheliAndRoniPath",
   "previewStartingState": {
-    "rotation": 0,
-    "velocity": 0
+    "rotation": -60.0,
+    "velocity": 0.0
   },
   "useDefaultConstraints": true
 }

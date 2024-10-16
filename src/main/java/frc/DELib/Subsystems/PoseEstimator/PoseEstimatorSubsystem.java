@@ -81,7 +81,9 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
   }
 
   public static void resetPositionFromCamera(){
-    resetPosition(limelightMesermentMT2.pose);
+    if(limelightMesermentMT2.pose != null){
+      resetPosition(limelightMesermentMT2.pose);
+    }
   }
   
   public static void zeroHeading(){

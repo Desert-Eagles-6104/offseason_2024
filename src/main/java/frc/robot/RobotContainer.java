@@ -114,10 +114,11 @@ public class RobotContainer {
 
   public void auto(){
     //add commands 
-    swerveAutoBuilder.addCommand("InatkeUntilHasNote", new IntakeEatUntilHasNote(m_intake, 0.7, true));
-    swerveAutoBuilder.addCommand("InatkeUntilHasNoteSecondBeamBreak", new IntakeEatUntilHasNote(m_intake, 0.08, false));
+    swerveAutoBuilder.addCommand("InatkeUntilHasNote", new IntakeEatUntilHasNote(m_intake, 0.8, true));
+    swerveAutoBuilder.addCommand("InatkeUntilHasNoteSecondBeamBreak", new IntakeEatUntilHasNote(m_intake, 0.4, false));
     swerveAutoBuilder.addCommand("FullIntake", new IntakeEatUntilHasNote(m_intake, 0.7, true).andThen(new IntakeGlubGlub(m_intake, true)).andThen(new IntakeEatUntilHasNote(m_intake, 0.5, false)).andThen(new IntakeGlubGlub(m_intake, false)));
     swerveAutoBuilder.addCommand("ShortIntake", new IntakeEatUntilHasNote(m_intake, 0.5, false).andThen(new IntakeGlubGlub(m_intake, false)));
+    swerveAutoBuilder.addCommand("IntakeDownGlubGlub", ((new IntakeGlubGlub(m_intake, true)).andThen(new IntakeEatUntilHasNote(m_intake, 0.4, false))));
     swerveAutoBuilder.addCommand("ArmWithVision", new ArmWithVision(m_arm));
     swerveAutoBuilder.addCommand("Shoot", new ShooterSetVelocity(m_shooter, 7000));
     swerveAutoBuilder.addCommand("AutoShoot", new ParallelDeadlineGroup(new AutoShoot(m_shooter, m_arm, m_intake), new ArmWithVision(m_arm), new ShooterSetVelocity(m_shooter, 7000)));
@@ -132,6 +133,7 @@ public class RobotContainer {
     swerveAutoBuilder.addCommand("DriveAssist", new DriveAssistAuto(m_swerve));
     swerveAutoBuilder.addCommand("EnableOffset", new InstantCommand(() -> SmartDashboard.putNumber("ArmAngleOffset", 1)));
     swerveAutoBuilder.addCommand("DisableOffset", new InstantCommand(() -> SmartDashboard.putNumber("ArmAngleOffset", 0.75)));
+    swerveAutoBuilder.addCommand("ArmSetIntakePos", new ArmSetPosition(m_arm, 25, true));
     //last
     swerveAutoBuilder.buildAutos();
   }

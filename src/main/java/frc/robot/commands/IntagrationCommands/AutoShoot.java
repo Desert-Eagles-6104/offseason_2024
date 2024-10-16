@@ -24,7 +24,7 @@ public class AutoShoot extends Command {
     m_shooter = shooter;
     m_intake = intake;
     m_arm = arm;
-    m_tvStable = new StableBoolean(0.1);
+    m_tvStable = new StableBoolean(0.0);
   }
 
   // Called when the command is initially scheduled.

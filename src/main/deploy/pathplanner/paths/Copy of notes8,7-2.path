@@ -3,40 +3,40 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.5311346007307416,
-        "y": 4.124382094918037
+        "x": 0.7987428243044774,
+        "y": 4.602358762492133
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4586272249467593,
-        "y": 4.144115980539654
+        "x": 3.1291992969149973,
+        "y": 1.2413486738528394
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "shoot1"
     },
     {
       "anchor": {
-        "x": 2.58,
-        "y": 4.124382094918037
+        "x": 8.293678213604645,
+        "y": 0.772915212021579
       },
       "prevControl": {
-        "x": 2.6424040256495593,
-        "y": 4.124382094918037
+        "x": 6.401287891782501,
+        "y": 0.8686235037915401
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "note8"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
-      "name": "Slow",
-      "minWaypointRelativePos": 0,
+      "name": "slowDrive",
+      "minWaypointRelativePos": 0.0,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 2.0,
-        "maxAcceleration": 0.8,
+        "maxVelocity": 1.0,
+        "maxAcceleration": 1.0,
         "maxAngularVelocity": 839.77,
         "maxAngularAcceleration": 750.0
       }
@@ -50,15 +50,15 @@
     "maxAngularAcceleration": 750.0
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "SheliAndRoniPath",
   "previewStartingState": {
-    "rotation": 0.0,
-    "velocity": 0
+    "rotation": -60.0,
+    "velocity": 0.0
   },
   "useDefaultConstraints": true
 }
