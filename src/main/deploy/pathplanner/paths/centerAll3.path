@@ -20,12 +20,12 @@
         "y": 7.01
       },
       "prevControl": {
-        "x": 1.9112722961537205,
-        "y": 6.604911811820771
+        "x": 1.9113063737879623,
+        "y": 6.604817712346578
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Note1V2"
     }
   ],
   "rotationTargets": [],

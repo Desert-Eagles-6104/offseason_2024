@@ -1,0 +1,82 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.28012348332389,
+        "y": 5.782028487133897
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.361390183550694,
+        "y": 7.284140331476098
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.75,
+        "y": 5.782028487133897
+      },
+      "prevControl": {
+        "x": 5.1104859536712794,
+        "y": 6.862657986057108
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "CloseToStageShootPose"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Shoot",
+      "waypointRelativePos": 0.6,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "EnableRotationOverride"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "ArmWithVision"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.9,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 839.77,
+    "maxAngularAcceleration": 750.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "SheliAndRoniPath",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
