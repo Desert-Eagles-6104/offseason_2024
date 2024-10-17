@@ -172,7 +172,7 @@ public class HeadingController  {
 
       case TeleopWithVision:
         //BASE
-        if (Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.05){
+        if (Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.4){
           m_useVisionLatch.reset();
         }
         chassisSpeeds.omegaRadiansPerSecond = update(visionHeading);

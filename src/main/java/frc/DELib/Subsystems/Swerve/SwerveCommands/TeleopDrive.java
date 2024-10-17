@@ -72,14 +72,14 @@ public class TeleopDrive extends Command {
       chassisSpeeds = SwerveDriveHelper.joystickToRobotUnits(chassisSpeeds, Constants.Swerve.swerveConstants.maxSpeed, Constants.Swerve.swerveConstants.maxAngularVelocity);
       //heading controller
       m_useVisionLatch.update(m_useVision.getAsBoolean());
-      if (Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.05){
+      if (Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.4){
         m_useVisionLatch.reset();
       }
       
 
       if(RobotContainer.m_isLocalizetionOmega.getAsBoolean()){
         //localization
-        setVisionTargetlocalization(true, PoseEstimatorSubsystem.getAngleToBlueSpeaker().getDegrees(), VisionSubsystem.getTotalLatency());
+        setVisionTargetlocalization(PoseEstimatorSubsystem.getAngleToSpeaker().getDegrees(), VisionSubsystem.getTotalLatency());
         chassisSpeeds = m_headingController.calculateOmegaSpeed2(!Robot.s_isAuto ,shouldResetAngle(m_shouldResetYaw), m_useVision.getAsBoolean(), chassisSpeeds, PoseEstimatorSubsystem.getHeading(), PoseEstimatorSubsystem.getRobotPose().getRotation(), m_swerve.getRobotRelativeVelocity());
       }
       else {
@@ -129,9 +129,9 @@ public class TeleopDrive extends Command {
    * @param errorFromTarget error from target in degrees
    * @param latency camera total latency
    */
-  private void setVisionTargetlocalization(boolean hasTarget, double errorFromTarget, double latency){
+  private void setVisionTargetlocalization(double errorFromTarget, double latency){
     if(m_useVisionLatch.get()){
-      double errorDegrees = hasTarget ? -errorFromTarget : 0;
+      double errorDegrees = -errorFromTarget;
       Rotation2d target = Rotation2d.fromDegrees(errorDegrees);
       SmartDashboard.putNumber("setpointHeading", target.getDegrees());
       m_headingController.setSetpoint(target);

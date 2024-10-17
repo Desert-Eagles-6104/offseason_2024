@@ -7,7 +7,6 @@ package frc.robot.commands.IntagrationCommands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commands.ArmCommands.ArmHoming;
-import frc.robot.commands.IntakeCommnands.IntakeSetPrecent;
 import frc.robot.commands.ShooterCommands.ShooterSetVelocity;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;

@@ -94,6 +94,7 @@ public class RobotContainer {
     presets();
     resets();
     auto();
+    driverStationController.LeftBlue().onTrue(new RotateToTarget(m_swerve));
   }
 
   public void disableMotors() {
@@ -167,7 +168,7 @@ public class RobotContainer {
   public void presets(){
     driverStationController.RightYellow().onTrue(new InstantCommand(() -> m_intake.setMotorPrecent(0.8)));
     drivercontroller.triangle().onTrue(new Amp(m_intake, m_arm, m_shooter));
-    driverStationController.LeftBlue().onTrue(new DriveAssistAuto(m_swerve));
+    // driverStationController.LeftBlue().onTrue(new DriveAssistAuto(m_swerve));
   }
 
   public void resets(){

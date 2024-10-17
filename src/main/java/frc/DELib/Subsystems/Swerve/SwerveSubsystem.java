@@ -29,6 +29,7 @@ import frc.DELib.CSV.CSVWriter;
 import frc.DELib.Intepulation.InterpolatingDouble;
 import frc.DELib.Intepulation.InterpolatingTreeMap;
 import frc.DELib.Sensors.Pigeon;
+import frc.robot.Robot;
 
 public class SwerveSubsystem extends SubsystemBase {
   private static SwerveSubsystem swerve = null;
@@ -150,6 +151,7 @@ public class SwerveSubsystem extends SubsystemBase {
     m_gyro.getYawStatusSignal().refresh();
     Pose2d currentPose = m_odometry.update(m_gyro.getYaw(), getModulesPositions());
     m_pastPoses.put(new InterpolatingDouble(Timer.getFPGATimestamp()), currentPose);
+    SmartDashboard.putNumber("RobotHeading", getHeading().getDegrees());
   }
 
   public void zeroHeading(){

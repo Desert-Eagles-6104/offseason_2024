@@ -8,40 +8,72 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2977299021645106,
-        "y": 6.37069508090514
+        "x": 1.6100701432172113,
+        "y": 7.193001309079541
       },
       "isLocked": false,
-      "linkedName": "start1,4"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.9618413082980024,
-        "y": 7.005529395674177
+        "x": 2.784236337703446,
+        "y": 7.666614563998359
       },
       "prevControl": {
-        "x": 2.46020150814572,
-        "y": 6.677183344665411
+        "x": 2.185257703747525,
+        "y": 7.640572014695927
       },
       "nextControl": {
-        "x": 3.504523162892481,
-        "y": 7.36073933686329
+        "x": 3.465055391649246,
+        "y": 7.696215392430786
       },
       "isLocked": false,
-      "linkedName": "note1"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.7378910142435675,
-        "y": 7.518610421836228
+        "x": 5.250972040405621,
+        "y": 7.508743479025419
       },
       "prevControl": {
-        "x": 4.038830136054031,
-        "y": 7.482362820744918
+        "x": 4.491217443973351,
+        "y": 7.518610421836229
+      },
+      "nextControl": {
+        "x": 5.783742024923154,
+        "y": 7.501824388317399
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.500916349116176,
+        "y": 7.49255596960067
+      },
+      "prevControl": {
+        "x": 6.142329187019666,
+        "y": 7.497190178959034
+      },
+      "nextControl": {
+        "x": 6.8595035112126865,
+        "y": 7.4879217602423065
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.875578828080734,
+        "y": 7.508743479025419
+      },
+      "prevControl": {
+        "x": 7.176517949891197,
+        "y": 7.47249587793411
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "OnTheMove1"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -49,7 +81,7 @@
     {
       "name": "SlowDrive",
       "minWaypointRelativePos": 0.5,
-      "maxWaypointRelativePos": 2.0,
+      "maxWaypointRelativePos": 4.0,
       "constraints": {
         "maxVelocity": 2.0,
         "maxAcceleration": 2.0,
@@ -127,7 +159,7 @@
     },
     {
       "name": "armOffset",
-      "waypointRelativePos": 0.85,
+      "waypointRelativePos": 0.6,
       "command": {
         "type": "parallel",
         "data": {
@@ -144,7 +176,7 @@
     },
     {
       "name": "armOffestDisable",
-      "waypointRelativePos": 2.0,
+      "waypointRelativePos": 1.2,
       "command": {
         "type": "parallel",
         "data": {

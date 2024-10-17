@@ -7,6 +7,7 @@ package frc.DELib.Subsystems.Swerve.SwerveCommands;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.DELib.BooleanUtil.StableBoolean;
@@ -36,7 +37,7 @@ public class RotateToTarget extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    target = PoseEstimatorSubsystem.getAngleToBlueSpeaker().unaryMinus();
+    target = PoseEstimatorSubsystem.getAngleToSpeaker().unaryMinus();
     m_headingController.setSetpoint(target);
     ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0,0,m_headingController.update(PoseEstimatorSubsystem.getHeading()));
     m_swerve.drive(chassisSpeeds, true, true, new Translation2d());

@@ -7,9 +7,11 @@ package frc.DELib.Subsystems.Swerve.SwerveUtil;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.DELib.Subsystems.Swerve.SwerveSubsystem;
 import frc.DELib.Subsystems.Vision.VisionSubsystem;
+import frc.robot.Robot;
 
 public class DriveAssistAuto extends Command {
   private SwerveSubsystem m_swerveSubsystem;
@@ -34,7 +36,12 @@ public class DriveAssistAuto extends Command {
   @Override
   public void execute() {
     if(VisionSubsystem.getTvNote()){
-      chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(m_filterForward.calculate(-VisionSubsystem.getTyNote())*m_kpForward, m_filterSide.calculate(-VisionSubsystem.getTxNote())*m_kpSide, 0, m_swerveSubsystem.getHeading());
+      if(Robot.s_Alliance == Alliance.Red){
+        chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(-m_filterForward.calculate(-VisionSubsystem.getTyNote())*m_kpForward, -m_filterSide.calculate(-VisionSubsystem.getTxNote())*m_kpSide, 0, m_swerveSubsystem.getHeading());
+      }
+      else{
+        chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(m_filterForward.calculate(-VisionSubsystem.getTyNote())*m_kpForward, m_filterSide.calculate(-VisionSubsystem.getTxNote())*m_kpSide, 0, m_swerveSubsystem.getHeading());
+      }
     }
     m_swerveSubsystem.drive(chassisSpeeds, false, true, centerOfRobot);
   }

@@ -213,9 +213,9 @@ public final class Constants {
       //#endregion motion magic values
   
       //#region cuurent limit
-      supplyCurrentLimit = 60; 
+      supplyCurrentLimit = 55; 
   
-      enableSupplyCurrentLimit = false;
+      enableSupplyCurrentLimit = true;
   
       statorCurrentLimit = 40;
   

@@ -7,6 +7,8 @@ package frc.DELib.Subsystems.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,6 +17,7 @@ import frc.DELib.Sensors.Pigeon;
 import frc.DELib.Subsystems.Swerve.SwerveSubsystem;
 import frc.DELib.Subsystems.Vision.VisionSubsystem;
 import frc.DELib.Subsystems.Vision.VisionUtil.LimelightHelpers;
+import frc.robot.Robot;
 
 public class PoseEstimatorSubsystem extends SubsystemBase{
   /** Creates a new PoseEstimator. */
@@ -26,6 +29,9 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
   private static boolean first = true;
   private static StableBoolean tvStableBoolean;
   Field2d field2d;
+  private static Translation2d blueSpeaker = new Translation2d(0.0, 5.55);
+  private static Translation2d redSpeaker = new Translation2d(16.52, 5.55);
+
   
   
   public PoseEstimatorSubsystem(SwerveSubsystem swerve) {
@@ -40,8 +46,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
     if(!first){
       updateVisionOdometry();
       // SmartDashboard.putString("estimatedRobotPose", getRobotPose().toString());
-      SmartDashboard.putNumber("distance from speaker", getDistanceToBlueSpeaker());
-      SmartDashboard.putNumber("angleSpeaker", getAngleToBlueSpeaker().getDegrees());
+      SmartDashboard.putNumber("distance from speaker", getDistanceToSpeaker());
+      SmartDashboard.putNumber("angleSpeaker", getAngleToSpeaker().getDegrees());
       // field2d.setRobotPose(getRobotPose());
       // SmartDashboard.putData("field2d ",field2d);
       SmartDashboard.putBoolean("isCentered", isCentered());
@@ -106,8 +112,22 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
     return getRobotPose().getTranslation().getDistance(new Translation2d(0.95, 7.0));
   }
 
+  public static double getDistanceToSpeaker(){
+    if(Robot.s_Alliance == Alliance.Red){
+    return getRobotPose().getTranslation().getDistance(redSpeaker);
+    }
+    return getRobotPose().getTranslation().getDistance(blueSpeaker);
+  }
+
   public static double getDistanceToBlueSpeaker(){
     return getRobotPose().getTranslation().getDistance(new Translation2d(0.0, 5.55));
+  }
+
+  public static Rotation2d getAngleToSpeaker(){
+    if(Robot.s_Alliance == Alliance.Red){
+      return Rotation2d.fromRadians(-Math.atan((redSpeaker.getY() - getRobotPose().getY())/(redSpeaker.getX() -getRobotPose().getX()))).rotateBy(Rotation2d.fromDegrees(180));
+    }
+    return Rotation2d.fromRadians(-Math.atan((blueSpeaker.getY() - getRobotPose().getY())/(blueSpeaker.getX() -getRobotPose().getX())));
   }
 
   public static Rotation2d getAngleToBlueSpeaker(){

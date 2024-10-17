@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.DELib.Subsystems.Vision.VisionUtil.CameraSettings;
 import frc.DELib.Subsystems.Vision.VisionUtil.LimelightHelpers;
-import frc.robot.RobotContainer;
 
 public class VisionSubsystem extends SubsystemBase {
   /** Creates a new VisionSubsystem. */
@@ -71,13 +70,6 @@ public class VisionSubsystem extends SubsystemBase {
       m_TyNote = LimelightHelpers.getTY(CameraType.GamePieceCamera.getCameraName(), m_LastTyNote);
       m_LastTyNote = m_TyNote;
       m_LastTxNote = m_TxNote;
-    }
-
-    if(RobotContainer.m_isLocalizetion.getAsBoolean()){
-      LimelightHelpers.SetFiducialIDFiltersOverride("Limelight",localizationVisionID);
-    }
-    else{
-      LimelightHelpers.SetFiducialIDFiltersOverride("Limelight",visionID);
     }
 
     //bounding april tag
