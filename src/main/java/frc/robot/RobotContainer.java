@@ -115,11 +115,11 @@ public class RobotContainer {
 
   public void auto(){
     //add commands 
-    swerveAutoBuilder.addCommand("InatkeUntilHasNote", new IntakeEatUntilHasNote(m_intake, 0.8, true));
-    swerveAutoBuilder.addCommand("InatkeUntilHasNoteSecondBeamBreak", new IntakeEatUntilHasNote(m_intake, 0.4, false));
-    swerveAutoBuilder.addCommand("FullIntake", new IntakeEatUntilHasNote(m_intake, 0.7, true).andThen(new IntakeGlubGlub(m_intake, true)).andThen(new IntakeEatUntilHasNote(m_intake, 0.5, false)).andThen(new IntakeGlubGlub(m_intake, false)));
-    swerveAutoBuilder.addCommand("ShortIntake", new IntakeEatUntilHasNote(m_intake, 0.5, false).andThen(new IntakeGlubGlub(m_intake, false)));
-    swerveAutoBuilder.addCommand("IntakeDownGlubGlub", ((new IntakeGlubGlub(m_intake, true)).andThen(new IntakeEatUntilHasNote(m_intake, 0.4, false))));
+    swerveAutoBuilder.addCommand("InatkeUntilHasNote", new IntakeEatUntilHasNote(m_intake, 0.8, true).withTimeout(2));
+    swerveAutoBuilder.addCommand("InatkeUntilHasNoteSecondBeamBreak", new IntakeEatUntilHasNote(m_intake, 0.4, false).withTimeout(2));
+    swerveAutoBuilder.addCommand("FullIntake", new IntakeEatUntilHasNote(m_intake, 0.7, true).andThen(new IntakeGlubGlub(m_intake, true)).andThen(new IntakeEatUntilHasNote(m_intake, 0.5, false)).andThen(new IntakeGlubGlub(m_intake, false)).withTimeout(2));
+    swerveAutoBuilder.addCommand("ShortIntake", new IntakeEatUntilHasNote(m_intake, 0.5, false).andThen(new IntakeGlubGlub(m_intake, false)).withTimeout(2));
+    swerveAutoBuilder.addCommand("IntakeDownGlubGlub", ((new IntakeGlubGlub(m_intake, true)).andThen(new IntakeEatUntilHasNote(m_intake, 0.4, false))).withTimeout(2));
     swerveAutoBuilder.addCommand("ArmWithVision", new ArmWithVision(m_arm));
     swerveAutoBuilder.addCommand("Shoot", new ShooterSetVelocity(m_shooter, 7000));
     swerveAutoBuilder.addCommand("AutoShoot", new ParallelDeadlineGroup(new AutoShoot(m_shooter, m_arm, m_intake), new ArmWithVision(m_arm), new ShooterSetVelocity(m_shooter, 7000)));
