@@ -14,12 +14,6 @@
         {
           "type": "named",
           "data": {
-            "name": "ArmHoming"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "ResetAll"
           }
         },
