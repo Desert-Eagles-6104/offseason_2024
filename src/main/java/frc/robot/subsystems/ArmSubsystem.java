@@ -24,7 +24,6 @@ public class ArmSubsystem extends ServoSubsystemTalon {
     linearVision = new LinearInterpolator(interpulationVisionSpeaker);
     linearInterpolatorLocalizationSpeaker = new LinearInterpolator(interpulationLocalizationSpeaker);
     linearInterpulationDeliverySpeaker = new LinearInterpolator(interpulationDeliverySpeaker);
-    SmartDashboard.putNumber("ArmAngleToSet", 90);
     SmartDashboard.putNumber("ArmAngleOffset", 0.75);
   }
 
@@ -36,11 +35,9 @@ public class ArmSubsystem extends ServoSubsystemTalon {
   public void setPosition(double position){
     if(Math.abs(super.getClosedLoopError()) < 2){
       super.setPosition(position);
-      SmartDashboard.putNumber("slot", 1);
     }
     else{
       super.setMotionMagicPosition(position);
-      SmartDashboard.putNumber("slot", 0);
     }
   }
 
@@ -92,9 +89,6 @@ public class ArmSubsystem extends ServoSubsystemTalon {
     this.setPosition(angle);
   }
 
-  public void Print(){
-    setPosition(SmartDashboard.getNumber("ArmAngleToSet", 90));
-  }
   //position Interpulation
   double[][] interpulationLocalizationSpeaker = 
   {{1.32, 55.0},

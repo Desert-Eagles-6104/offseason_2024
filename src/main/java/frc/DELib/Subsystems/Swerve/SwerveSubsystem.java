@@ -5,12 +5,8 @@
 package frc.DELib.Subsystems.Swerve;
 
 import static edu.wpi.first.units.Units.Volts;
-
 import java.io.IOException;
-
-import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;

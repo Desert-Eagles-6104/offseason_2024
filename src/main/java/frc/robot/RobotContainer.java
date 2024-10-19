@@ -19,14 +19,12 @@ import frc.DELib.Subsystems.Swerve.SwerveSubsystem;
 import frc.DELib.Subsystems.Swerve.SwerveCommands.ResetSwerveModules;
 import frc.DELib.Subsystems.Swerve.SwerveCommands.RotateToTarget;
 import frc.DELib.Subsystems.Swerve.SwerveCommands.SwerveDisableMotors;
-import frc.DELib.Subsystems.Swerve.SwerveCommands.SwerveSysidCommands;
 import frc.DELib.Subsystems.Swerve.SwerveCommands.TeleopDrive;
 import frc.DELib.Subsystems.Swerve.SwerveUtil.DriveAssistAuto;
 import frc.DELib.Subsystems.Vision.VisionSubsystem;
 import frc.DELib.Subsystems.Vision.VisionUtil.CameraSettings;
 import frc.DELib.Util.DriverStationController;
 import frc.DELib.Util.SwerveAutoBuilder;
-import frc.robot.commands.ArmCommands.ArmAngleToDashBoard;
 import frc.robot.commands.ArmCommands.ArmChangeNeutralMode;
 import frc.robot.commands.ArmCommands.ArmHoming;
 import frc.robot.commands.ArmCommands.ArmSetPosition;
@@ -161,8 +159,6 @@ public class RobotContainer {
     SmartDashboard.putData("Change Arm  NeutralMode", new ArmChangeNeutralMode(m_arm).ignoringDisable(true)); 
     SmartDashboard.putData("reset arm", new InstantCommand(() -> m_arm.resetPosition(9.57)).ignoringDisable(true));
     SmartDashboard.putData("ArmDisableSoftLimit", new InstantCommand(() -> m_arm.ControlSoftLimit(false)).ignoringDisable(true));
-    //drivercontroller.R1().onTrue(new ArmWithVision(m_arm).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    drivercontroller.povUp().onTrue(new ArmAngleToDashBoard(m_arm, m_shooter));
     operatorController.cross().onTrue(new ServoSubsystemManualControl(m_arm, ()-> operatorController.getRightY()));
   }
 
@@ -170,9 +166,9 @@ public class RobotContainer {
     drivercontroller.R1().and(m_inMyWing).onTrue(new ArmWithVision(m_arm).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     drivercontroller.R1().and(m_inMyWing).onTrue(new ShooterSetIfHasNote(m_shooter, m_intake, 7000));
 
-    drivercontroller.R1().and(m_lowDeliveryMiddlePreset).and(m_DisableDelivery).onTrue(new Preset(m_shooter, m_arm, 20, 5000));//low middle preset
+    drivercontroller.R1().and(m_lowDeliveryMiddlePreset).and(m_DisableDelivery).onTrue(new Preset(m_shooter, m_arm, 35, 3500));//low middle preset
     drivercontroller.R1().and(m_highDeliveryMiddlePreset).and(m_DisableDelivery).onTrue(new Preset(m_shooter, m_arm, 53, 5000));//high middle preset
-    drivercontroller.R1().and(m_highDeliveryWingPreset).and(m_DisableDelivery).onTrue(new Preset(m_shooter, m_arm, 53, 4700));//high wing preset
+    drivercontroller.R1().and(m_highDeliveryWingPreset).and(m_DisableDelivery).onTrue(new Preset(m_shooter, m_arm, 63, 6000));//high wing preset
   
     drivercontroller.triangle().onTrue(new Amp(m_intake, m_arm, m_shooter));
   }

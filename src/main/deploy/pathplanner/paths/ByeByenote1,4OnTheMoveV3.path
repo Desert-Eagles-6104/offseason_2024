@@ -3,29 +3,61 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.28012348332389,
-        "y": 4.1046482092964185
+        "x": 1.5531360993973853,
+        "y": 7.45
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.086223403216037,
-        "y": 4.144115980539654
+        "x": 1.9850139700279412,
+        "y": 7.617279849944316
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.708290185811142,
-        "y": 4.54866063578281
+        "x": 2.8335710517574895,
+        "y": 7.715949278052403
       },
       "prevControl": {
-        "x": 6.168597721810829,
-        "y": 4.223051523026124
+        "x": 2.4333230392265106,
+        "y": 7.715949278052403
+      },
+      "nextControl": {
+        "x": 3.2884146412665762,
+        "y": 7.715949278052403
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.250972040405621,
+        "y": 7.51
+      },
+      "prevControl": {
+        "x": 4.5406497325919375,
+        "y": 7.779752891333223
+      },
+      "nextControl": {
+        "x": 5.7739200093784815,
+        "y": 7.3114046228092455
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.5993044293780905,
+        "y": 5.870830972431175
+      },
+      "prevControl": {
+        "x": 7.105957288837656,
+        "y": 6.295109513295949
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "gilad"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,7 +65,7 @@
     {
       "name": "New Constraints Zone",
       "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 1.0,
+      "maxWaypointRelativePos": 3.0,
       "constraints": {
         "maxVelocity": 5.2,
         "maxAcceleration": 6.0,
@@ -45,21 +77,21 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 0.2,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": [
             {
               "type": "named",
               "data": {
-                "name": "Shoot"
+                "name": "ArmHoming"
               }
             },
             {
               "type": "named",
               "data": {
-                "name": "ArmWithVision"
+                "name": "DisableShooter"
               }
             }
           ]
@@ -74,14 +106,14 @@
     "maxAngularAcceleration": 750.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -14.420000000000016,
-    "rotateFast": false
+    "velocity": 2.0,
+    "rotation": 0,
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "SkipPath",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 0.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

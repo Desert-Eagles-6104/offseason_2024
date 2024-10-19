@@ -39,88 +39,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ByeByenote1,4OnTheMove"
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "InatkeUntilHasNote"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "DriveAssist"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "EnableRotationOverride"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "FullIntake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Note4ToShoot"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "DisableIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoShoot"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.3
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "ShootToNote5"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "DisableRotationOverride"
-                }
-              }
-            ]
+            "pathName": "ByeByenote1,4OnTheMoveV3"
           }
         },
         {
@@ -300,6 +219,50 @@
                 "type": "named",
                 "data": {
                   "name": "DisableRotationOverride"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "InatkeUntilHasNote"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DriveAssist"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "FullIntake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "EnableRotationOverride"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Note7ToShoot"
                 }
               }
             ]

@@ -7,9 +7,7 @@ package frc.DELib.Subsystems.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.DELib.BooleanUtil.StableBoolean;
@@ -50,7 +48,6 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
       updateVisionOdometry();
       SmartDashboard.putNumber("distance from speaker", getDistanceToSpeaker());
       SmartDashboard.putNumber("angleSpeaker", getAngleToSpeaker().getDegrees());
-      SmartDashboard.putBoolean("isCentered", isCentered());
     }
     else{
       first = false;
@@ -106,19 +103,15 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
 
     public static Rotation2d getAngleToDelivery(){
       if(inEnenmyWing() && Robot.s_Alliance == Alliance.Red){
-        SmartDashboard.putString("delivaryPoint", deliveryMiddleRed.toString());
         return Rotation2d.fromRadians(-Math.atan((deliveryMiddleRed.getY() - getRobotPose().getY())/(deliveryMiddleRed.getX() -getRobotPose().getX()))).rotateBy(Rotation2d.fromDegrees(180));
       }
       else if(inEnenmyWing() && Robot.s_Alliance == Alliance.Blue){
-        SmartDashboard.putString("delivaryPoint", deliveryMiddleBlue.toString());
         return Rotation2d.fromRadians(-Math.atan((deliveryMiddleBlue.getY() - getRobotPose().getY())/(deliveryMiddleBlue.getX() -getRobotPose().getX())));
       }
       else if(notInAnyWing() && Robot.s_Alliance == Alliance.Red){
-        SmartDashboard.putString("delivaryPoint", DeliveryRedSpeaker.toString());
         return Rotation2d.fromRadians(-Math.atan((DeliveryRedSpeaker.getY() - getRobotPose().getY())/(DeliveryRedSpeaker.getX() -getRobotPose().getX()))).rotateBy(Rotation2d.fromDegrees(180));
       }
       else if(notInAnyWing() && Robot.s_Alliance == Alliance.Blue){
-        SmartDashboard.putString("delivaryPoint", DeliveryBlueSpeaker.toString());
         return Rotation2d.fromRadians(-Math.atan((DeliveryBlueSpeaker.getY() - getRobotPose().getY())/(DeliveryBlueSpeaker.getX() -getRobotPose().getX())));
       }
       else{

@@ -80,7 +80,6 @@ public class VisionSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("TX", getTx());
     SmartDashboard.putNumber("TY", getTy());
     SmartDashboard.putBoolean("TV", getTv());
-    // SmartDashboard.putString("3D", getEstimatedRobotPose().pose.toString());
   }
 
   public static LimelightHelpers.PoseEstimate getEstimatedRobotPose(){
