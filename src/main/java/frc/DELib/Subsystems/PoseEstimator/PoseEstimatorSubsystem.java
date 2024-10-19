@@ -62,7 +62,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
       boolean rejectUpdate = false;
       LimelightHelpers.SetRobotOrientation("limelight", getRobotPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
       limelightMesermentMT2 = VisionSubsystem.getEstimatedRobotPose();
-      if(Math.abs(m_gyro.getRateStatusSignal().getValueAsDouble()) > 360 && getRobotPose().getX() < 5 || limelightMesermentMT2.pose == null){
+      if(Math.abs(m_gyro.getRate()) > 360 && getRobotPose().getX() < 5 || limelightMesermentMT2.pose == null){
         rejectUpdate = true;
       }
       if(!rejectUpdate && tvStableBoolean.get(VisionSubsystem.getTv()) && limelightMesermentMT2.pose != null){

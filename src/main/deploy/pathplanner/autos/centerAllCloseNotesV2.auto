@@ -399,7 +399,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.2
+            "waitTime": 0.3
           }
         },
         {
@@ -416,6 +416,18 @@
                 "type": "path",
                 "data": {
                   "pathName": "DriveTo3NoteMid"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DisableShooter"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ArmHoming"
                 }
               },
               {
