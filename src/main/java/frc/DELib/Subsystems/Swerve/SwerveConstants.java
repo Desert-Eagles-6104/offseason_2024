@@ -3,6 +3,8 @@ package frc.DELib.Subsystems.Swerve;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -14,6 +16,9 @@ import frc.DELib.Subsystems.Swerve.SwerveUtil.SwerveModuleConstants;
 public class SwerveConstants {
     public COTSTalonFXSwerveConstants chosenModule =  //TODO: This must be tuned to specific robot
     COTSTalonFXSwerveConstants.SDS.MK4.KrakenX60(COTSTalonFXSwerveConstants.SDS.MK4.driveRatios.L3);
+
+    /*String bus */
+    String canBus = "Canivore";
 
     /* Drivetrain Constants */
     public double wheelCircumference = chosenModule.wheelCircumference;
@@ -36,12 +41,17 @@ public class SwerveConstants {
     /* Angle Encoder Invert */
     public SensorDirectionValue canCoderInvert = chosenModule.cancoderInvert;
 
+    /*Feedback Sensor Azimuth */
+    public FeedbackSensorSourceValue feedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+
     /* Swerve Current Limiting */
     public int angleContinuousCurrentLimit = 25;
     public int anglePeakCurrentLimit = 40;
     public double anglePeakCurrentDuration = 0.1;
     public boolean angleEnableCurrentLimit = true;
 
+    public int driveStatorCurrentLimit = 60; //TODO: cheak when training
+    public boolean driveEnableStatorCurrentLimit = true;
     public int driveContinuousCurrentLimit = 40;
     public int drivePeakCurrentLimit = 60;
     public double drivePeakCurrentDuration = 0.1;
@@ -50,7 +60,7 @@ public class SwerveConstants {
     /* These values are used by the drive falcon to ramp in open loop and closed loop driving.
     * We found a small open loop ramp (0.25) helps with tread wear, tipping, etc */
     public double openLoopRamp = 0.2;
-    public double closedLoopRamp = 0.0;
+    public double closedLoopRamp = 0.2;
 
     /* Angle Motor PID Values */
     public double angleKP = chosenModule.angleKP;
@@ -82,7 +92,7 @@ public class SwerveConstants {
 
     /* Swerve Profiling Values */
     /** Meters per Second */
-    public double maxSpeed = 4.5; //TODO: This must be tuned to specific robot
+    public double maxSpeed = 5.2; //TODO: This must be tuned to specific robot
     /** Radians per Second */
     public double maxAngularVelocity = 10.0; //TODO: This must be tuned to specific robot
 
@@ -109,6 +119,7 @@ public class SwerveConstants {
         configs.Feedback.SensorToMechanismRatio = chosenModule.driveGearRatio;
 
         /* Current Limiting */
+        configs.CurrentLimits.StatorCurrentLimit = driveStatorCurrentLimit;
         configs.CurrentLimits.SupplyCurrentLimitEnable = driveEnableCurrentLimit;
         configs.CurrentLimits.SupplyCurrentLimit = driveContinuousCurrentLimit;
         configs.CurrentLimits.SupplyCurrentThreshold = drivePeakCurrentLimit;
@@ -137,6 +148,7 @@ public class SwerveConstants {
 
         /* Gear Ratio and Wrapping Config */
         configs.Feedback.SensorToMechanismRatio = chosenModule.angleGearRatio;
+        configs.Feedback.FeedbackSensorSource = feedbackSensorSource;
         configs.ClosedLoopGeneral.ContinuousWrap = true;
         
         /* Current Limiting */

@@ -79,7 +79,12 @@ public class TeleopDrive extends Command {
 
       if(RobotContainer.m_isLocalizetionOmega.getAsBoolean()){
         //localization
-        setVisionTargetlocalization(PoseEstimatorSubsystem.getAngleToSpeaker().getDegrees(), VisionSubsystem.getTotalLatency());
+        if(PoseEstimatorSubsystem.inMyWing()){
+          setVisionTargetlocalization(PoseEstimatorSubsystem.getAngleToSpeaker().getDegrees());
+        }
+        else{
+          setVisionTargetlocalization(PoseEstimatorSubsystem.getAngleToDelivery().getDegrees());
+        }
         chassisSpeeds = m_headingController.calculateOmegaSpeed2(!Robot.s_isAuto ,shouldResetAngle(m_shouldResetYaw), m_useVision.getAsBoolean(), chassisSpeeds, PoseEstimatorSubsystem.getHeading(), PoseEstimatorSubsystem.getRobotPose().getRotation(), m_swerve.getRobotRelativeVelocity());
       }
       else {
@@ -127,9 +132,8 @@ public class TeleopDrive extends Command {
     /**
    * @param hasTarget camera sees target 
    * @param errorFromTarget error from target in degrees
-   * @param latency camera total latency
    */
-  private void setVisionTargetlocalization(double errorFromTarget, double latency){
+  private void setVisionTargetlocalization(double errorFromTarget){
     if(m_useVisionLatch.get()){
       double errorDegrees = -errorFromTarget;
       Rotation2d target = Rotation2d.fromDegrees(errorDegrees);

@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -52,6 +53,9 @@ public final class Constants {
       chosenModule =  //TODO: This must be tuned to specific robot
       COTSTalonFXSwerveConstants.SDS.MK4.KrakenX60(COTSTalonFXSwerveConstants.SDS.MK4.driveRatios.L3);
 
+      /*String bus */
+      String canBus = "Canivore";
+
       /* Drivetrain Constants */
       wheelCircumference = chosenModule.wheelCircumference;
 
@@ -76,12 +80,17 @@ public final class Constants {
       /* Angle Encoder Invert */
       canCoderInvert = chosenModule.cancoderInvert;
 
+      /*Feedback Sensor Azimuth */
+      feedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+
+
       /* Swerve Current Limiting */
       angleContinuousCurrentLimit = 25;
       anglePeakCurrentLimit = 40;
       anglePeakCurrentDuration = 0.1;
       angleEnableCurrentLimit = true;
 
+      driveStatorCurrentLimit = 60;
       driveContinuousCurrentLimit = 40;
       drivePeakCurrentLimit = 60;
       drivePeakCurrentDuration = 0.1;

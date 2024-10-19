@@ -2,12 +2,14 @@ package frc.DELib.Subsystems.Swerve;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -58,13 +60,25 @@ public class SwerveModule {
         m_swerveConstants = swerveConstants;
         m_moduleConstants = swerveModuleConstants;
 
-        m_absoluteEncoder = new CANcoder(swerveModuleConstants.absoluteEncoderID, "Canivore");
+        m_absoluteEncoder = new CANcoder(swerveModuleConstants.absoluteEncoderID, swerveConstants.canBus);
         m_absoluteEncoder.getConfigurator().apply(swerveConstants.canCoderConfigs());
 
-        m_steeringMotor = new TalonFX(swerveModuleConstants.steeringMotorID, "Canivore");
-        m_steeringMotor.getConfigurator().apply(swerveConstants.steerTalonFXConfigs());
+        m_steeringMotor = new TalonFX(swerveModuleConstants.steeringMotorID, swerveConstants.canBus);
+        TalonFXConfiguration steerConfiguration = swerveConstants.steerTalonFXConfigs();
+        if(m_steeringMotor.getIsProLicensed().getValue() && swerveConstants.feedbackSensorSource == FeedbackSensorSourceValue.FusedCANcoder){
+            steerConfiguration.Feedback.FeedbackRemoteSensorID = swerveModuleConstants.absoluteEncoderID;
+            steerConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+            steerConfiguration.Feedback.RotorToSensorRatio = swerveConstants.chosenModule.angleGearRatio;
+            steerConfiguration.Feedback.SensorToMechanismRatio = 1.0;
+        }   
+        else{
+            steerConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+            steerConfiguration.Feedback.SensorToMechanismRatio = swerveConstants.angleGearRatio;
+            steerConfiguration.Feedback.RotorToSensorRatio = 1.0;
+        }
+        m_steeringMotor.getConfigurator().apply(steerConfiguration);
 
-        m_driveMotor = new TalonFX(swerveModuleConstants.driveMotorID, "Canivore");
+        m_driveMotor = new TalonFX(swerveModuleConstants.driveMotorID, swerveConstants.canBus);
         m_driveMotor.getConfigurator().apply(swerveConstants.driveTalonFXConfigs());
         m_driveMotor.getConfigurator().apply(swerveModuleConstants.slot0Configs);
         m_driveMotor.getConfigurator().setPosition(0.0);
@@ -87,7 +101,7 @@ public class SwerveModule {
         odometrySignals[2] = m_steerMotorVelocitySignal;
         odometrySignals[3] = m_steerMotorPositionSignal;
 
-        CanBusProperties(50);
+        CanBusProperties(250);
 
         m_angleOffset = swerveModuleConstants.angleOffset;
     }

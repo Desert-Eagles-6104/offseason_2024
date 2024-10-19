@@ -230,7 +230,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "centerAll3"
+                        "pathName": "centerAll3V3"
                       }
                     },
                     {
@@ -309,65 +309,28 @@
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "DisableRotationOverride"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "InatkeUntilHasNote"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DriveAssist"
+                }
+              }
+            ]
           }
         },
         {
           "type": "sequential",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "DisableShooter"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "DisableIntake"
-                }
-              },
-              {
-                "type": "parallel",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Note1ToMid2"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "ArmHoming"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "deadline",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "InatkeUntilHasNote"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "DriveAssist"
-                      }
-                    }
-                  ]
-                }
-              },
               {
                 "type": "parallel",
                 "data": {
@@ -399,7 +362,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.2
+            "waitTime": 0.3
           }
         },
         {
@@ -419,6 +382,18 @@
                 }
               },
               {
+                "type": "named",
+                "data": {
+                  "name": "DisableShooter"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ArmHoming"
+                }
+              },
+              {
                 "type": "deadline",
                 "data": {
                   "commands": [
@@ -435,6 +410,12 @@
                       }
                     }
                   ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DisableSwerveMotors"
                 }
               },
               {

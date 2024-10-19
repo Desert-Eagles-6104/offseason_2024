@@ -34,6 +34,7 @@ import frc.robot.commands.ArmCommands.ArmWithVision;
 import frc.robot.commands.ArmCommands.DisableArm;
 import frc.robot.commands.IntagrationCommands.Amp;
 import frc.robot.commands.IntagrationCommands.AutoShoot;
+import frc.robot.commands.IntagrationCommands.Preset;
 import frc.robot.commands.IntagrationCommands.ResetAllSubsystems;
 import frc.robot.commands.IntakeCommnands.DisableIntake;
 import frc.robot.commands.IntakeCommnands.IntakeEatUntilHasNote;
@@ -72,6 +73,13 @@ public class RobotContainer {
   private Trigger m_firstBeamBreakSees;
   private Trigger m_firstBeamBreakDontSees;
   private Trigger m_canShoot;
+  private BooleanSupplier m_DisableDelivery;
+  private BooleanSupplier m_highDeliveryMiddlePreset = () -> false;
+  private BooleanSupplier m_lowDeliveryMiddlePreset = () -> false;
+  private BooleanSupplier m_highDeliveryWingPreset = () -> false;
+  private BooleanSupplier m_inMyWing = () -> false;
+  
+
 
   public RobotContainer() {
     m_swerve = SwerveSubsystem.createInstance(Constants.Swerve.swerveConstants);
@@ -84,14 +92,19 @@ public class RobotContainer {
     m_isLocalizetion = driverStationController.LeftSwitch().negate();
     m_isLocalizetionOmega = driverStationController.LeftMidSwitch().negate();
     m_canShoot = new Trigger(() ->(m_shooter.isAtSetpoint() && m_arm.isAtSetpoint())); //TODO: add isCentered 
+    m_DisableDelivery = driverStationController.RightMidSwitch().negate();
     m_firstBeamBreakSees =  new Trigger(() -> m_intake.firstBeamBreak());
     m_firstBeamBreakDontSees = new Trigger(() -> !m_intake.firstBeamBreak());
+    m_highDeliveryMiddlePreset = () -> PoseEstimatorSubsystem.isAtFeederSide() && PoseEstimatorSubsystem.notInAnyWing();
+    m_lowDeliveryMiddlePreset = () -> !PoseEstimatorSubsystem.isAtFeederSide() && PoseEstimatorSubsystem.notInAnyWing();
+    m_highDeliveryWingPreset = () -> PoseEstimatorSubsystem.inEnenmyWing() && PoseEstimatorSubsystem.isAtFeederSide();
+    m_inMyWing = () -> PoseEstimatorSubsystem.inMyWing();
     SmartDashboard.putData("reset Odometry from limelight", new InstantCommand(() -> PoseEstimatorSubsystem.resetPositionFromCamera()));
     SwerveBinding();
     armBinding();
-    shooterBinding();
     intakeBinding();
     presets();
+    shotState();
     resets();
     auto();
     driverStationController.LeftBlue().onTrue(new RotateToTarget(m_swerve));
@@ -148,13 +161,20 @@ public class RobotContainer {
     SmartDashboard.putData("Change Arm  NeutralMode", new ArmChangeNeutralMode(m_arm).ignoringDisable(true)); 
     SmartDashboard.putData("reset arm", new InstantCommand(() -> m_arm.resetPosition(9.57)).ignoringDisable(true));
     SmartDashboard.putData("ArmDisableSoftLimit", new InstantCommand(() -> m_arm.ControlSoftLimit(false)).ignoringDisable(true));
-    drivercontroller.R1().onTrue(new ArmWithVision(m_arm).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    //drivercontroller.R1().onTrue(new ArmWithVision(m_arm).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     drivercontroller.povUp().onTrue(new ArmAngleToDashBoard(m_arm, m_shooter));
     operatorController.cross().onTrue(new ServoSubsystemManualControl(m_arm, ()-> operatorController.getRightY()));
   }
 
-  public void shooterBinding(){
-    drivercontroller.R1().onTrue(new ShooterSetIfHasNote(m_shooter, m_intake, 7000));
+  public void shotState(){
+    drivercontroller.R1().and(m_inMyWing).onTrue(new ArmWithVision(m_arm).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    drivercontroller.R1().and(m_inMyWing).onTrue(new ShooterSetIfHasNote(m_shooter, m_intake, 7000));
+
+    drivercontroller.R1().and(m_lowDeliveryMiddlePreset).and(m_DisableDelivery).onTrue(new Preset(m_shooter, m_arm, 20, 5000));//low middle preset
+    drivercontroller.R1().and(m_highDeliveryMiddlePreset).and(m_DisableDelivery).onTrue(new Preset(m_shooter, m_arm, 53, 5000));//high middle preset
+    drivercontroller.R1().and(m_highDeliveryWingPreset).and(m_DisableDelivery).onTrue(new Preset(m_shooter, m_arm, 53, 4700));//high wing preset
+  
+    drivercontroller.triangle().onTrue(new Amp(m_intake, m_arm, m_shooter));
   }
 
   public void intakeBinding(){
@@ -163,16 +183,20 @@ public class RobotContainer {
     (m_firstBeamBreakDontSees).and(drivercontroller.L2()).onTrue(new IntakeEatUntilHasNote(m_intake, 0.7, true).andThen(new IntakeGlubGlub(m_intake, true)).andThen(new IntakeEatUntilHasNote(m_intake, 0.5, false)).andThen(new IntakeGlubGlub(m_intake, false)));
     drivercontroller.R2().whileTrue(new IntakeForTime(m_intake, -0.3, 2.0));
     drivercontroller.R1().debounce(0.4).and(m_canShoot).onTrue(new IntakeForTime(m_intake, 0.8, 1.0).andThen(new WaitCommand(0.5)).andThen(new DisableShooter(m_shooter)).andThen(new ArmHoming(m_arm)));
+    operatorController.R1().debounce(0.4).and(m_canShoot).onTrue(new IntakeForTime(m_intake, 0.8, 1.0).andThen(new WaitCommand(0.5)).andThen(new DisableShooter(m_shooter)).andThen(new ArmHoming(m_arm)));
   }
 
   public void presets(){
     driverStationController.RightYellow().onTrue(new InstantCommand(() -> m_intake.setMotorPrecent(0.8)));
-    drivercontroller.triangle().onTrue(new Amp(m_intake, m_arm, m_shooter));
-    // driverStationController.LeftBlue().onTrue(new DriveAssistAuto(m_swerve));
+    operatorController.cross().onTrue(new Preset(m_shooter, m_arm, 55, 5000)); //close to speaker preset
+    operatorController.square().onTrue(new Preset(m_shooter, m_arm, 36, 6000)); //amp preset
+    operatorController.circle().onTrue(new Preset(m_shooter, m_arm, 36, 6000)); //trass preset
+    operatorController.triangle().onTrue(new Preset(m_shooter, m_arm, 53, 5000)); //delivary preset
   }
 
   public void resets(){
     drivercontroller.L1().onTrue(new ResetAllSubsystems(m_shooter, m_intake, m_arm));
+    operatorController.L1().onTrue(new ResetAllSubsystems(m_shooter, m_intake, m_arm));
     drivercontroller.povDown().onTrue(new ArmSetPosition(m_arm, 10, true));
   }
 }

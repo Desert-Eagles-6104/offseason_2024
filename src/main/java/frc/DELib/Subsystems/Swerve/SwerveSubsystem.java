@@ -7,6 +7,8 @@ package frc.DELib.Subsystems.Swerve;
 import static edu.wpi.first.units.Units.Volts;
 
 import java.io.IOException;
+
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.VecBuilder;
@@ -29,7 +31,6 @@ import frc.DELib.CSV.CSVWriter;
 import frc.DELib.Intepulation.InterpolatingDouble;
 import frc.DELib.Intepulation.InterpolatingTreeMap;
 import frc.DELib.Sensors.Pigeon;
-import frc.robot.Robot;
 
 public class SwerveSubsystem extends SubsystemBase {
   private static SwerveSubsystem swerve = null;

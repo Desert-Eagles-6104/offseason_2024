@@ -28,14 +28,17 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
   private static double odometryToArmDistance = 0.13784;
   private static boolean first = true;
   private static StableBoolean tvStableBoolean;
-  Field2d field2d;
   private static Translation2d blueSpeaker = new Translation2d(0.0, 5.55);
   private static Translation2d redSpeaker = new Translation2d(16.52, 5.55);
+  private static double blueWing = 5.85;
+  private static double redWing = 10.7;
+  private static double centerLine = 4.1;
+  private static Translation2d DeliveryBlueSpeaker = new Translation2d(0.95, 7.0);
+  private static Translation2d DeliveryRedSpeaker = new Translation2d(15.75, 7.0);
+  private static Translation2d deliveryMiddleBlue = new Translation2d(7.0, 7.35);
+  private static Translation2d deliveryMiddleRed = new Translation2d(9.5, 7.35);
 
-  
-  
   public PoseEstimatorSubsystem(SwerveSubsystem swerve) {
-    field2d = new Field2d();
     m_swerve = swerve;
     m_gyro = Pigeon.getInstance();
     tvStableBoolean = new StableBoolean(0.15);
@@ -45,11 +48,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
   public void periodic() {
     if(!first){
       updateVisionOdometry();
-      // SmartDashboard.putString("estimatedRobotPose", getRobotPose().toString());
       SmartDashboard.putNumber("distance from speaker", getDistanceToSpeaker());
       SmartDashboard.putNumber("angleSpeaker", getAngleToSpeaker().getDegrees());
-      // field2d.setRobotPose(getRobotPose());
-      // SmartDashboard.putData("field2d ",field2d);
       SmartDashboard.putBoolean("isCentered", isCentered());
     }
     else{
@@ -75,7 +75,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
   }
 
   public static boolean isCentered(){
-    return Math.abs(getHeading().getDegrees() - getAngleToBlueSpeaker().getDegrees()) < 1.5; //TODO: cheak
+    return Math.abs(getHeading().getDegrees() - getAngleToSpeaker().getDegrees()) < 1.5; //TODO: cheak
   }
 
   public static Pose2d getRobotPose(){
@@ -104,12 +104,26 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
     return m_swerve.getInterpolatedPose(latencySeconds);
   }
 
-    public static Rotation2d getAngleToDeliveryCloseToSpeaker(){
-    return Rotation2d.fromRadians(-Math.atan((7.0 - getRobotPose().getY())/(0.95 -getRobotPose().getX())));
-  }
-
-    public static double getDistanceToDeliveryCloseToSpeaker(){
-    return getRobotPose().getTranslation().getDistance(new Translation2d(0.95, 7.0));
+    public static Rotation2d getAngleToDelivery(){
+      if(inEnenmyWing() && Robot.s_Alliance == Alliance.Red){
+        SmartDashboard.putString("delivaryPoint", deliveryMiddleRed.toString());
+        return Rotation2d.fromRadians(-Math.atan((deliveryMiddleRed.getY() - getRobotPose().getY())/(deliveryMiddleRed.getX() -getRobotPose().getX()))).rotateBy(Rotation2d.fromDegrees(180));
+      }
+      else if(inEnenmyWing() && Robot.s_Alliance == Alliance.Blue){
+        SmartDashboard.putString("delivaryPoint", deliveryMiddleBlue.toString());
+        return Rotation2d.fromRadians(-Math.atan((deliveryMiddleBlue.getY() - getRobotPose().getY())/(deliveryMiddleBlue.getX() -getRobotPose().getX())));
+      }
+      else if(notInAnyWing() && Robot.s_Alliance == Alliance.Red){
+        SmartDashboard.putString("delivaryPoint", DeliveryRedSpeaker.toString());
+        return Rotation2d.fromRadians(-Math.atan((DeliveryRedSpeaker.getY() - getRobotPose().getY())/(DeliveryRedSpeaker.getX() -getRobotPose().getX()))).rotateBy(Rotation2d.fromDegrees(180));
+      }
+      else if(notInAnyWing() && Robot.s_Alliance == Alliance.Blue){
+        SmartDashboard.putString("delivaryPoint", DeliveryBlueSpeaker.toString());
+        return Rotation2d.fromRadians(-Math.atan((DeliveryBlueSpeaker.getY() - getRobotPose().getY())/(DeliveryBlueSpeaker.getX() -getRobotPose().getX())));
+      }
+      else{
+        return Rotation2d.fromDegrees(0);
+      }
   }
 
   public static double getDistanceToSpeaker(){
@@ -119,10 +133,6 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
     return getRobotPose().getTranslation().getDistance(blueSpeaker);
   }
 
-  public static double getDistanceToBlueSpeaker(){
-    return getRobotPose().getTranslation().getDistance(new Translation2d(0.0, 5.55));
-  }
-
   public static Rotation2d getAngleToSpeaker(){
     if(Robot.s_Alliance == Alliance.Red){
       return Rotation2d.fromRadians(-Math.atan((redSpeaker.getY() - getRobotPose().getY())/(redSpeaker.getX() -getRobotPose().getX()))).rotateBy(Rotation2d.fromDegrees(180));
@@ -130,29 +140,36 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
     return Rotation2d.fromRadians(-Math.atan((blueSpeaker.getY() - getRobotPose().getY())/(blueSpeaker.getX() -getRobotPose().getX())));
   }
 
-  public static Rotation2d getAngleToBlueSpeaker(){
-    return Rotation2d.fromRadians(-Math.atan((5.55 - getRobotPose().getY())/(0 -getRobotPose().getX())));
-  }
-
   public static double getArmAngleToBlueSpeaker(){
-    double distanceToSpeaker = getDistanceToBlueSpeaker()+odometryToArmDistance;
+    double distanceToSpeaker = getDistanceToSpeaker()+odometryToArmDistance;
     return clamp(Math.toDegrees(Math.atan((speakerHighetFromRobot)/(distanceToSpeaker)))+7.9  , 10, 100);
   } 
 
-  
-  public static double getDistanceToBlueSpeakerOnTheMove(){
-    return getInterpolatedPose(0.02).getTranslation().getDistance(new Translation2d(0.0, 5.55));
+  public static boolean inMyWing(){
+    if(Robot.s_Alliance == Alliance.Red){
+      return getRobotPose().getX() >= redWing;
+    }
+    else{
+      return getRobotPose().getX() <= blueWing;
+    }
   }
 
-  public static Rotation2d getAngleToBlueSpeakerOnTheMove(){
-    Pose2d pose = getInterpolatedPose(0.02);
-    return Rotation2d.fromRadians(-Math.atan((5.55 - pose.getY())/(0 -pose.getX())));
+  public static boolean inEnenmyWing(){
+    if(Robot.s_Alliance == Alliance.Red){
+      return getRobotPose().getX() <= blueWing;
+    }
+    else{
+      return getRobotPose().getX() >= redWing;
+    }
   }
 
-  public static double getArmAngleToBlueSpeakerOnTheMove(){
-    double distanceToSpeaker = getDistanceToBlueSpeakerOnTheMove()+odometryToArmDistance - 0.1;
-    return clamp(Math.toDegrees(Math.atan((speakerHighetFromRobot)/(distanceToSpeaker))), 10, 100);
-  } 
+  public static boolean isAtFeederSide(){
+    return getRobotPose().getY() <= centerLine;
+  }
+
+  public static boolean notInAnyWing(){
+    return !inEnenmyWing() && !inMyWing();
+  }
 
    /**
   @param value clamped value
@@ -162,5 +179,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase{
   */
   private static double clamp(double value, double min, double max) {
     return Math.max(min, Math.min(max, value));
-    }
+  }
+
+
 }

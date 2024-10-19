@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.DELib.Subsystems.PoseEstimator.PoseEstimatorSubsystem;
 import frc.DELib.Subsystems.Swerve.SwerveSubsystem;
 
@@ -63,6 +64,7 @@ public class SwerveAutoBuilder {
                 m_swerve // Reference to this subsystem to set requirements
         );
         m_autoChooser = AutoBuilder.buildAutoChooser();
+        m_autoChooser.setDefaultOption("Default", new PrintCommand("Default"));
         SmartDashboard.putData("Auto Chooser", m_autoChooser);
         m_rotationOverrideConditionSupplier = () -> false;
         m_rotationTargetSupplier = () -> -PoseEstimatorSubsystem.getAngleToSpeaker().getDegrees();
