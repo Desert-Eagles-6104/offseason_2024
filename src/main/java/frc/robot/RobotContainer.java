@@ -166,9 +166,9 @@ public class RobotContainer {
     drivercontroller.R1().and(m_inMyWing).onTrue(new ArmWithVision(m_arm).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     drivercontroller.R1().and(m_inMyWing).onTrue(new ShooterSetIfHasNote(m_shooter, m_intake, 7000));
 
-    drivercontroller.R1().and(m_lowDeliveryMiddlePreset).and(m_DisableDelivery).onTrue(new Preset(m_shooter, m_arm, 35, 3500));//low middle preset
+    drivercontroller.R1().and(m_lowDeliveryMiddlePreset).and(m_DisableDelivery).onTrue(new Preset(m_shooter, m_arm, 20, 5000));//low middle preset
     drivercontroller.R1().and(m_highDeliveryMiddlePreset).and(m_DisableDelivery).onTrue(new Preset(m_shooter, m_arm, 53, 5000));//high middle preset
-    drivercontroller.R1().and(m_highDeliveryWingPreset).and(m_DisableDelivery).onTrue(new Preset(m_shooter, m_arm, 63, 6000));//high wing preset
+    drivercontroller.R1().and(m_highDeliveryWingPreset).and(m_DisableDelivery).onTrue(new Preset(m_shooter, m_arm, 53, 5000));//high wing preset
   
     drivercontroller.triangle().onTrue(new Amp(m_intake, m_arm, m_shooter));
   }
