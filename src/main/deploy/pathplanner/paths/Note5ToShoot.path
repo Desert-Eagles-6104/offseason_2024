@@ -3,46 +3,70 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.5311346007307416,
-        "y": 4.124382094918037
+        "x": 8.299857368945508,
+        "y": 5.7721615443230885
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4586272249467593,
-        "y": 4.144115980539654
+        "x": 6.888884546999863,
+        "y": 6.3345772845391854
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.7,
-        "y": 4.124382094918037
+        "x": 5.0,
+        "y": 6.5
       },
       "prevControl": {
-        "x": 2.7624040256495594,
-        "y": 4.124382094918037
+        "x": 6.339774525702899,
+        "y": 6.726040913620289
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "ShootFar"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
-      "name": "Slow",
+      "name": "New Constraints Zone",
       "minWaypointRelativePos": 0,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 2.0,
-        "maxAcceleration": 0.8,
+        "maxVelocity": 5.2,
+        "maxAcceleration": 8.0,
         "maxAngularVelocity": 839.77,
         "maxAngularAcceleration": 750.0
       }
     }
   ],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "ArmWithVision"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.9,
     "maxAcceleration": 6.0,
@@ -55,9 +79,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "CenterPaths",
+  "folder": "SkipPath",
   "previewStartingState": {
-    "rotation": 0.0,
+    "rotation": 0,
     "velocity": 0
   },
   "useDefaultConstraints": true

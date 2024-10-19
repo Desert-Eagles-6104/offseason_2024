@@ -17,7 +17,7 @@ import frc.robot.Robot;
 public class DriveAssistAuto extends Command {
   private SwerveSubsystem m_swerveSubsystem;
   private double m_kpSide = 0.05;
-  private double m_kpForward = 0.08;
+  private double m_kpForward = 0.1;
   private LinearFilter m_filterSide;
   private LinearFilter m_filterForward;
   private ChassisSpeeds chassisSpeeds;

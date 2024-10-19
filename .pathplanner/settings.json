@@ -3,12 +3,18 @@
   "robotLength": 0.65,
   "holonomicMode": true,
   "pathFolders": [
-    "Test",
-    "SheliAndRoniPath"
+    "CenterPaths",
+    "New Folder",
+    "OnTheMovePaths",
+    "SheliAndRoniPath",
+    "SkipPath"
   ],
   "autoFolders": [
-    "Test",
-    "SheliAndRoniAuto"
+    "CnterNotes",
+    "OnTheMove",
+    "SheliAndRoniAuto",
+    "SkipNotes",
+    "Right"
   ],
   "defaultMaxVel": 4.9,
   "defaultMaxAccel": 6.0,

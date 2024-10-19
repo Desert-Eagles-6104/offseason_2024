@@ -4,10 +4,12 @@
 
 package frc.DELib.Subsystems.Vision;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.DELib.Subsystems.Vision.VisionUtil.CameraSettings;
 import frc.DELib.Subsystems.Vision.VisionUtil.LimelightHelpers;
+import frc.DELib.Subsystems.Vision.VisionUtil.LimelightHelpers.PoseEstimate;
 
 public class VisionSubsystem extends SubsystemBase {
   /** Creates a new VisionSubsystem. */
@@ -82,6 +84,11 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public static LimelightHelpers.PoseEstimate getEstimatedRobotPose(){
+    if(m_estimatedRobotPose == null){
+      PoseEstimate poseEstimate = new PoseEstimate();
+      poseEstimate.pose = new Pose2d();
+      return poseEstimate;
+    }
     return m_estimatedRobotPose;
   }
   
