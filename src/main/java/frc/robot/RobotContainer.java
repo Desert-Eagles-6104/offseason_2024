@@ -34,6 +34,7 @@ import frc.robot.commands.IntagrationCommands.Amp;
 import frc.robot.commands.IntagrationCommands.AutoShoot;
 import frc.robot.commands.IntagrationCommands.Preset;
 import frc.robot.commands.IntagrationCommands.ResetAllSubsystems;
+import frc.robot.commands.IntagrationCommands.StupidShooter;
 import frc.robot.commands.IntakeCommnands.DisableIntake;
 import frc.robot.commands.IntakeCommnands.IntakeEatUntilHasNote;
 import frc.robot.commands.IntakeCommnands.IntakeForTime;
@@ -146,6 +147,7 @@ public class RobotContainer {
     swerveAutoBuilder.addCommand("EnableOffset", new InstantCommand(() -> SmartDashboard.putNumber("ArmAngleOffset", 1)));
     swerveAutoBuilder.addCommand("DisableOffset", new InstantCommand(() -> SmartDashboard.putNumber("ArmAngleOffset", 0.75)));
     swerveAutoBuilder.addCommand("ArmSetIntakePos", new ArmSetPosition(m_arm, 25, true));
+    swerveAutoBuilder.addCommand("StupidShooter", new StupidShooter(m_shooter, m_arm, m_intake));
     //last
     swerveAutoBuilder.buildAutos();
   }
