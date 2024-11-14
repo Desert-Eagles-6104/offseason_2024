@@ -1,5 +1,5 @@
 {
-  "version": 1.0,
+  "version": "2025.0",
   "waypoints": [
     {
       "anchor": {
@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4817998866766982,
+        "x": 1.4817998866766984,
         "y": 4.745999491998984
       },
       "isLocked": false,
@@ -38,27 +38,31 @@
         "maxVelocity": 4.0,
         "maxAcceleration": 5.0,
         "maxAngularVelocity": 839.77,
-        "maxAngularAcceleration": 750.0
+        "maxAngularAcceleration": 750.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
       }
     }
   ],
+  "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.9,
     "maxAcceleration": 6.0,
     "maxAngularVelocity": 839.77,
-    "maxAngularAcceleration": 750.0
+    "maxAngularAcceleration": 750.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.7161599454703759,
-    "rotateFast": false
+    "rotation": 0.7161599454703759
   },
   "reversed": false,
   "folder": "SheliAndRoniPath",
-  "previewStartingState": {
-    "rotation": 0,
-    "velocity": 0
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

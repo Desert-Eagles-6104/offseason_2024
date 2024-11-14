@@ -10,11 +10,15 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -24,6 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import frc.DELib.Conversions;
 import frc.DELib.Subsystems.PoseEstimator.PoseEstimatorSubsystem;
 import frc.DELib.Subsystems.Swerve.SwerveSubsystem;
 
@@ -70,7 +75,7 @@ public class SwerveAutoBuilder {
         m_rotationTargetSupplier = () -> -PoseEstimatorSubsystem.getAngleToSpeaker().getDegrees();
 
         NamedCommands.registerCommand("EnableRotationOverride", new InstantCommand(() ->setRotationOverrideConditionSupplier(() -> true)));
-        NamedCommands.registerCommand("DisableRotationOverride", new InstantCommand(() ->setRotationOverrideConditionSupplier(() -> false)));   }
+        NamedCommands.registerCommand("DisableRotationOverride", new InstantCommand(() ->setRotationOverrideConditionSupplier(() -> false)));}
 
     /**
      * first add all commands 
@@ -89,7 +94,7 @@ public class SwerveAutoBuilder {
     public void addCommand(String[] name, Command... commands){
         int i = 0;
         for(Command command : commands){
-            NamedCommands.registerCommand(name[i], command);
+            NamedCommands.registerCommand(name[i], command);            
             i++;
         }
     }
@@ -103,9 +108,26 @@ public class SwerveAutoBuilder {
             m_fullAutoCommands.put(autoName, AutoBuilder.buildAuto(autoName));
         }
     }
+
+
+Pose2d targetPose = new Pose2d(10, 5, Rotation2d.fromDegrees(180));
+
+PathConstraints constraints = new PathConstraints(
+        3.0, 4.0,
+        Conversions.degreesToRadians(540), Conversions.degreesToRadians(720));
+
+Command pathfindingCommand = AutoBuilder.pathfindToPose(
+        targetPose,
+        constraints,
+        0.0, // Goal end velocity in meters/sec
+        0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
+);
+
+
+List<PathPlannerPath> pathGroup = PathPlannerAuto.getPathGroupFromAutoFile("Example Auto");
     
     /**
-     * return the chosen auto command 
+     * return the chosen auto command
      * @return
      */
     public Command getAuto(){
@@ -115,6 +137,11 @@ public class SwerveAutoBuilder {
     public String getAutoName(){
         return m_autoChooser.getSelected().getName();
     } 
+
+    // Use the PathPlannerAuto class to get a path group from an auto
+
+
+
 
     public void setRotationTargetSupplier(DoubleSupplier rotationTargetSupplier) {
         m_rotationTargetSupplier = rotationTargetSupplier;

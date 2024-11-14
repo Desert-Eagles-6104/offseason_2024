@@ -1,5 +1,5 @@
 {
-  "version": 1.0,
+  "version": "2025.0",
   "waypoints": [
     {
       "anchor": {
@@ -54,7 +54,9 @@
         "maxVelocity": 2.0,
         "maxAcceleration": 2.0,
         "maxAngularVelocity": 839.77,
-        "maxAngularAcceleration": 750.0
+        "maxAngularAcceleration": 750.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
       }
     },
     {
@@ -65,14 +67,18 @@
         "maxVelocity": 1.0,
         "maxAcceleration": 1.0,
         "maxAngularVelocity": 839.77,
-        "maxAngularAcceleration": 750.0
+        "maxAngularAcceleration": 750.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
       }
     }
   ],
+  "pointTowardsZones": [],
   "eventMarkers": [
     {
       "name": "FirstShoot",
       "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": null,
       "command": {
         "type": "sequential",
         "data": {
@@ -128,6 +134,7 @@
     {
       "name": "armOffset",
       "waypointRelativePos": 0.85,
+      "endWaypointRelativePos": null,
       "command": {
         "type": "parallel",
         "data": {
@@ -145,6 +152,7 @@
     {
       "name": "armOffestDisable",
       "waypointRelativePos": 2.0,
+      "endWaypointRelativePos": null,
       "command": {
         "type": "parallel",
         "data": {
@@ -164,18 +172,19 @@
     "maxVelocity": 4.9,
     "maxAcceleration": 6.0,
     "maxAngularVelocity": 839.77,
-    "maxAngularAcceleration": 750.0
+    "maxAngularAcceleration": 750.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
   },
   "goalEndState": {
     "velocity": 2.0,
-    "rotation": 0,
-    "rotateFast": false
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "OnTheMovePaths",
-  "previewStartingState": {
-    "rotation": 60.0,
-    "velocity": 0
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

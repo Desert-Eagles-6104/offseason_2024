@@ -1,12 +1,5 @@
 {
-  "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 1.5311346007307416,
-      "y": 4.124382094918037
-    },
-    "rotation": 0
-  },
+  "version": "2025.0",
   "command": {
     "type": "sequential",
     "data": {
@@ -461,6 +454,7 @@
       ]
     }
   },
+  "resetOdom": true,
   "folder": "CnterNotes",
   "choreoAuto": false
 }

@@ -32,6 +32,11 @@ public class Conversions {
         return wheelMeters;
     }
 
+    public static double degreesToRadians(double degrees){
+        double Radians = Math.toRadians(degrees);
+        return Radians;
+    }
+
     /**
      * @param wheelMeters Wheel Distance: (in Meters)
      * @param circumference Wheel Circumference: (in Meters)
